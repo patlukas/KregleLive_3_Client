@@ -1,0 +1,4 @@
+{
+    "minimum_number_of_lines_to_write_in_log_file": 1,
+    "socket_timeout": 1.0
+}
