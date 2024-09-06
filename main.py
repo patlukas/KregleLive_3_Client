@@ -5,8 +5,10 @@ from socket_manager import SocketManager
 class Main():
     def __init__(self):
         self.__log_management = None
-        self.__socket_manager = None
+        self.__socket_manager: None | SocketManager = None
         self.__init_program()
+        self.__socket_manager.connect("localhost", 3000 )
+        self.__loop()
 
     def __init_program(self):
         """

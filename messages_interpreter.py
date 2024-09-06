@@ -1,13 +1,16 @@
 from typing import Callable
 
+from results_manager import ResultsManager
+
 
 class MessagesInterpreter:
     """
         Logs:
 
     """
-    def __init__(self, on_add_log: Callable[[int, str, str, str], None]):
+    def __init__(self, results_manager: ResultsManager, on_add_log: Callable[[int, str, str, str], None]):
         self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
+        self.__results_manager: ResultsManager = results_manager
         self.__messages = b""
 
     def add_messages(self, messages: bytes) -> None:
@@ -88,7 +91,8 @@ class MessagesInterpreter:
             self.__on_add_log(3, "INT_TOLANE_IGNORE", s.upper(), f"In lane {recipient_str} communications {s}")
         elif x == b"M":
             if y == b"S":
-                self.__on_add_log(3, "INT_TOLANE_IGNORE", "PRINT_SURNAME", f"In lane {recipient_str} was set data to print: name={content}")
+                self.__set_player_name_if_not_set(recipient_int, content[2:])
+                self.__on_add_log(6, "INT_TOLANE_NAME", "PRINT_SURNAME", f"In lane {recipient_str} was set data to print: name={content}")
             elif y == b"D":
                 self.__on_add_log(3, "INT_TOLANE_IGNORE", "PRINT_DATE", f"In lane {recipient_str} was set data to print: date={content}")
             else:
@@ -97,19 +101,52 @@ class MessagesInterpreter:
             self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}")
 
     def __set_lane_status(self, lane: int, status: int):
-        pass
+        self.__on_add_log(3, "INT_TOLANE_STATUS", f"{lane}", f"Na torze {lane} ustawiono status {status}")
+        self.__results_manager.change_lane_status(lane, status)
 
     def __set_lane_time(self, lane: int, time_bytes: bytes):
-        pass
+        time = self.__bytes2int(time_bytes) / 10
+        self.__on_add_log(3, "INT_TOLANE_TIME", f"{lane}", f"Na torze {lane} ustawiono czas {time}")
+        self.__results_manager.change_time_on_lane(lane, time)
 
     def __interpretation_of_trail_run(self, lane: int, trial_setup: bytes):
-        pass
+        number_of_throw_in_trial = self.__bytes2int(trial_setup[0:3])
+        number_of_time_in_trial = self.__bytes2int(trial_setup[3:6])
+        self.__results_manager.trial_setup_on_lane(lane, number_of_throw_in_trial, number_of_time_in_trial)
 
     def __interpretation_of_game_run(self, lane: int, game_setup: bytes):
-        pass
+        number_p = self.__bytes2int(game_setup[0:3])
+        number_z = self.__bytes2int(game_setup[3:6])
+        time = self.__bytes2int(game_setup[6:9]) / 10
+        total_sum = self.__bytes2int(game_setup[9:12])
+        all_x = self.__bytes2int(game_setup[12:15])
+        card = self.__bytes2int(game_setup[16:17])
+        self.__results_manager.game_setup_on_lane(lane, number_p, number_z, time, total_sum, all_x, card)
 
     def __interpretation_of_lane_result(self, lane: int, result: bytes):
-        pass
+        type_update = result[0:1]
+        throw = self.__bytes2int(result[1:4])
+        throw_result = self.__bytes2int(result[4:7])
+        lane_sum = self.__bytes2int(result[7:10])
+        total_sum = self.__bytes2int(result[10:13])
+        next_arrangements = self.__bytes2int(result[13:16])
+        all_x = self.__bytes2int(result[16:19])
+        time = self.__bytes2int(result[19:22])
+        beaten_arrangements = self.__bytes2int(result[22:25])
+        card = self.__bytes2int(result[26:27])
+        self.__results_manager.add_result_to_lane(lane, type_update, throw, throw_result, lane_sum, total_sum,
+                      next_arrangements, all_x, time, beaten_arrangements, card)
+
+    def __set_player_name_if_not_set(self, lane: int, name_bytes: bytes):
+        name = str(name_bytes)
+        self.__results_manager.set_player_name_if_not_set(lane, name)
+
+    def __bytes2int(self, hex_bytes: bytes) -> int:
+        try:
+            return int(hex_bytes, 16)
+        except ValueError as e:
+            self.__on_add_log(3, "INT_CONVERT_ERROR", "", f"Błąd podczas próby konwercji liczby szesnastkowej {hex_bytes}")
+            return 0
 
     @staticmethod
     def __interpret_lane(lane: bytes) -> (int, str):
