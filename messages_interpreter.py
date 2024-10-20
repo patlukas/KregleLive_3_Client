@@ -138,7 +138,7 @@ class MessagesInterpreter:
                       next_arrangements, all_x, time, beaten_arrangements, card)
 
     def __set_player_name_if_not_set(self, lane: int, name_bytes: bytes):
-        name = str(name_bytes)
+        name = name_bytes.decode("utf-8")
         self.__results_manager.set_player_name_if_not_set(lane, name)
 
     def __bytes2int(self, hex_bytes: bytes) -> int:

@@ -1,0 +1,120 @@
+{
+    "type": "lane",
+    "name": <str> - pod jaką nazwą będzie widoczny ten szablon
+    "path_to_table": {
+        <str: str{ścieżka do pliku z tabelą do wpisywania danych}>
+        klucze:
+            <1..63> - status na torze - przydatne przy tworzeniu
+    },
+    "background_color": <list[int, int, int]: kolor tła (płótna) na którym będą umieszczone tabele, w formacie BGR>
+    "width": <int: szerokość tła (płótna)>,
+    "height": <int: wysokość tła (płótna)>,
+    "table_cords" <zawiera współrzędne gdzie poszczególne tabele z wynikami z torów mają być na płótnie>: {
+        [
+            <str: numer toru 0..inf>: {
+                "top": <int: górna współrzędna>,
+                "left": <int: dolna współrzędna>
+            }
+        ]
+    },
+    "cell_in_table": {
+        "metadata_default": {
+            <
+                settings przy dodawaniu napisu są nadpisywane ustawienia, w każdym 'settings', czyli po zmianie
+                parametru X ta wartość będzie już ustawiona na stałe do momentu kolejnej zmiany
+            >:
+            "font_path": <str: ścieżka do pliku z czcionką>,
+            "font_color": <list[int, int, int]: przykładowy kolor [255, 0, 0] (niebieski) UWAGA! Kolor w zapisie BGR>
+            "max_font_size": <int: maksymalny rozmiar czcionki>,
+            "left": <int: lewa współrzędna>,
+            "top": <int: górna współrzędna>,
+            "width": <int: szerokość komórki>,
+            "height": <int: wysokość komórki>
+            "text": <str | null: tekst który ma być wypisany, jeżeli wartość pola jest inna niż "", jeżeli text == "" to nie będzie zastępował>
+            "background": <list[int, int, int] | null: kolor tła>
+            "writeIfNoChange": <bool: czy wpisać tekst, jak nie nastąpiłą zmiana tekstu, przydatne, jak zmienił się tekst pod spodem i chcemy aby to było na wierzchu>
+            "text_align": <str: "center", "left", "right" - jak ma być wycentrowana czcionka
+        },
+        "cell": {
+            [
+                <rodzaj>: {<opcje z settings>}
+                  <mogą być następujące rodzaje:
+                    specjalne:
+                        "status" - w przypadku statystyk dotyczących aktualnie rozgrywanych torów, będzie tutaj wartość <1..63> jaki jest status toru lub "0"
+                                    przydaje się, jeżeli jest kilka różnych obrazów w zależności od statusu toru
+                    "&id"
+                    "team|player|lane|stat|option|status&id"
+                        team:
+                            T - w przypadku statystyk dotyczących aktualnie rozgrywanych torów, "T" zastąpione będzie przez numer zespołu gracza
+                            <0..inf> numer zespołu gracza
+                        player:
+                            "" - puste oznacza, że statystyka którą chcemy uzyskać będzie statystyką dotyczącą zespołu
+                            P - w przypadku statystyk dotyzących aktualnie rozgrywanych torów, "P" zastąpione będzie przez numer gracza
+                            <0..inf> numer gracza
+                        lane:
+                            "" - puste oznacza, że statystyka którą chcemy uzyskać będzie statystyką dotyczącą gracza
+                            L - w przypadku statystyk dotyzących aktualnie rozgrywanych torów, "L" zastąpione będzie przez numer toru
+                            trial - jeżeli chcemy statyystykę dotyczącą próbnych
+                            <0..inf> numer toru
+                        stat:
+                            uniwersalne (dotyczące drużyn, graczy, torów (w tym próbnych))
+                                s - suma
+                                p - pełne
+                                z - zbierane (przy próbnych zawsze będie 0)
+                                x - dziury
+                                number_throw - numer rzutu na torze/gracza/drużyny
+                                ps - punkty setowe (przy próbnych lub jak nie ma pojedynku zawsze będie 0)
+                                different - różnica na torze/w pojedynku/sum drużyny (przy próbnych lub jak nie ma pojedynku zawsze będie 0)
+                                is - zwraca "1" lub "". "1" gdy wszystko jest spełnione, przydaje się do rysowania prostokątów lub napisów
+                            dotyczące torów
+                                time - czas
+                                throw-N - (zamiast N liczba <1..inf>) - wynik z N-tego rzutu
+                                throw-last - wynik ostatniego oddanego rzutu na tym torze
+                            dotyczące graczy
+                                pd - punkty drużynowe (jak nie ma pojedynku zawsze będie 0)
+                                name - nazwa gracza lub po zmianie inicjał imienia i nazwisko każdego gracza
+                                name_now_playing_player - nazwa aktualnie grającego gracza
+                            doyczące drużyn
+                                pm - punkty meczowe
+                                pd - punkty drużynowe
+                                name - nazwa drużyny
+                        option:
+                            "" - pusty parametr oznacza 65535
+                            <0..262143> zsumowane akceptowalne statusy (np. 32761 oznacza że jeżeli gracz wygrywa lub remisuje na torze to statystyka nie będzie zwrócona, tzn będzie "")
+                                    jeżeli oczekiwana statystyka dotyczy gracza (np. nazwa) to ograniczenia dotyczące torów (1,2,4) nie będą brane pod uwagę,
+                                    a jeżeli drużyny to ignorowane będą (1,2,4,8,16,32,64,128,256)
+                                opcje:
+                                    131072 - wartość może być 0 | 17
+                                    65536 - drużyna wygrywa | 16
+                                    32768 - drużyna remisuje | 15
+                                    16384 - drużyna przegrywa | 14
+                                    8192 - większa suma drużyny | 13
+                                    4096 - równa suma drużyny | 12
+                                    2048 - mniejsza suma drużyny | 11
+                                    1024 - pojedynek wygrywany | 10
+                                    512 - pojedynek remisowany | 9
+                                    256 - pojedynek przegrywany | 8
+                                    128 - wyższa suma w pojedynku | 7
+                                    64 - równa suma w pojedynku | 6
+                                    32 - mniejsza suma w pojedynku | 5
+                                    16 - pojedynek nie musi być rozpoczęty | 4
+                                    8 - tor wygrywany | 3
+                                    4 - tor remisowany | 2
+                                    2 - tor przegrywany | 1
+                                    1 - tor nie musi być rozpoczęty | 0
+                        status:
+                            "" - pusty parametr oznacza 63
+                            <0..63> zsumowane akceptowalne statusy (np. 6 oznacza że akceptowane są gotowe próbne i zakończone)
+                                statusy:
+                                    1 - ustawiono próbne
+                                    2 - próbne gotowe do gry
+                                    4 - próbne zakończone
+                                    8 - ustawiono meczówkę
+                                    16 - meczówka gotowa go gry
+                                    32 - zakończono meczówkę
+                        &id <opcjonalne>:
+                            id - unikalny int, przydatne, jeżeli żeby nie było dwóch kluczy o identycznej nazwie
+            ]
+        }
+    }
+}

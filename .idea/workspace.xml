@@ -4,15 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Add first version messages_interpreter.py">
-      <change afterPath="$PROJECT_DIR$/game_types.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Add first version results_container.py &amp; results_manager.py to storage results">
+      <change afterPath="$PROJECT_DIR$/create_result_table.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_table_lane.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_table_main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/methods_to_draw_on_image.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/fonts/ubuntu.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/img_tables/clasic_two_team_6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/img_tables/one_lane_table.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/instrukcja_lane_table.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/lane_table_settings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/lane_table_settings2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/lane_table_settings3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/six_player_league.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/table_for_results/six_player_league2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/speedtest.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/config_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/game_types.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messages_interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/messages_interpreter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,24 +69,83 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/48724/Documents/GitHub/Kegeln_record_search&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.Unnamed.executor": "Run",
+    "Python.create_table_lane.executor": "Run",
+    "Python.create_table_main.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.results_manager.executor": "Run",
+    "Python.speedtest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/48724/Documents/GitHub/KregleLive_3_Client/table_for_results",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results" />
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results\img_tables" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results\fonts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="docker-deploy" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.main">
+    <configuration name="create_table_lane" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="KregleLive_3_Client" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/create_table_lane.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="create_table_main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="KregleLive_3_Client" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/create_table_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="KregleLive_3_Client" />
       <option name="ENV_FILES" value="" />
@@ -97,6 +168,75 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="results_manager" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="KregleLive_3_Client" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/results_manager.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="speedtest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="KregleLive_3_Client" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/speedtest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Unnamed" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="containerName" value="" />
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Docker.Unnamed" />
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.create_table_lane" />
+      <item itemvalue="Python.create_table_main" />
+      <item itemvalue="Python.results_manager" />
+      <item itemvalue="Python.speedtest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.create_table_lane" />
+        <item itemvalue="Python.create_table_main" />
+        <item itemvalue="Python.results_manager" />
+        <item itemvalue="Python.speedtest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -137,7 +277,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724758730625</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add first version results_container.py &amp; results_manager.py to storage results">
+      <option name="closed" value="true" />
+      <created>1725660791389</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1725660791389</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -167,6 +315,14 @@
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Add socket_manager.py, log_management.py, config_reader.py(and tests)." />
     <MESSAGE value="Add first version messages_interpreter.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add first version messages_interpreter.py" />
+    <MESSAGE value="Add first version results_container.py &amp; results_manager.py to storage results" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add first version results_container.py &amp; results_manager.py to storage results" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="self._ResultsManager__period" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

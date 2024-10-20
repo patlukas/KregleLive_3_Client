@@ -35,7 +35,7 @@
         "number_periods": -1
     },
     "Liga 6-osobowa2": {
-        "type": "league", //classic | league
+        "type": "league",
         "number_of_team": 2,
         "number_of_player_in_team": 6,
         "number_of_changes": 2,
@@ -64,9 +64,6 @@
         ],
         "number_periods": 2
 
-//        "list_category": ["Mężczyzna", "Junior", "Junior młodszy"],
-//        "tables_for_results": "tables_for_results/six_player_league.json",
-//        "tables_for_lane_results": "tables_for_results/lane_table_settings.json",
-//        "google_spreadsheets": "spreadsheets/settings_google_spreadsheet_to_result_6_players.json",
+
     }
 }

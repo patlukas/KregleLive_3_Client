@@ -1,11 +1,24 @@
+import json
+from time import sleep
+
+from create_table_lane import CreateTableLane
+from create_table_main import CreateTableMain
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
+from messages_interpreter import MessagesInterpreter
+from results_container import ResultsContainerLeague, ResultsContainer
+from results_manager import ResultsManager
 from socket_manager import SocketManager
 
 class Main():
     def __init__(self):
         self.__log_management = None
         self.__socket_manager: None | SocketManager = None
+        self.__results_container: None | ResultsContainer = None
+        self.__results_manager: None | ResultsManager = None
+        self.__create_table_lane: None | CreateTableLane = None
+        self.__create_table_main: None | CreateTableMain = None
+        self.__message_interpreter: None | MessagesInterpreter = None
         self.__init_program()
         self.__socket_manager.connect("localhost", 3000 )
         self.__loop()
@@ -27,6 +40,20 @@ class Main():
             )
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
+
+            self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
+            self.__results_container.init_struct(2, 3, 2, 4)
+
+            gametype = json.load(open("game_types.json", encoding='utf8'))["Liga 6-osobowa"]
+
+            self.__results_manager = ResultsManager(self.__results_container, gametype["transitions"], gametype["lanes"], gametype["number_periods"], self.__log_management.add_log)
+
+            self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
+
+            b = json.load(open("table_for_results/lane_table_settings3.json", encoding='utf8'))
+            b2 = json.load(open("table_for_results/six_player_league2.json", encoding='utf8'))
+            self.__create_table_main = CreateTableMain(self.__results_manager, b2)
+            self.__create_table_lane = CreateTableLane(self.__results_manager, b)
         except ConfigReaderError as e:
             self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message)
 
@@ -36,12 +63,14 @@ class Main():
             if socket_status == 1:
                 recv_code, recv_data = self.__socket_manager.recv()
                 if recv_code > 0:
-                    pass
-                    #recv
+                    self.__message_interpreter.add_messages(recv_data)
+                    self.__message_interpreter.interpret_messages()
             elif socket_status == 0:
                 if self.__socket_manager.reconnect() < 0:
                     pass
-                    #sleep
+            self.__create_table_main.make_table()
+            self.__create_table_lane.make_table()
+            sleep(0.5)
 
 
 Main()
