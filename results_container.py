@@ -7,9 +7,6 @@ class ResultsContainer:
         :param on_add_log:  <Callable[[int, str, str, str], None]> function to add logs
 
         self.teams: <list[TeamsResultsContainer]> list of team
-
-        self.init_struct(number_team) -> True
-        self.init_block(number_players_in_period, number_lane) -> None
         """
         self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
         self.teams: list[TeamsResultsContainer] = []
@@ -37,30 +34,102 @@ class ResultsContainer:
 
     def update_result(self, who: tuple[int, int, int], type_update: bytes, throw: int, throw_result: int, lane_sum: int,
                       total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
+        """
+        This method updates the player's result on lane 'who[2]'
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param type_update: <bytes> "g" was yellow card, "h" was red card, "f" was empty throw, "k" result was edit, "w"  was not special result
+        :param throw: <int> number of throw on lane <1, ...>
+        :param throw_result: <int> number of beaten pins on this throw <0..9>
+        :param lane_sum: <int> result on this lane <0, ...>
+        :param total_sum: <int> result on all game <0, ...>
+        :param next_arrangements: <int> what arrangements will be next <0, 511>
+        :param all_x: <int> number of empty throw in game <0, ...>
+        :param time: <float> how much time is left <0.0, ...>
+        :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
+        :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :return: None
+        """
         self.teams[who[0]].players[who[1]].update_result(
             who[2], type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time,
             beaten_arrangements, card
         )
 
     def update_time(self, who: tuple[int, int, int], time: float) -> None:
+        """
+        This method updates the player's time on lane 'who[2]'
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param time: <float> how much time is left <0.0, ...>
+        :return: None
+        """
         self.teams[who[0]].players[who[1]].update_time(who[2], time)
 
-    def init_setup_trial(self, who: tuple[int, int, int], max_throw: int, time: float):
+    def init_setup_trial(self, who: tuple[int, int, int], max_throw: int, time: float) -> None:
+        """
+        This method initiates a player trial, the player can make "max_throw" throws or play for "time" amount of time
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param max_throw: <int> max number of throws a player can play in trial
+        :param time: <float> max time a player can play in trial
+        :return: None
+        """
         self.teams[who[0]].players[who[1]].trial.init_setup_trial(max_throw, time)
 
-    def init_setup_game(self, who: tuple[int, int, int], number_p: int, number_z: int, time: float, total_sum: int, all_x: int, card: int):
+    def init_setup_game(self, who: tuple[int, int, int], number_p: int, number_z: int, time: float, total_sum: int, all_x: int, card: int) -> None:
+        """
+        This method initiates a player's lane
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param number_p: <int> number of throws played to full
+        :param number_z: <int> number of throws played to clear off
+        :param time: <float> max time a player can play in trial
+        :param total_sum: <int> number of pins knocked down from previous lanes
+        :param all_x: <int> number of empty throws from previous lanes
+        :param card: <int> <int> 0 - no card, 1 - yellow card, 3 - red card
+        :return: None
+        """
         self.teams[who[0]].players[who[1]].lanes[who[2]].init_setup(number_p, number_z, time, total_sum, all_x, card)
 
-    def set_player_name_if_not_set(self,who: tuple[int, int, int], name: str):
+    def set_player_name_if_not_set(self,who: tuple[int, int, int], name: str) -> None:
+        """
+        This method sets the player name if it is not already set
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param name: <str> player name
+        :return: None
+        """
         self.teams[who[0]].players[who[1]].set_name_if_not_set(name)
 
-    def set_player_name(self, who: tuple[int, int], name: str):
+    def set_player_name(self, who: tuple[int, int], name: str) -> None:
+        """
+        This method sets the player name
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param name: <str> player name
+        :return: None
+        """
         self.teams[who[0]].players[who[1]].set_name(name)
 
-    def set_team_name(self, team: int, name: str):
+    def set_team_name(self, team: int, name: str) -> None:
+        """
+        This method sets the team name
+
+        :param team: <int> number_team
+        :param name: <str> team name
+        :return: None
+        """
         self.teams[team].set_name(name)
 
     def get_dict_with_results(self, list_of_result_names: list[str], who: tuple[int, int, int] = (0, 0, 0), status: int = 0) -> dict:
+        """
+        The method takes a list of keys 'list_of_result_names' and returns a dictionary where it adds a value to each key
+
+        :param list_of_result_names: <list[str]> more in documentation - the function returns the results that are associated with these keys
+        :param who: <tuple(int, int, int)> first int is team_number and replace "T", second is player number and replace "P", third is lane_number and replace "L"
+        :param status: <int> status number - more in documentation
+        :return: <dict[str - all str form list_of_result_names: values: str]>
+        """
         status = 2**status
         dict_result = {}
         who_str = list(map(str, who))
@@ -82,11 +151,28 @@ class ResultsContainer:
         return dict_result
 
     def __get_stat(self, team: str, player: str, lane: str, stat: str, option: str) -> str:
+        """
+        This method returns the value of the statistic
+
+        :param team: <int> team number
+        :param player: <int> player number
+        :param lane: <int> lane number
+        :param stat: <str> statistics name
+        :param option: <str> "" or str(int) with option number - more in documentation
+        :return: <str> "" or value
+        """
         return self.teams[int(team)].get_stat(player, lane, stat, option)
 
 
 class ResultsContainerLeague(ResultsContainer):
     def init_struct(self, number_team: int, number_player_in_team: int) -> bool:
+        """
+        This method initializes the number of teams, later the number of teams cannot be changed
+
+        :param number_team: <int> number of teams
+        :param number_player_in_team: <int> number player in team in block
+        :return: bool - False is wrong number_team should be 2, True - everything is ok
+        """
         if number_team != 2:
             self.__on_add_log(10, "RCR_L_INIT_ERROR_TEAM", "", f"Liczba zespołów powinna być równa 2, a jest {number_team}")
             return False
@@ -94,10 +180,33 @@ class ResultsContainerLeague(ResultsContainer):
 
     def update_result(self, who: tuple[int, int, int], type_update: bytes, throw: int, throw_result: int, lane_sum: int,
                         total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
+        """
+        This method updates the player's result on lane 'who[2]', and calculate league points
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param type_update: <bytes> "g" was yellow card, "h" was red card, "f" was empty throw, "k" result was edit, "w"  was not special result
+        :param throw: <int> number of throw on lane <1, ...>
+        :param throw_result: <int> number of beaten pins on this throw <0..9>
+        :param lane_sum: <int> result on this lane <0, ...>
+        :param total_sum: <int> result on all game <0, ...>
+        :param next_arrangements: <int> what arrangements will be next <0, 511>
+        :param all_x: <int> number of empty throw in game <0, ...>
+        :param time: <float> how much time is left <0.0, ...>
+        :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
+        :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :return: None
+        """
         super().update_result(who, type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time,beaten_arrangements, card)
-        self.__calculate_league_points(who)
+        if who[2] != -1:
+            self.__calculate_league_points(who)
 
     def __calculate_league_points(self, who: tuple[int, int, int]) -> None:
+        """
+        This method calculates the team's league points
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :return: None
+        """
         rival_team_sum = [t.get_sum() for t in self.teams]
         rival_player_total_sum = [t.players[who[1]].get_sum() for t in self.teams]
         rival_player_lane_sum = [t.players[who[1]].lanes[who[2]].get_sum() for t in self.teams]
@@ -110,6 +219,17 @@ class ResultsContainerLeague(ResultsContainer):
 
 class TeamsResultsContainer:
     def __init__(self, number_player_in_team: int):
+        """
+        :param number_player_in_team: <int> number player in team in block
+
+        self.__number_player_in_team: <int> number player in team in block
+        self.name: <str> team name - default ""
+        self.pd: <float> team points
+        self.pm: <float> match points
+        self.ps: <float> set points
+        self.different: <int> difference between team totals, positive value i.e. team wins
+        self.players: <list[PlayerResultsContainer]> players
+        """
         self.__number_player_in_team: int = number_player_in_team
         self.name: str = ""
         self.pd: float = 0
@@ -118,12 +238,27 @@ class TeamsResultsContainer:
         self.different: int = 0
         self.players: list[PlayerResultsContainer] = []
 
-    def init_block(self, number_lane: int) -> bool:
+    def init_block(self, number_lane: int) -> None:
+        """
+        This method creates a block of new players who will play "number_lane" number of lanes
+
+        :param number_lane: <int> how many lanes will players play
+        :return: None
+        """
         for _ in range(self.__number_player_in_team):
             self.players.append(PlayerResultsContainer(number_lane))
-        return True
 
     def calculate_league_points(self, player: int, lane: int, rival_team_sum: int, rival_player_total_sum: int, rival_player_lane_sum: int) -> None:
+        """
+        This method calls the function to calculate the player's league points, and then calculates the team's league points.
+
+        :param player: <int> player number
+        :param lane: <int> lane number <0, ...>
+        :param rival_team_sum: <int> second team sum
+        :param rival_player_total_sum: <int> second player total sum
+        :param rival_player_lane_sum: <int> second player lane sum
+        :return: None
+        """
         self.players[player].calculate_league_points(lane, rival_player_total_sum, rival_player_lane_sum)
         self.ps = sum([p.ps for p in self.players])
         self.pd = sum([p.pd for p in self.players])
@@ -132,12 +267,32 @@ class TeamsResultsContainer:
         self.different = t_s - rival_team_sum
 
     def calculate_pm_points(self, rival_pd: float) -> None:
+        """
+        This method set match points
+
+        :param rival_pd: <float> opposing team's team points
+        :return: None
+        """
         self.pm = 2 if self.pd > rival_pd else 1 if self.pd == rival_pd else 0
 
     def get_sum(self) -> int:
+        """
+        This method returns the sum of the team
+
+        :return: <int> team sum
+        """
         return sum([p.get_sum() for p in self.players])
 
     def get_stat(self, player: str, lane: str, stat: str, option: str) -> str:
+        """
+        This method returns the value of the statistic
+
+        :param player: <int> player number
+        :param lane: <int> lane number
+        :param stat: <str> statistics name
+        :param option: <str> "" or str(int) with option number - more in documentation
+        :return: <str> "" or value
+        """
         if option != "":
             option_int = int(option)
             result_value = 2 ** (16 if self.pm == 2 else 15 if self.pm == 1 else 14)
@@ -157,6 +312,12 @@ class TeamsResultsContainer:
             return self.players[int(player)].get_stat(lane, stat, option)
 
     def get_stat_value(self, stat) -> int | float | None:
+        """
+        This method returns the value of the statistic
+
+        :param stat: <str> statistics name
+        :return: <int | float | None> int | float if statistics exists, None if not
+        """
         if stat in ["s", "p", "z", "x", "number_throw"]:
             return self.__get_sum_stat_value(stat)
         match stat:
@@ -173,10 +334,22 @@ class TeamsResultsContainer:
             case default:
                 return None
 
-    def set_name(self, name: str):
+    def set_name(self, name: str) -> None:
+        """
+        This method set team name
+
+        :param name: <str> team name
+        :return: None
+        """
         self.name = name
 
     def __get_sum_stat_value(self, stat) -> int | float:
+        """
+        This method returns the sum of all players' stats.
+
+        :param stat: <str> statistics name
+        :return: <int | float> statistics value
+        """
         sum_v = 0
         for p in self.players:
             v = p.get_stat_value(stat)
@@ -186,6 +359,18 @@ class TeamsResultsContainer:
 
 class PlayerResultsContainer:
     def __init__(self, number_lane: int):
+        """
+        :param number_lane: <int> number of lanes
+
+        self.__number_player_in_team: <int> number player in team in block
+        self.list_name: <str> player name, e.g. [("a", 0), ("b", 61)] player "a" started, "b" replaced him and played from throw 61
+        self.pd: <float> team points [0, 0.5, 1]
+        self.ps: <float> set points <0, number_lane>
+        self.different: <int> difference between players' sum, positive value, i.e. player has higher sum
+        self.__started: <bool> False - False - the player has not started yet, True - the player has started
+        self.trial: <LaneTrialContainer> trial
+        self.players: <list[PlayerResultsContainer]> lanes
+        """
         self.list_name: list[tuple[str, int]] = [("", 0)]
         self.team_name: str = ""
         self.pd: float = 0
@@ -196,6 +381,14 @@ class PlayerResultsContainer:
         self.lanes: list[LaneResultsContainer] = [LaneResultsContainer() for _ in range(number_lane)]
 
     def calculate_league_points(self, lane: int, rival_player_total_sum: int, rival_player_lane_sum: int) -> None:
+        """
+        This method calls the function to calculate the lane's league points, and then calculates the player's league points.
+
+        :param lane: <int> lane number <0, ...>
+        :param rival_player_total_sum: <int> second player total sum
+        :param rival_player_lane_sum: <int> second player lane sum
+        :return: None
+        """
         self.lanes[lane].calculate_league_points(rival_player_lane_sum)
         t_s = self.get_sum()
         self.ps = sum([l.ps for l in self.lanes])
@@ -206,27 +399,75 @@ class PlayerResultsContainer:
             self.pd = 1.0 if self.ps > (lane+1)/2 else 0.0
 
     def get_sum(self) -> int:
+        """
+        This method returns the sum of the player
+
+        :return: <int> team sum
+        """
         return sum([l.get_sum() for l in self.lanes])
 
     def update_result(self, lane: int, type_update: bytes, throw: int, throw_result: int, lane_sum: int, total_sum: int,
                       next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
+        """
+        This method updates result on lane
+
+        :param lane: lane number
+        :param type_update: <bytes> "g" was yellow card, "h" was red card, "f" was empty throw, "k" result was edit, "w"  was not special result
+        :param throw: <int> number of throw on lane <1, ...>
+        :param throw_result: <int> number of beaten pins on this throw <0..9>
+        :param lane_sum: <int> result on this lane <0, ...>
+        :param total_sum: <int> result on all game <0, ...>
+        :param next_arrangements: <int> what arrangements will be next <0, 511>
+        :param all_x: <int> number of empty throw in game <0, ...>
+        :param time: <float> how much time is left <0.0, ...>
+        :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
+        :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :return: None
+        """
         if not self.__started:
             self.__started = True
         x = self.trial if lane == -1 else self.lanes[lane]
         x.update_result(type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time, beaten_arrangements, card)
 
     def update_time(self, lane: int, time: float) -> None:
+        """
+        This method updates time on lane
+
+        :param lane: lane number
+        :param time: <float> how much time is left <0.0, ...>
+        :return: None
+        """
         x = self.trial if lane == -1 else self.lanes[lane]
         x.update_time(time)
 
     def set_name_if_not_set(self, name: str) -> None:
+        """
+        This method sets the player name if it is not already set
+
+        :param name: <str> player name
+        :return: None
+        """
         if len(self.list_name) == 1 and self.list_name[0][0] == "":
             self.set_name(name)
 
     def set_name(self, name: str) -> None:
+        """
+        This method sets the player name
+
+        :param name: <str> player name
+        :return: None
+        """
         self.list_name[0] = (name, 0)
 
     def get_stat(self, lane: str, stat: str, option: str) -> str:
+        """
+        This method returns the value of the statistic
+
+        :param lane: <int> lane number
+        :param stat: <str> statistics name
+        :param option: <str> "" or str(int) with option number - more in documentation
+        :return: <str> "" or value
+        """
         if option != "":
             option_int = int(option)
             result_value = 2 ** (10 if self.pd == 1.0 else 9 if self.pd == 0.5 else 8)
@@ -252,6 +493,12 @@ class PlayerResultsContainer:
             return self.lanes[int(lane)].get_stat(stat, option)
 
     def get_stat_value(self, stat) -> int | float | None:
+        """
+        This method returns the value of the statistic
+
+        :param stat: <str> statistics name
+        :return: <int | float | None> int | float if statistics exists, None if not
+        """
         if stat in ["s", "p", "z", "x", "number_throw"]:
             return self.__get_sum_stat_value(stat)
         match stat:
@@ -267,6 +514,12 @@ class PlayerResultsContainer:
                 return None
 
     def __get_sum_stat_value(self, stat) -> int | float:
+        """
+        This method returns the sum of all lanes' stats.
+
+        :param stat: <str> statistics name
+        :return: <int | float> statistics value
+        """
         sum_v = 0
         for l in self.lanes:
             v = l.get_stat_value(stat)
@@ -275,6 +528,11 @@ class PlayerResultsContainer:
         return sum_v
 
     def __get_name(self) -> str:
+        """
+        This method return player name, i more then one player was playing, give first letter of firstname and surname, and separate players by "/"
+
+        :return: <str> players names
+        """
         if len(self.list_name) == 1:
             return self.list_name[0][0]
 
@@ -328,7 +586,7 @@ class LaneContainer:
         Method to add new result
 
         :param type_update: <bytes> "g" was yellow card, "h" was red card, "f" was empty throw, "k" result was edit, "w"  was not special result
-        :param throw: <int> number of throw on lane
+        :param throw: <int> number of throw on lane <1, ...>
         :param throw_result: <int> number of beaten pins on this throw
         :param lane_sum: <int> result on this lane
         :param total_sum: <int> result on all game
@@ -398,6 +656,13 @@ class LaneContainer:
         self.list_arrangements: list[tuple[int, int] | None] = [None] * (number_p + number_z)
 
     def get_stat(self, stat: str, option: str) -> str:
+        """
+        This method returns the value of the statistic
+
+        :param stat: <str> statistics name
+        :param option: <str> "" or str(int) with option number - more in documentation
+        :return: <str> "" or value
+        """
         if option != "":
             option_int = int(option)
             result_value = 2 ** (3 if self.ps == 1.0 else 2 if self.ps == 0.5 else 1)
@@ -430,6 +695,12 @@ class LaneContainer:
                     return ""
 
     def get_stat_value(self, stat) -> int | float | None:
+        """
+        This method returns the value of the statistic
+
+        :param stat: <str> statistics name
+        :return: <int | float | None> int | float if statistics exists, None if not
+        """
         match stat:
             case "is":
                 return 1
