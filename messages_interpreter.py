@@ -91,6 +91,7 @@ class MessagesInterpreter:
             self.__on_add_log(3, "INT_TOLANE_IGNORE", s.upper(), f"In lane {recipient_str} communications {s}")
         elif x == b"M":
             if y == b"S":
+                self.__set_lane_status(recipient_int, 3)
                 self.__set_player_name_if_not_set(recipient_int, content[2:])
                 self.__on_add_log(6, "INT_TOLANE_NAME", "PRINT_SURNAME", f"In lane {recipient_str} was set data to print: name={content}")
             elif y == b"D":

@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Version running in prototype mode">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Add gitignore">
+      <change afterPath="$PROJECT_DIR$/game_type_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/game_types.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages_interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/messages_interpreter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,20 +56,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Docker.Unnamed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.create_table_lane.executor&quot;: &quot;Run&quot;,
-    &quot;Python.create_table_main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.results_manager.executor&quot;: &quot;Run&quot;,
-    &quot;Python.speedtest.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/48724/Documents/GitHub/KregleLive_3_Client&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.Unnamed.executor": "Run",
+    "Python.create_table_lane.executor": "Run",
+    "Python.create_table_main.executor": "Run",
+    "Python.game_type_manager.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.results_manager.executor": "Run",
+    "Python.speedtest.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/48724/Documents/GitHub/comSender",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results" />
@@ -120,6 +126,28 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/create_table_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="game_type_manager" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="KregleLive_3_Client" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/game_type_manager.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -206,6 +234,7 @@
     <list>
       <item itemvalue="Docker.Unnamed" />
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.game_type_manager" />
       <item itemvalue="Python.create_table_lane" />
       <item itemvalue="Python.create_table_main" />
       <item itemvalue="Python.results_manager" />
@@ -213,6 +242,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.game_type_manager" />
         <item itemvalue="Python.create_table_lane" />
         <item itemvalue="Python.create_table_main" />
         <item itemvalue="Python.results_manager" />
@@ -275,7 +305,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729460948560</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add gitignore">
+      <option name="closed" value="true" />
+      <created>1729498423210</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1729498423210</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -307,7 +345,8 @@
     <MESSAGE value="Add first version messages_interpreter.py" />
     <MESSAGE value="Add first version results_container.py &amp; results_manager.py to storage results" />
     <MESSAGE value="Version running in prototype mode" />
-    <option name="LAST_COMMIT_MESSAGE" value="Version running in prototype mode" />
+    <MESSAGE value="Add gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add gitignore" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

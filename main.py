@@ -3,6 +3,7 @@ from time import sleep
 
 from create_table_lane import CreateTableLane
 from create_table_main import CreateTableMain
+from game_type_manager import GameTypesManager, GameTypesManagerError, GameType
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
 from messages_interpreter import MessagesInterpreter
@@ -19,6 +20,7 @@ class Main():
         self.__create_table_lane: None | CreateTableLane = None
         self.__create_table_main: None | CreateTableMain = None
         self.__message_interpreter: None | MessagesInterpreter = None
+        self.__game_type_manager: None | GameTypesManager = None
         self.__init_program()
         self.__socket_manager.connect("localhost", 3000 )
         self.__loop()
@@ -41,12 +43,15 @@ class Main():
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
 
+            self.__game_type_manager = GameTypesManager()
+            game_type: GameType = self.__game_type_manager.get_game_type("Liga 6-osobowa")
+            # game_type: GameType = self.__game_type_manager.get_game_type("Zawody")
+
+            # self.__results_container = ResultsContainer(self.__log_management.add_log)
             self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
-            self.__results_container.init_struct(2, 3, 2, 4)
+            # self.__results_container.init_struct(game_type.number_team)
 
-            gametype = json.load(open("game_types.json", encoding='utf8'))["Liga 6-osobowa"]
-
-            self.__results_manager = ResultsManager(self.__results_container, gametype["transitions"], gametype["lanes"], gametype["number_periods"], self.__log_management.add_log)
+            self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
 
             self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
 
@@ -56,6 +61,8 @@ class Main():
             self.__create_table_lane = CreateTableLane(self.__results_manager, b)
         except ConfigReaderError as e:
             self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message)
+        except GameTypesManagerError as e:
+            self.__log_management.add_log(10, "GTM_READ_ERROR", e.code, e.message)
 
     def __loop(self):
         while True:

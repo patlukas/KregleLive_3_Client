@@ -4,19 +4,36 @@ from typing import Callable
 class ResultsContainer:
     def __init__(self, on_add_log: Callable[[int, str, str, str], None]):
         """
+        :param on_add_log:  <Callable[[int, str, str, str], None]> function to add logs
 
-        classic (wtedy oprócz poprzednich bloków, aktualnego, jest jeszcze przyszły)
-        league - jest tyle blokó ile jest periodów
+        self.teams: <list[TeamsResultsContainer]> list of team
+
+        self.init_struct(number_team) -> True
+        self.init_block(number_players_in_period, number_lane) -> None
         """
         self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
         self.teams: list[TeamsResultsContainer] = []
 
-    def init_struct(self, number_team: int, number_players_in_period: int, number_periods: int, number_lane: int) -> bool:
-        self.teams = [TeamsResultsContainer(number_players_in_period * number_periods, number_lane) for _ in range(number_team)]
+    def init_struct(self, number_team: int, number_player_in_team: int) -> bool:
+        """
+        This method initializes the number of teams, later the number of teams cannot be changed
+
+        :param number_team: <int> number of teams
+        :param number_player_in_team: <int> number player in team in block
+        :return: True
+        """
+        self.teams = [TeamsResultsContainer(number_player_in_team) for _ in range(number_team)]
         return True
 
-    def end_period(self) -> None:
-        pass
+    def init_block(self, number_lane: int) -> None:
+        """
+        This method create new block of players who will play 'number_lane' lanes
+
+        :param number_lane: <int> how many lanes will the added players play
+        :return: None
+        """
+        for team in self.teams:
+            team.init_block(number_lane)
 
     def update_result(self, who: tuple[int, int, int], type_update: bytes, throw: int, throw_result: int, lane_sum: int,
                       total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
@@ -69,14 +86,11 @@ class ResultsContainer:
 
 
 class ResultsContainerLeague(ResultsContainer):
-    def init_struct(self, number_team: int, number_players_in_period: int, number_periods: int, number_lane: int) -> bool:
+    def init_struct(self, number_team: int, number_player_in_team: int) -> bool:
         if number_team != 2:
             self.__on_add_log(10, "RCR_L_INIT_ERROR_TEAM", "", f"Liczba zespołów powinna być równa 2, a jest {number_team}")
             return False
-        if number_periods <= 0:
-            self.__on_add_log(10, "RCR_L_INIT_ERROR_PERIODS", "", f"Liczba okresów musi być większa niż 0, a jest {number_periods}")
-            return False
-        return super().init_struct(number_team, number_players_in_period, number_periods, number_lane)
+        return super().init_struct(number_team, number_player_in_team)
 
     def update_result(self, who: tuple[int, int, int], type_update: bytes, throw: int, throw_result: int, lane_sum: int,
                         total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
@@ -95,13 +109,19 @@ class ResultsContainerLeague(ResultsContainer):
 
 
 class TeamsResultsContainer:
-    def __init__(self, number_players: int, number_lane: int):
+    def __init__(self, number_player_in_team: int):
+        self.__number_player_in_team: int = number_player_in_team
         self.name: str = ""
         self.pd: float = 0
         self.pm: int = 0
         self.ps: float = 0
         self.different: int = 0
-        self.players: list[PlayerResultsContainer] = [PlayerResultsContainer(number_lane) for _ in range(number_players)]
+        self.players: list[PlayerResultsContainer] = []
+
+    def init_block(self, number_lane: int) -> bool:
+        for _ in range(self.__number_player_in_team):
+            self.players.append(PlayerResultsContainer(number_lane))
+        return True
 
     def calculate_league_points(self, player: int, lane: int, rival_team_sum: int, rival_player_total_sum: int, rival_player_lane_sum: int) -> None:
         self.players[player].calculate_league_points(lane, rival_player_total_sum, rival_player_lane_sum)
