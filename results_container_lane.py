@@ -63,7 +63,7 @@ class _LaneContainer:
         else:
             self.sums = [self.sums[0], lane_sum, total_sum]
 
-        if type_update != b"f" or beaten_arrangements == 0:
+        if type_update == b"f":
             self.x += 1
         if type_update != b"k" and 0 < throw <= self._number_p + self._number_z:
             self.list_results[throw-1] = throw_result
