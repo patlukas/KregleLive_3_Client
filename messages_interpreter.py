@@ -2,7 +2,8 @@ from typing import Callable
 
 from results_manager import ResultsManager
 
-
+# todo add more logs
+# TODO: Add Comments
 class MessagesInterpreter:
     """
         Logs:
@@ -61,21 +62,23 @@ class MessagesInterpreter:
                 self.__set_lane_status(sender_int, status)
             else:
                 self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}")
-        elif length == 9 and x == "s":
+        elif length == 9 and x == b"s":
             s = "on" if content[1:2] == b"1" else "off"
-            self.__on_add_log(3, "INT_LANE_IGNORE", f"IS_{s.upper()}", f"Lane {sender_name} is {s}")
+            self.__on_add_log(0, "INT_LANE_IGNORE", f"IS_{s.upper()}", f"Lane {sender_name} is {s}")
+            if content[2:5] != b"000" or content[5:6] not in [b"0", b"1"] or content[6:7] not in [b"0", b"1"] or content[7:9] not in [b"FF", b"38"]:
+                self.__on_add_log(9, "INT_LANE_UNKNOWN", "s", f"Unknown message from {sender_name} with content: {content}")
         else:
             self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}")
 
     def __interpret_message_to_lane(self, recipient_int: int, recipient_str: str, content: bytes) -> None:
         length = len(content)
         if length == 0:
-            self.__on_add_log(3, "INT_TOLANE_IGNORE", "HEARTBEAT", f"In lane {recipient_str} heartbeat sent")
+            self.__on_add_log(0, "INT_TOLANE_IGNORE", "HEARTBEAT", f"In lane {recipient_str} heartbeat sent")
             return
         x = content[0:1]
         if length == 1:
             if x == b"S":
-                self.__on_add_log(3, "INT_TOLANE_IGNORE", "IS_ON?", f"In lane {recipient_str} was a question whether is on or off")
+                self.__on_add_log(0, "INT_TOLANE_IGNORE", "IS_ON?", f"In lane {recipient_str} was a question whether is on or off")
             else:
                 self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}")
             return
@@ -88,14 +91,14 @@ class MessagesInterpreter:
             self.__interpretation_of_trail_run(recipient_int, content[1:])
         elif length == 2 and x == b"E":
             s = "enable" if y == b"1" else "disable"
-            self.__on_add_log(3, "INT_TOLANE_IGNORE", s.upper(), f"In lane {recipient_str} communications {s}")
+            self.__on_add_log(0, "INT_TOLANE_IGNORE", s.upper(), f"In lane {recipient_str} communications {s}")
         elif x == b"M":
             if y == b"S":
                 self.__set_lane_status(recipient_int, 3)
                 self.__set_player_name_if_not_set(recipient_int, content[2:])
                 self.__on_add_log(6, "INT_TOLANE_NAME", "PRINT_SURNAME", f"In lane {recipient_str} was set data to print: name={content}")
             elif y == b"D":
-                self.__on_add_log(3, "INT_TOLANE_IGNORE", "PRINT_DATE", f"In lane {recipient_str} was set data to print: date={content}")
+                self.__on_add_log(0, "INT_TOLANE_IGNORE", "PRINT_DATE", f"In lane {recipient_str} was set data to print: date={content}")
             else:
                 self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}")
         else:
@@ -107,7 +110,7 @@ class MessagesInterpreter:
 
     def __set_lane_time(self, lane: int, time_bytes: bytes):
         time = self.__bytes2int(time_bytes) / 10
-        self.__on_add_log(3, "INT_TOLANE_TIME", f"{lane}", f"Na torze {lane} ustawiono czas {time}")
+        self.__on_add_log(0, "INT_TOLANE_TIME", f"{lane}", f"Na torze {lane} ustawiono czas {time}")
         self.__results_manager.change_time_on_lane(lane, time)
 
     def __interpretation_of_trail_run(self, lane: int, trial_setup: bytes):
