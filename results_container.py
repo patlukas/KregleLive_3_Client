@@ -35,7 +35,7 @@ class ResultsContainer:
             team.init_block(number_lane)
 
     def update_result(self, who: tuple[int, int, int], type_update: bytes, throw: int, throw_result: int, lane_sum: int,
-                      total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
+                      total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int, raw_message: bytes) -> None:
         """
         This method updates the player's result on lane 'who[2]'
 
@@ -50,11 +50,12 @@ class ResultsContainer:
         :param time: <float> how much time is left <0.0, ...>
         :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
         :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :param raw_message <bytes> raw message received from the lane
         :return: None
         """
         self.teams[who[0]].players[who[1]].update_result(
             who[2], type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time,
-            beaten_arrangements, card
+            beaten_arrangements, card, raw_message
         )
 
     def update_time(self, who: tuple[int, int, int], time: float) -> None:
@@ -112,6 +113,16 @@ class ResultsContainer:
         :return: None
         """
         self.teams[who[0]].players[who[1]].set_name(name)
+
+    def set_player_previous_sum(self, who: tuple[int, int], previous_sum: int) -> None:
+        """
+        This method sets the previous sum e.g. the result from the elimination
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param previous_sum: <int> e.g. the result from the elimination
+        :return: None
+        """
+        self.teams[who[0]].players[who[1]].previous_sum = previous_sum
 
     def set_team_name(self, team: int, name: str) -> None:
         """
@@ -181,7 +192,7 @@ class ResultsContainerLeague(ResultsContainer):
         return super().init_struct(number_team, number_player_in_team)
 
     def update_result(self, who: tuple[int, int, int], type_update: bytes, throw: int, throw_result: int, lane_sum: int,
-                        total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
+                        total_sum: int, next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int, raw_message: bytes) -> None:
         """
         This method updates the player's result on lane 'who[2]', and calculate league points
 
@@ -196,9 +207,10 @@ class ResultsContainerLeague(ResultsContainer):
         :param time: <float> how much time is left <0.0, ...>
         :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
         :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :param raw_message <bytes> raw message received from the lane
         :return: None
         """
-        super().update_result(who, type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time,beaten_arrangements, card)
+        super().update_result(who, type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time,beaten_arrangements, card, raw_message)
         if who[2] != -1:
             self.__calculate_league_points(who)
 

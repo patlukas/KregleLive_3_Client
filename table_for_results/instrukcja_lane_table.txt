@@ -74,6 +74,8 @@
                                 pd - punkty drużynowe (jak nie ma pojedynku zawsze będie 0)
                                 name - nazwa gracza lub po zmianie inicjał imienia i nazwisko każdego gracza
                                 name_now_playing_player - nazwa aktualnie grającego gracza
+                                previous_sum - suma z np. eliminacji
+                                total_sum - suma sum z eliminacji (previous_sum) i bierzącej gry
                             doyczące drużyn
                                 pm - punkty meczowe
                                 pd - punkty drużynowe

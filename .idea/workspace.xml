@@ -4,9 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Split file results_container.py into results_container.py, results_container_team.py, results_container_player.py, results_container_team.py">
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="messages_interpreter.py: Fix bug not recognizing specific known messages">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_container_lane.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container_lane.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/config_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_result_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_result_table.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_table_lane.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_table_lane.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/create_table_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_table_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_type_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_type_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messages_interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/messages_interpreter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/methods_to_draw_on_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/methods_to_draw_on_image.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_container_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container_player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/instrukcja_lane_table.txt" beforeDir="false" afterPath="$PROJECT_DIR$/table_for_results/instrukcja_lane_table.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +52,9 @@
     &quot;accountId&quot;: &quot;114446fa-37cb-465a-8096-c6eed6aaac94&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -51,21 +65,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.Unnamed.executor": "Run",
-    "Python.create_table_lane.executor": "Run",
-    "Python.create_table_main.executor": "Run",
-    "Python.game_type_manager.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.results_manager.executor": "Run",
-    "Python.speedtest.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/48724/Documents/GitHub/comSender",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create_table_lane.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create_table_main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.game_type_manager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.results_manager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.speedtest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/48724/Documents/GitHub/comSender&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results" />
@@ -332,7 +346,31 @@
       <option name="project" value="LOCAL" />
       <updated>1729624558615</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Fix bug - incorrect counting of empty throws">
+      <option name="closed" value="true" />
+      <created>1729632073333</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1729632073333</updated>
+    </task>
+    <task id="LOCAL-00011" summary="results_manager.py: Add comments">
+      <option name="closed" value="true" />
+      <created>1729642054728</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1729642054728</updated>
+    </task>
+    <task id="LOCAL-00012" summary="messages_interpreter.py: Fix bug not recognizing specific known messages">
+      <option name="closed" value="true" />
+      <created>1729727530080</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1729727530080</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -368,7 +406,10 @@
     <MESSAGE value="Add support for multiple different transition schemes" />
     <MESSAGE value="results_container.py: Add comments" />
     <MESSAGE value="Split file results_container.py into results_container.py, results_container_team.py, results_container_player.py, results_container_team.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Split file results_container.py into results_container.py, results_container_team.py, results_container_player.py, results_container_team.py" />
+    <MESSAGE value="Fix bug - incorrect counting of empty throws" />
+    <MESSAGE value="results_manager.py: Add comments" />
+    <MESSAGE value="messages_interpreter.py: Fix bug not recognizing specific known messages" />
+    <option name="LAST_COMMIT_MESSAGE" value="messages_interpreter.py: Fix bug not recognizing specific known messages" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

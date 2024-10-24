@@ -6,6 +6,8 @@ class MethodsToDrawOnImage:
         """
         __used_fonts - {<path_font>: {<size_font>: <object font PIL>}} - dictionary with loaded fonts
         __get_font(str, int) -> PIL.ImageFont.FreeTypeFont - zwraca potrzebną czcionkę
+
+        TODO: Dodaj dodawnaie logów
         """
         self.__used_fonts: dict = {}
 
@@ -49,10 +51,10 @@ class MethodsToDrawOnImage:
             image = Image.open(path)
             return image
         except FileNotFoundError:
-            # TODO: ERROR image not exist
+            # TODO: ERROR image not exist | LOG
             print(f"Plik '{path}' nie istnieje.")
         except OSError:
-            # TODO: ERROR wrong file
+            # TODO: ERROR wrong file | LOG
             print(f"Plik '{path}' nie jest poprawnym obrazem.")
         return None
 
@@ -67,7 +69,7 @@ class MethodsToDrawOnImage:
         try:
             img.save(path, "PNG")
         except OSError:
-            #TODO: ERROR
+            #TODO: ERROR | LOG
             pass
 
     def draw_text_in_cell(self, img_cell: Image.Image, text: str, max_font_size: int, font_path: str,

@@ -12,6 +12,9 @@ class ResultsContainerPlayer:
         self.ps: <float> set points <0, number_lane>
         self.different: <int> difference between players' sum, positive value, i.e. player has higher sum
         self.__started: <bool> False - False - the player has not started yet, True - the player has started
+        self.list_raw_messages: <list[bytes]> a list of raw messages received from lanes regarding a player's game
+        self.list_raw_messages_trial: <list[bytes]> a list of raw messages received from lane regarding a player's trial
+        self.previous_sum: <int> a field for storing e.g. the result from the elimination
         self.trial: <LaneTrialContainer> trial
         self.players: <list[PlayerResultsContainer]> lanes
         """
@@ -21,6 +24,9 @@ class ResultsContainerPlayer:
         self.ps: float = 0
         self.different: int = 0
         self.__started = False
+        self.list_raw_messages: list[bytes] = []
+        self.list_raw_messages_trial: list[bytes] = []
+        self.previous_sum: int = 0
         self.trial: ResultsContainerTrial = ResultsContainerTrial()
         self.lanes: list[ResultsContainerLane] = [ResultsContainerLane() for _ in range(number_lane)]
 
@@ -51,7 +57,7 @@ class ResultsContainerPlayer:
         return sum([l.get_sum() for l in self.lanes])
 
     def update_result(self, lane: int, type_update: bytes, throw: int, throw_result: int, lane_sum: int, total_sum: int,
-                      next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> None:
+                      next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int, raw_message: bytes) -> None:
         """
         This method updates result on lane
 
@@ -66,11 +72,16 @@ class ResultsContainerPlayer:
         :param time: <float> how much time is left <0.0, ...>
         :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
         :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :param raw_message <bytes> raw message received from the lane
         :return: None
         """
         if not self.__started:
             self.__started = True
         x = self.trial if lane == -1 else self.lanes[lane]
+        if lane == -1:
+            self.list_raw_messages_trial.append(raw_message)
+        else:
+            self.list_raw_messages.append(raw_message)
         x.update_result(type_update, throw, throw_result, lane_sum, total_sum, next_arrangements, all_x, time, beaten_arrangements, card)
 
     def update_time(self, lane: int, time: float) -> None:
@@ -125,6 +136,10 @@ class ResultsContainerPlayer:
                 return self.list_name[-1][0]
             if stat == "name":
                 return self.__get_name()
+            if stat == "previous_sum":
+                return str(self.previous_sum)
+            if stat == "total_sum":
+                return str(self.previous_sum + self.__get_sum_stat_value("s"))
             v = self.get_stat_value(stat)
             if v is None:
                 return ""

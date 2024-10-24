@@ -45,6 +45,7 @@ class Main():
 
             self.__game_type_manager = GameTypesManager()
             game_type: GameType = self.__game_type_manager.get_game_type("Liga 6-osobowa")
+
             # game_type: GameType = self.__game_type_manager.get_game_type("Zawody")
 
             # self.__results_container = ResultsContainer(self.__log_management.add_log)

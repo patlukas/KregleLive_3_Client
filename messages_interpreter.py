@@ -139,7 +139,7 @@ class MessagesInterpreter:
         beaten_arrangements = self.__bytes2int(result[22:25])
         card = self.__bytes2int(result[26:27])
         self.__results_manager.add_result_to_lane(lane, type_update, throw, throw_result, lane_sum, total_sum,
-                      next_arrangements, all_x, time, beaten_arrangements, card)
+                      next_arrangements, all_x, time, beaten_arrangements, card, result)
 
     def __set_player_name_if_not_set(self, lane: int, name_bytes: bytes):
         name = name_bytes.decode("utf-8")

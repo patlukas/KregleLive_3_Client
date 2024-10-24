@@ -1,6 +1,8 @@
 from methods_to_draw_on_image import MethodsToDrawOnImage
 import copy
 
+# TODO: Add comments
+
 class CreateResultTable(MethodsToDrawOnImage):
     def __init__(self, table_settings: dict):
         super().__init__()
@@ -62,6 +64,7 @@ class CreateResultTable(MethodsToDrawOnImage):
         return dict_metadata
 
     def __x(self, metadata: dict, cells: dict, dict_of_cells_metadata: dict, replace_key: dict):
+        # TODO: Change func name
         for key, v in cells.items():
             if "for" in key:
                 s = key.split("&")[0].split("|")

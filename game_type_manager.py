@@ -1,5 +1,6 @@
 """This module read game types from game_types.json"""
 #TODO Add comments
+#TODO: przekaż ścieżkę do pliku config w argumencie, ścieżkę przechowuje w settings
 import json
 import os
 from typing import Literal

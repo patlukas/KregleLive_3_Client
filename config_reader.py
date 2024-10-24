@@ -2,7 +2,7 @@
 import json
 import os
 
-
+# TODO: Dodaj do config informacje o innych plikach i katalogach
 class ConfigReaderError(Exception):
     """
         List code:

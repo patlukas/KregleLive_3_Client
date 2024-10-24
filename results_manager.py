@@ -26,7 +26,8 @@ class ResultsManager:
                 "self.__block_is_running" is greater than "self.__block_number" by 1 only in
                 the time between when a new block starts on some track and when a new block starts on all tracks
             2. you cannot remove blocks whose indexes are less than or equal to "self.__block_is_running"
-        # TODO uproszczenie self.__status_on_lanes z list[int, ....] do list[int, int]
+        # TODO: uproszczenie self.__status_on_lanes z list[int, ....] do list[int, int]
+        # TODO: Add lists every logs
         """
         self.__results_container: ResultsContainer = results_container
         self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
@@ -180,7 +181,7 @@ class ResultsManager:
         return True
 
     def add_result_to_lane(self, lane, type_update: bytes, throw: int, throw_result: int, lane_sum: int, total_sum: int,
-                      next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int) -> bool:
+                      next_arrangements: int, all_x: int, time: float, beaten_arrangements: int, card: int, raw_message: bytes) -> bool:
         """
         This method updates the player's result on lane
 
@@ -195,13 +196,14 @@ class ResultsManager:
         :param time: <float> how much time is left <0.0, ...>
         :param beaten_arrangements: <int> what arrangements was beaten in this throw <0, 511>
         :param card: <int> 0 - no card, 1 - yellow card, 3 - red card
+        :param raw_message <bytes> raw message received from the lane
         :return: <bool> True - result has been added, False - otherwise
         """
         who = self.__get_player_on_lane_for_results_or_time(lane)
         if not who:
             return False
         self.__results_container.update_result(who, type_update, throw, throw_result, lane_sum, total_sum,
-                      next_arrangements, all_x, time, beaten_arrangements, card)
+                      next_arrangements, all_x, time, beaten_arrangements, card, raw_message)
         return True
 
     def trial_setup_on_lane(self, lane: int, max_throw: int, time: float) -> bool:
@@ -262,6 +264,18 @@ class ResultsManager:
         :return: True
         """
         self.__results_container.set_player_name((team, player), name)
+        return True
+
+    def set_player_previous_sum(self, team: int, player: int, previous_sum: int) -> bool:
+        """
+        This method sets the player previous sum e.g. the result from the elimination
+
+        :param team: <int> team number
+        :param player: <int> player number
+        :param previous_sum: <int> e.g. the result from the elimination
+        :return: True
+        """
+        self.__results_container.set_player_previous_sum((team, player), previous_sum)
         return True
 
     def set_team_name(self, team: int, name: str) -> bool:

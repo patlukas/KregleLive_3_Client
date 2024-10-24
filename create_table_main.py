@@ -6,6 +6,8 @@ from results_container import ResultsContainer, ResultsContainerLeague
 from results_manager import ResultsManager
 import json
 
+# TODO: Many lines to del
+
 class CreateTableMain(CreateResultTable):
     def __init__(self, results_manager: ResultsManager | None, table_settings: dict):
         super().__init__(table_settings)
