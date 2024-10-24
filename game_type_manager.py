@@ -40,13 +40,13 @@ class GameTypesManager:
     @staticmethod
     def __get_game_types() -> dict:
         try:
-            file = open("game_types.json")
+            file = open("settings/game_types.json")
         except FileNotFoundError:
-            raise GameTypesManagerError("13-000", "Nie znaleziono pliku {}".format(os.path.abspath("game_types.json")))
+            raise GameTypesManagerError("13-000", "Nie znaleziono pliku {}".format(os.path.abspath("settings/game_types.json")))
         try:
             data = json.load(file)
         except ValueError:
-            raise GameTypesManagerError("13-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath("game_types.json")))
+            raise GameTypesManagerError("13-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath("settings/game_types.json")))
         return data
 
     def __check_correctness_data(self, loaded_game_types: dict):

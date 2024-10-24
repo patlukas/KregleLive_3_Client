@@ -229,7 +229,3 @@ class ResultsContainerLeague(ResultsContainer):
         rival_pd = [t.pd for t in self.teams]
         for i, t in enumerate(self.teams):
             t.calculate_pm_points(rival_pd[1-i])
-
-
-
-

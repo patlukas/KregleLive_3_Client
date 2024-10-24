@@ -1,9 +1,9 @@
 {
     "type": "lane",
-    "output_path": "temporary_img/lane.png",
+    "name": "Tabelki ligowe jasne",
     "path_to_table": {
-        "7": "table_for_results/img_tables/one_lane_table_trial2.png",
-        "56": "table_for_results/img_tables/one_lane_table2.png"
+        "7": "lane_trial_dark.png",
+        "56": "lane_game_light.png"
     },
     "background_color": [255, 0, 255],
     "width": 807,
@@ -36,13 +36,13 @@
     ],
     "cell_in_table": {
         "metadata_default": {
-            "font_path": "table_for_results/fonts/ubuntu.ttf",
-            "font_color": [255, 255, 255],
+            "font_path": "ubuntu.ttf",
+            "font_color": [0,0,0],
             "max_font_size": 14,
             "left": 0,
             "top": 0,
             "width": 10,
-            "height": 12,
+            "height": 14,
             "text": null,
             "background": null,
             "writeIfNoChange": false,

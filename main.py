@@ -56,10 +56,20 @@ class Main():
 
             self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
 
-            b = json.load(open("table_for_results/lane_table_settings3.json", encoding='utf8'))
-            b2 = json.load(open("table_for_results/six_player_league2.json", encoding='utf8'))
-            self.__create_table_main = CreateTableMain(self.__results_manager, b2)
-            self.__create_table_lane = CreateTableLane(self.__results_manager, b)
+            b = json.load(open("tables/instruction/lane/lane_league_light.json", encoding='utf8'))
+            b2 = json.load(open("tables/instruction/main/main_league_6_light.json", encoding='utf8'))
+            self.__create_table_main = CreateTableMain(self.__results_manager,
+                                                       self.__config["dir_fonts"],
+                                                       self.__config["dir_template_main"],
+                                                       self.__config["file_output_main"],
+                                                       self.__config["dir_instructions_main"],
+                                                       b2)
+            self.__create_table_lane = CreateTableLane(self.__results_manager,
+                                                       self.__config["dir_fonts"],
+                                                       self.__config["dir_template_lane"],
+                                                       self.__config["file_output_lane"],
+                                                       self.__config["dir_instructions_lane"],
+                                                       b)
         except ConfigReaderError as e:
             self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message)
         except GameTypesManagerError as e:

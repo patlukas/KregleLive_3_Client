@@ -4,17 +4,21 @@ import copy
 # TODO: Add comments
 
 class CreateResultTable(MethodsToDrawOnImage):
-    def __init__(self, table_settings: dict):
+    def __init__(self, table_settings: dict, font_path: str, template_dir: str, output_path: str, instructions_path: str):
         super().__init__()
         self._table_settings: dict = table_settings
         self.__cells_metadata: {} = self.__get_cells_metadata()
         self._list_of_cell_names: list[str] = list(self.__cells_metadata.keys())
+        self.__font_dir: str = font_path
+        self.__template_dir: str = template_dir
+        self._output_path: str = output_path
+        self.__instructions_dir: str = instructions_path
         self.__tables_clear: dict = self.__load_clear_images(table_settings["path_to_table"])
 
     def __load_clear_images(self, dict_wit_paths: dict) -> dict:
         return_dict = {}
         for key, path in dict_wit_paths.items():
-            return_dict[key] = self.load_image(path)
+            return_dict[key] = self.load_image(self.__template_dir + path)
         return return_dict
 
     def _make_table(self, now_results: dict, old_results: dict, old_img):
@@ -44,7 +48,7 @@ class CreateResultTable(MethodsToDrawOnImage):
 
             if value_now != "":
                 cell = self.draw_text_in_cell(
-                    cell, value_now, metadata["max_font_size"], metadata["font_path"],
+                    cell, value_now, metadata["max_font_size"], self.__font_dir + metadata["font_path"],
                     metadata["font_color"], metadata["width"], metadata["height"], metadata["text_align"]
                 )
             old_img = self.paste_img(old_img, cell, metadata["left"], metadata["top"])

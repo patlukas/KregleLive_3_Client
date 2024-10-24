@@ -30,13 +30,14 @@ class ConfigReader:
                 12-002 - KeyError - if config doesn't have required fields
         """
         try:
-            file = open("config.json")
+            file = open("settings/config.json")
         except FileNotFoundError:
-            raise ConfigReaderError("12-000", "Nie znaleziono pliku {}".format(os.path.abspath("config.json")))
+            raise ConfigReaderError("12-000", "Nie znaleziono pliku {}".format(os.path.abspath("settings/config.json")))
         try:
             data = json.load(file)
         except ValueError:
-            raise ConfigReaderError("12-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath("config.json")))
+            raise ConfigReaderError("12-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath(
+                "settings/config.json")))
         for key in self.__get_required_config_settings():
             if key not in data:
                 raise ConfigReaderError("12-002", "KeyError - W pliku config.json nie ma: " + key)
@@ -51,6 +52,13 @@ class ConfigReader:
         """
         list_settings = [
             "minimum_number_of_lines_to_write_in_log_file",
-            "socket_timeout"
+            "socket_timeout",
+            "dir_fonts",
+            "dir_template_lane",
+            "dir_template_main",
+            "file_output_lane",
+            "file_output_main",
+            "dir_instructions_lane",
+            "dir_instructions_main"
         ]
         return list_settings

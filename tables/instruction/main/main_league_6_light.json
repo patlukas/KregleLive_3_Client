@@ -1,8 +1,8 @@
 {
     "type": "main",
-    "output_path": "temporary_img/main.png",
+    "name": "Liga 6 osobowa",
     "path_to_table": {
-        "63": "table_for_results/img_tables/clasic_two_team_6.png"
+        "63": "main_league_6_light.png"
     },
     "background_color": [255, 0, 255],
     "width": 1280,
@@ -13,7 +13,7 @@
     },
     "cell_in_table": {
         "metadata_default": {
-            "font_path": "table_for_results/fonts/ubuntu.ttf",
+            "font_path": "ubuntu.ttf",
             "font_color": [0,0,0],
             "max_font_size": 15,
             "left": 0,

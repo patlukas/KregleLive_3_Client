@@ -9,8 +9,9 @@ import json
 # TODO: MAny lines to del
 
 class CreateTableLane(CreateResultTable):
-    def __init__(self, results_manager: ResultsManager | None, table_settings: dict):
-        super().__init__(table_settings)
+    def __init__(self, results_manager: ResultsManager | None, fonts_dir: str, template_dir: str, output_path: str,
+                     instruction_dir: str, table_settings: dict):
+        super().__init__(table_settings, fonts_dir, template_dir, output_path, instruction_dir)
         self.__number_of_lane: int = len(table_settings["table_cords"])
         self.__results_manager: ResultsManager | None = results_manager
         self.__list_results: list[dict] = [{}] * self.__number_of_lane
@@ -34,7 +35,7 @@ class CreateTableLane(CreateResultTable):
                     if table is None:
                         continue
                     final_img = self.paste_img(final_img, table, table_cords[i]["left"], table_cords[i]["top"])
-        self.save_image(final_img, self._table_settings["output_path"])
+        self.save_image(final_img, self._output_path)
 
 
 # log = lambda a, b, c, d: print(a, b, c, d)
@@ -55,13 +56,13 @@ class CreateTableLane(CreateResultTable):
 # # results_manager.add_result_to_lane(0, b"w", 1, 3, 3, 3, 0, 0, 11.5, 222, 0)
 # # results_manager.add_result_to_lane(0, b"w", 1, 3, 3, 3, 0, 0, 11.5, 222, 0)
 #
-# file = open("table_for_results/lane_table_settings2.json", encoding='utf8')
+# file = open("table_for_results/lane_league_light.json", encoding='utf8')
 # b = json.load(file)
 # print(b)
 #
 # a = CreateTableLane(results_manager, b)
 #
-# file2 = open("table_for_results/six_player_league2.json", encoding='utf8')
+# file2 = open("table_for_results/main_league_6_light.json", encoding='utf8')
 # b2 = json.load(file2)
 # print(b2)
 # aa = CreateTableMain(results_manager, b2)

@@ -4,20 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="messages_interpreter.py: Fix bug not recognizing specific known messages">
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="results_container_player.py: add storage for raw player performance messages &amp; add the ability to store and show the elimination score">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/config_reader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create_result_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_result_table.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create_table_lane.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_table_lane.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create_table_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_table_main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/game_type_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_type_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/game_types.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messages_interpreter.py" beforeDir="false" afterPath="$PROJECT_DIR$/messages_interpreter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/methods_to_draw_on_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/methods_to_draw_on_image.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/results_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_container_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container_player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/table_for_results/instrukcja_lane_table.txt" beforeDir="false" afterPath="$PROJECT_DIR$/table_for_results/instrukcja_lane_table.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/fonts/ubuntu.ttf" beforeDir="false" afterPath="$PROJECT_DIR$/tables/fonts/ubuntu.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/img_tables/clasic_two_team_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/tables/img_template/main/main_league_6_light.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/img_tables/one_lane_table.png" beforeDir="false" afterPath="$PROJECT_DIR$/tables/img_template/lane/lane_game_light.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/img_tables/one_lane_table2.png" beforeDir="false" afterPath="$PROJECT_DIR$/tables/img_template/lane/lane_game_dark.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/img_tables/one_lane_table_trial2.png" beforeDir="false" afterPath="$PROJECT_DIR$/tables/img_template/lane/lane_trial_dark.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/instrukcja_lane_table.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instrukcja_lane_table.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/lane_table_settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/lane_table_settings2.json" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instruction/lane/lane_league_light.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/lane_table_settings3.json" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instruction/lane/lane_league_dark.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/six_player_league.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/table_for_results/six_player_league2.json" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instruction/main/main_league_6_light.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,19 +84,24 @@
     &quot;Python.speedtest.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/48724/Documents/GitHub/comSender&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/48724/Documents/GitHub/KregleLive_3_Client/tables&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables" />
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results" />
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client" />
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results\img_tables" />
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\table_for_results\fonts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables\img_template\main" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables\img_template\lane" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables\instruction\main" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables\instruction\lane" />
+      <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables\instruction" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -370,7 +383,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729727530080</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="results_container_player.py: add storage for raw player performance messages &amp; add the ability to store and show the elimination score">
+      <option name="closed" value="true" />
+      <created>1729729649235</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1729729649235</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -409,7 +430,8 @@
     <MESSAGE value="Fix bug - incorrect counting of empty throws" />
     <MESSAGE value="results_manager.py: Add comments" />
     <MESSAGE value="messages_interpreter.py: Fix bug not recognizing specific known messages" />
-    <option name="LAST_COMMIT_MESSAGE" value="messages_interpreter.py: Fix bug not recognizing specific known messages" />
+    <MESSAGE value="results_container_player.py: add storage for raw player performance messages &amp; add the ability to store and show the elimination score" />
+    <option name="LAST_COMMIT_MESSAGE" value="results_container_player.py: add storage for raw player performance messages &amp; add the ability to store and show the elimination score" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

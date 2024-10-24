@@ -1,0 +1,11 @@
+{
+    "minimum_number_of_lines_to_write_in_log_file": 1,
+    "socket_timeout": 1.0,
+    "dir_fonts": "tables/fonts/",
+    "dir_template_lane": "tables/img_template/lane/",
+    "dir_template_main": "tables/img_template/main/",
+    "dir_instructions_lane": "tables/instruction/lane/",
+    "dir_instructions_main": "tables/instruction/main/",
+    "file_output_lane": "tables/img_temporary/lane.png",
+    "file_output_main": "tables/img_temporary/main.png"
+}
