@@ -7,10 +7,12 @@
     "background_color": [255, 0, 255],
     "width": 1280,
     "height": 170,
-    "table_cords": {
-        "top": 0,
-        "left": 0
-    },
+    "table_cords": [
+        {
+            "top": 0,
+            "left": 0
+        }
+    ],
     "cell_in_table": {
         "metadata_default": {
             "font_path": "ubuntu.ttf",

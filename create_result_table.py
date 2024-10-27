@@ -1,90 +1,113 @@
+from typing import Callable
 from methods_to_draw_on_image import MethodsToDrawOnImage
-import copy
+from PIL import Image
+import os
+
+from results_manager import ResultsManager
+from table_instruction import TableInstruction, TableInstructionError
+
 
 # TODO: Add comments
 
-class CreateResultTable(MethodsToDrawOnImage):
-    def __init__(self, table_settings: dict, font_path: str, template_dir: str, output_path: str, instructions_path: str):
+class _CreateResultTable(MethodsToDrawOnImage):
+    def __init__(self, table_type: str, font_path: str, template_dir: str, output_path: str, instructions_path: str,
+                 number_tables: int, get_results: Callable[[list[str]], list[dict | None]],
+                 on_add_log: Callable[[int, str, str, str], None]):
+        """
+
+        """
         super().__init__()
-        self._table_settings: dict = table_settings
-        self.__cells_metadata: {} = self.__get_cells_metadata()
-        self._list_of_cell_names: list[str] = list(self.__cells_metadata.keys())
+        self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
+        self.__get_results: Callable[[list[str]], list[dict | None]] = get_results
+        self.__number_images: int = number_tables
+        self.__old_results: list[dict] = [{}] * number_tables
+        self.__old_tables: list[Image.Image | None] = [None] * number_tables
         self.__font_dir: str = font_path
-        self.__template_dir: str = template_dir
-        self._output_path: str = output_path
-        self.__instructions_dir: str = instructions_path
-        self.__tables_clear: dict = self.__load_clear_images(table_settings["path_to_table"])
+        self.__output_path: str = output_path
+        self.__instructions: list[TableInstruction] = self.__load_instructions(table_type, instructions_path, template_dir)
+        self.__instructions_index: int = 0
 
-    def __load_clear_images(self, dict_wit_paths: dict) -> dict:
-        return_dict = {}
-        for key, path in dict_wit_paths.items():
-            return_dict[key] = self.load_image(self.__template_dir + path)
-        return return_dict
+    def change_instruction(self, index: int) -> None:
+        if self.__instructions_index == index:
+            return
+        if index < 0 or index >= len(self.__instructions):
+            return
+        self.__instructions_index = index
+        for i in range(self.__number_images):
+            self.__old_results[i] = {}
+            self.__old_tables[i] = None
 
-    def _make_table(self, now_results: dict, old_results: dict, old_img):
-        i, clear_img = self.__get_clear_table(now_results["status"])
+    def make_table(self):
+        if self.__instructions_index >= len(self.__instructions):
+            return None
+        instruction = self.__instructions[self.__instructions_index]
+
+        new_list_results: list[dict | None] | None = self.__get_results(instruction.list_of_cell_names)
+        [width, height, background] = instruction.get_background_settings()
+        final_img = self.create_img(width, height, background)
+        if new_list_results is not None:
+            for i, results in enumerate(new_list_results):
+                if results is not None:
+                    table = self.__make_single_table(instruction, results, i)
+                    if table is None:
+                        continue
+                    [left, top] = instruction.list_table_cords[i]
+                    final_img = self.paste_img(final_img, table, left, top)
+        self.save_image(final_img, self.__output_path)
+
+    def __load_instructions(self, table_type: str, dir_instruction: str, dir_template: str) -> list[TableInstruction]:
+        instruction_files: list[str] = [file for file in os.listdir(dir_instruction) if file.endswith('.json')]
+        return_list = []
+        for file_path in instruction_files:
+            try:
+                instruction = TableInstruction(table_type,dir_instruction + file_path, dir_template, self.load_image)
+                return_list.append(instruction)
+            except TableInstructionError as e:
+                self.__on_add_log(10, "CRT_LOAD_ERROR", e.code, e.message)
+        return return_list
+
+    def __make_single_table(self, instruction: TableInstruction, now_results: dict, table_index: int):
+        if instruction is None:
+            return None
+        old_results, old_table = self.__old_results[table_index], self.__old_tables[table_index]
+        img_key, clear_img = instruction.get_img_template(now_results["status"])
         if clear_img is None:
             return None
-        if "status" not in old_results or int(i) & int(old_results["status"]) != int(old_results["status"]) or old_img is None:
+        if "status" not in old_results or int(img_key) & int(old_results["status"]) != int(old_results["status"]) or old_table is None:
             old_results = {}
-            old_img = clear_img.copy()
-        for name in self._list_of_cell_names:
-            value_now = now_results.get(name, "")
-            value_old = old_results.get(name, "")
-            metadata = self.__cells_metadata[name]
+            old_table = clear_img.copy()
+        for name in instruction.list_of_cell_names:
+            value_now, value_old = now_results.get(name, ""), old_results.get(name, "")
+            metadata = instruction.cells_metadata[name]
             if not metadata["writeIfNoChange"] and value_now == value_old:
                 continue
-
             if metadata["breakIfEmpty"] and value_now == "":
                 continue
 
             cell = self.crop_img(clear_img, metadata["left"], metadata["top"], metadata["width"], metadata["height"])
-
             if metadata["background"] is not None:
                 self.fill_cell_background(cell, metadata["background"])
-
             if value_now != "" and metadata["text"] is not None:
                 value_now = metadata["text"]
-
             if value_now != "":
                 cell = self.draw_text_in_cell(
                     cell, value_now, metadata["max_font_size"], self.__font_dir + metadata["font_path"],
                     metadata["font_color"], metadata["width"], metadata["height"], metadata["text_align"]
                 )
-            old_img = self.paste_img(old_img, cell, metadata["left"], metadata["top"])
-        return old_img
+            old_table = self.paste_img(old_table, cell, metadata["left"], metadata["top"])
+        self.__old_tables[table_index] = old_table
+        self.__old_results[table_index] = now_results
+        return old_table
 
-    def __get_clear_table(self, status: str):
-        status_int: int = int(status)
-        for key, v in self.__tables_clear.items():
-            if int(key) & status_int == status_int:
-                return key, v
-        return 0, None
+class CreateTableMain(_CreateResultTable):
+    def __init__(self, results_manager: ResultsManager | None, fonts_dir: str, template_dir: str, output_path: str,
+                 instruction_dir: str, on_add_log: Callable[[int, str, str, str], None]):
+        super().__init__("main", fonts_dir, template_dir, output_path, instruction_dir, 1,
+                         results_manager.get_scores, on_add_log)
 
-    def __get_cells_metadata(self) -> list[str]:
-        metadata = self._table_settings["cell_in_table"]["metadata_default"]
-        cells = self._table_settings["cell_in_table"]["cells"]
-        dict_metadata, _ = self.__x( metadata, cells, {}, {})
-        return dict_metadata
 
-    def __x(self, metadata: dict, cells: dict, dict_of_cells_metadata: dict, replace_key: dict):
-        # TODO: Change func name
-        for key, v in cells.items():
-            if "for" in key:
-                s = key.split("&")[0].split("|")
-                for s_k, s_v in v["metadata"].items():
-                    metadata[s_k] = s_v
-                new_replace_key = copy.deepcopy(replace_key)
-                for i in range(int(s[2]), int(s[3])+1):
-                    new_replace_key[s[1]] = str(i)
-                    dict_of_cells_metadata, metadata = self.__x(metadata, v["cells"], dict_of_cells_metadata, new_replace_key)
-                    for s_k, s_v in v["metadata_step"].items():
-                        metadata[s_k] += s_v
-            else:
-                for o, n in replace_key.items():
-                    key = key.replace(o, n)
-                for s_k, s_v in v.items():
-                    metadata[s_k] = s_v
-                dict_of_cells_metadata[key] = copy.deepcopy(metadata)
-        return dict_of_cells_metadata, metadata
-
+class CreateTableLane(_CreateResultTable):
+    def __init__(self, results_manager: ResultsManager | None, fonts_dir: str, template_dir: str, output_path: str,
+                 instruction_dir: str, number_of_lanes: int, on_add_log: Callable[[int, str, str, str], None]):
+        super().__init__("lane", fonts_dir, template_dir, output_path, instruction_dir, number_of_lanes,
+                         results_manager.get_scores_of_players_now_playing, on_add_log)

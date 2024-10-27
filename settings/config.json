@@ -1,6 +1,7 @@
 {
     "minimum_number_of_lines_to_write_in_log_file": 1,
     "socket_timeout": 1.0,
+    "number_of_lanes": 6,
     "dir_fonts": "tables/fonts/",
     "dir_template_lane": "tables/img_template/lane/",
     "dir_template_main": "tables/img_template/main/",

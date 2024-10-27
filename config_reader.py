@@ -2,7 +2,6 @@
 import json
 import os
 
-# TODO: Dodaj do config informacje o innych plikach i katalogach
 class ConfigReaderError(Exception):
     """
         List code:
@@ -53,6 +52,7 @@ class ConfigReader:
         list_settings = [
             "minimum_number_of_lines_to_write_in_log_file",
             "socket_timeout",
+            "number_of_lanes",
             "dir_fonts",
             "dir_template_lane",
             "dir_template_main",

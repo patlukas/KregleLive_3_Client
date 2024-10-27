@@ -1,8 +1,6 @@
-import json
 from time import sleep
 
-from create_table_lane import CreateTableLane
-from create_table_main import CreateTableMain
+from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError, GameType
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
@@ -10,6 +8,8 @@ from messages_interpreter import MessagesInterpreter
 from results_container import ResultsContainerLeague, ResultsContainer
 from results_manager import ResultsManager
 from socket_manager import SocketManager
+import time
+
 
 class Main():
     def __init__(self):
@@ -56,26 +56,30 @@ class Main():
 
             self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
 
-            b = json.load(open("tables/instruction/lane/lane_league_light.json", encoding='utf8'))
-            b2 = json.load(open("tables/instruction/main/main_league_6_light.json", encoding='utf8'))
+            # b = json.load(open("tables/instruction/lane/lane_league_light.json", encoding='utf8'))
+            # b2 = json.load(open("tables/instruction/main/main_league_6_light.json", encoding='utf8'))
             self.__create_table_main = CreateTableMain(self.__results_manager,
                                                        self.__config["dir_fonts"],
                                                        self.__config["dir_template_main"],
                                                        self.__config["file_output_main"],
                                                        self.__config["dir_instructions_main"],
-                                                       b2)
+                                                       self.__log_management.add_log
+                                                       )
             self.__create_table_lane = CreateTableLane(self.__results_manager,
                                                        self.__config["dir_fonts"],
                                                        self.__config["dir_template_lane"],
                                                        self.__config["file_output_lane"],
                                                        self.__config["dir_instructions_lane"],
-                                                       b)
+                                                       self.__config["number_of_lanes"],
+                                                       self.__log_management.add_log)
         except ConfigReaderError as e:
             self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message)
         except GameTypesManagerError as e:
             self.__log_management.add_log(10, "GTM_READ_ERROR", e.code, e.message)
 
     def __loop(self):
+        start_time = time.time()  # Pobierz czas rozpoczęcia
+
         while True:
             socket_status = self.__socket_manager.get_connection_status()
             if socket_status == 1:
@@ -88,6 +92,13 @@ class Main():
                     pass
             self.__create_table_main.make_table()
             self.__create_table_lane.make_table()
+
+            current_time = time.time()  # Aktualny czas
+            elapsed_seconds = int(current_time - start_time)  # Czas, który upłynął w sekundach
+            if elapsed_seconds > 0 and elapsed_seconds >= 10:
+                print("Change")
+                self.__create_table_lane.change_index()
+                start_time = current_time
             sleep(0.5)
 
 

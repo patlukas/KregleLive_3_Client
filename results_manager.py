@@ -382,11 +382,11 @@ class ResultsManager:
                 return_list.append(self.__results_container.get_dict_with_results(list_of_result_names, who, status))
         return return_list
 
-    def get_scores(self, list_of_result_names: list[str]) -> dict:
+    def get_scores(self, list_of_result_names: list[str]) -> list[dict]:
         """
         The method takes a list of keys 'list_of_result_names' and returns a dictionary where it adds a value to each key
 
         :param list_of_result_names: <list[str]> list of statistics names
         :return: dict - team/player/lane statistics
         """
-        return self.__results_container.get_dict_with_results(list_of_result_names, (0, 0, 0), 0)
+        return [self.__results_container.get_dict_with_results(list_of_result_names, (0, 0, 0), 0)]
