@@ -1,3 +1,4 @@
+import time
 from socket import socket
 import socket
 from typing import Callable
@@ -47,6 +48,7 @@ class SocketManager:
         self.__ip_address: str = ""
         self.__port: int = -1
         self.__socket: None | socket.socket = None
+        self.__time_last_msg: float = 0
 
     def connect(self, ip_address: str, port: int) -> tuple[int, str]:
         """
@@ -68,6 +70,11 @@ class SocketManager:
         if self.__socket is not None:
             self.__on_add_log(7, "SKT_INIT_EXIST", "", "Połączenie jest nawiązane, więc nie można nawiązać nowego")
             return -6, "Połączenie jest już nawiązane"
+        if not isinstance(port, int):
+            try:
+                port = int(port)
+            except ValueError:
+                return -2, "Niepoprawny typ danych"
         self.__ip_address, self.__port = ip_address, port
         result_connect = self.__connect()
         if result_connect == 1:
@@ -111,7 +118,7 @@ class SocketManager:
             self.__on_add_log(7, "SKT_RCNCT_EXIST", "", "Połączenie jest nawiązane, więc nie można nawiązać nowego")
             return -7
         if self.__port == -1 or self.__ip_address == "":
-            self.__on_add_log(7, "SKT_RCNCT_NSADDR", "", "Nie ma ustawionego akresu serwer, więc nie można się połączyć")
+            self.__on_add_log(7, "SKT_RCNCT_NSADDR", "", "Nie ma ustawionego adresu serwer, więc nie można się połączyć")
             return -6
         result_connect = self.__connect()
         if result_connect in [-2, -3, -4]:
@@ -208,6 +215,7 @@ class SocketManager:
                             -3 - there is no connection to the server
         :logs: SKT_RECV_ERROR (10), SKT_RCV_LSRVR (10), SKT_RECV_NCNCT (7), SKT_RECV_OK (4), SKT_RECV_EMPTY (1)
         """
+        self.__time_last_msg = time.time()
         if self.__socket is None:
             self.__on_add_log(7, "SKT_RECV_NCNCT", "", f"Nie można odebrać danych bo nie ma połaczenia")
             return -3, b""
@@ -218,6 +226,7 @@ class SocketManager:
             return 0, b""
         except socket.error as e:
             self.__on_add_log(10, "SKT_RCV_ERROR", "", f"Nieoczekiwany błąd podczas odbierania | {e}")
+            self.__socket = None
             return -2, b""
         if len(msg) == 0:
             self.__on_add_log(10, "SKT_RCV_LSRVR", "", f"Utracono połączenie z serwerem!")
@@ -225,3 +234,22 @@ class SocketManager:
             return -1, b""
         self.__on_add_log(4, "SKT_RCV_OK", "", f"{msg}")
         return 1, msg
+
+    def ping(self, interval: float) -> bool:
+        """
+            TODO: Add comment
+        """
+        if self.__socket is None:
+            self.__on_add_log(7, "SKT_PING_NCNCT", "", f"Nie można odebrać danych bo nie ma połaczenia")
+            return False
+        if self.__time_last_msg + interval > time.time():
+            return True
+        self.__time_last_msg = time.time()
+        try:
+            msg = self.__socket.send(b"\r")
+        except socket.error as e:
+            self.__on_add_log(10, "SKT_PING_ERROR", "", f"Nieoczekiwany błąd podczas odbierania | {e}")
+            self.__socket = None
+            return False
+        self.__on_add_log(0, "SKT_PING_OK", "", f"{msg}")
+        return True
