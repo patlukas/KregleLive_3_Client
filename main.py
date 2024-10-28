@@ -5,6 +5,7 @@ from game_type_manager import GameTypesManager, GameTypesManagerError, GameType
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
 from messages_interpreter import MessagesInterpreter
+from player_licenses import PlayerLicenses, PlayerLicensesError
 from results_container import ResultsContainerLeague, ResultsContainer
 from results_manager import ResultsManager
 from socket_manager import SocketManager
@@ -21,8 +22,9 @@ class Main():
         self.__create_table_main: None | CreateTableMain = None
         self.__message_interpreter: None | MessagesInterpreter = None
         self.__game_type_manager: None | GameTypesManager = None
+        self.__player_licenses: None | PlayerLicenses = None
         self.__init_program()
-        self.__socket_manager.connect("localhost", 3000 )
+        self.__socket_manager.connect("localhost", 3000 ) # TODO: To można zrobić tylko jak nie jest None
         self.__loop()
 
     def __init_program(self):
@@ -40,6 +42,7 @@ class Main():
             self.__log_management.set_minimum_number_of_lines_to_write(
                 self.__config["minimum_number_of_lines_to_write_in_log_file"]
             )
+            self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"])
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
 
@@ -76,10 +79,12 @@ class Main():
             self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message)
         except GameTypesManagerError as e:
             self.__log_management.add_log(10, "GTM_READ_ERROR", e.code, e.message)
+        except PlayerLicensesError as e:
+            self.__log_management.add_log(10, "PLI_READ_ERROR", e.code, e.message)
 
     def __loop(self):
         start_time = time.time()  # Pobierz czas rozpoczęcia
-
+        index = 0
         while True:
             socket_status = self.__socket_manager.get_connection_status()
             if socket_status == 1:
@@ -96,8 +101,8 @@ class Main():
             current_time = time.time()  # Aktualny czas
             elapsed_seconds = int(current_time - start_time)  # Czas, który upłynął w sekundach
             if elapsed_seconds > 0 and elapsed_seconds >= 10:
-                print("Change")
-                self.__create_table_lane.change_index()
+                index = (index + 1) % 2
+                self.__create_table_lane.change_instruction(index)
                 start_time = current_time
             sleep(0.5)
 

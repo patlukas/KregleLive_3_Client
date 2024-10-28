@@ -4,24 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Change the directory structure &amp; paths to files used to create tables, put in config.json">
-      <change afterPath="$PROJECT_DIR$/table_instruction.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tables/fonts/CourierPrime-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tables/fonts/CourierPrime-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tables/fonts/IBMPlexMono-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tables/fonts/RobotoMono.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="Add the ability to dynamically change the instructions for creating a table with results">
+      <change afterPath="$PROJECT_DIR$/player_licenses.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings/licenses.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/config_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_result_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_result_table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_table_lane.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_table_main.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/settings/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tables/instruction/lane/lane_league_dark.json" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instruction/lane/lane_league_dark.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tables/instruction/lane/lane_league_light.json" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instruction/lane/lane_league_light.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tables/instruction/main/main_league_6_light.json" beforeDir="false" afterPath="$PROJECT_DIR$/tables/instruction/main/main_league_6_light.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +65,7 @@
     "Python.create_table_main.executor": "Run",
     "Python.game_type_manager.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.player_licenses.executor": "Debug",
     "Python.results_manager.executor": "Run",
     "Python.speedtest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -196,6 +186,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="player_licenses" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="KregleLive_3_Client" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/player_licenses.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="results_manager" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="KregleLive_3_Client" />
       <option name="ENV_FILES" value="" />
@@ -218,28 +230,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="speedtest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="KregleLive_3_Client" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/speedtest.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="Unnamed" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
@@ -252,19 +242,19 @@
     <list>
       <item itemvalue="Docker.Unnamed" />
       <item itemvalue="Python.main" />
+      <item itemvalue="Python.player_licenses" />
       <item itemvalue="Python.game_type_manager" />
       <item itemvalue="Python.create_table_lane" />
       <item itemvalue="Python.create_table_main" />
       <item itemvalue="Python.results_manager" />
-      <item itemvalue="Python.speedtest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.player_licenses" />
         <item itemvalue="Python.game_type_manager" />
         <item itemvalue="Python.create_table_lane" />
         <item itemvalue="Python.create_table_main" />
         <item itemvalue="Python.results_manager" />
-        <item itemvalue="Python.speedtest" />
       </list>
     </recent_temporary>
   </component>
@@ -395,7 +385,15 @@
       <option name="project" value="LOCAL" />
       <updated>1729812171452</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Add the ability to dynamically change the instructions for creating a table with results">
+      <option name="closed" value="true" />
+      <created>1730040777679</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1730040777679</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -436,7 +434,8 @@
     <MESSAGE value="messages_interpreter.py: Fix bug not recognizing specific known messages" />
     <MESSAGE value="results_container_player.py: add storage for raw player performance messages &amp; add the ability to store and show the elimination score" />
     <MESSAGE value="Change the directory structure &amp; paths to files used to create tables, put in config.json" />
-    <option name="LAST_COMMIT_MESSAGE" value="Change the directory structure &amp; paths to files used to create tables, put in config.json" />
+    <MESSAGE value="Add the ability to dynamically change the instructions for creating a table with results" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add the ability to dynamically change the instructions for creating a table with results" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

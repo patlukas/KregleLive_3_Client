@@ -1,0 +1,10 @@
+{
+    "path": "https://docs.google.com/spreadsheets/d/1VIDJbQhEMoFHlWcp8_ut3QZ8FTwccHnJ5lzx9LLyLME/gviz/tq?tqx=out:csv&gid=0",
+    "license_column": 0,
+    "team_column": 4,
+    "name_column": 3,
+    "category_column": 5,
+    "valid_license_column": 12,
+    "where_loaned_column": 13,
+    "license_is_valid_when_there_is_text": ["TAK"]
+}
