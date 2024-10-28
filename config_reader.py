@@ -60,6 +60,7 @@ class ConfigReader:
             "file_output_main",
             "dir_instructions_lane",
             "dir_instructions_main",
-            "file_with_licenses_config"
+            "file_with_licenses_config",
+            "file_with_category_types"
         ]
         return list_settings

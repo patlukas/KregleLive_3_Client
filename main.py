@@ -1,5 +1,6 @@
 from time import sleep
 
+from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError, GameType
 from log_management import LogManagement
@@ -23,6 +24,7 @@ class Main():
         self.__message_interpreter: None | MessagesInterpreter = None
         self.__game_type_manager: None | GameTypesManager = None
         self.__player_licenses: None | PlayerLicenses = None
+        self.__category_type_manager: None | CategoryTypesManager = None
         self.__init_program()
         self.__socket_manager.connect("localhost", 3000 ) # TODO: To można zrobić tylko jak nie jest None
         self.__loop()
@@ -43,31 +45,32 @@ class Main():
                 self.__config["minimum_number_of_lines_to_write_in_log_file"]
             )
             self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"])
+            self.__category_type_manager = CategoryTypesManager(self.__config["file_with_category_types"])
+            l = self.__category_type_manager.get_list_category_type_name()
+            g = self.__category_type_manager.select_category_type(l[1])
+            self.__player_licenses.set_category_type(g)
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
 
             self.__game_type_manager = GameTypesManager()
             game_type: GameType = self.__game_type_manager.get_game_type("Liga 6-osobowa")
-
             # game_type: GameType = self.__game_type_manager.get_game_type("Zawody")
 
-            # self.__results_container = ResultsContainer(self.__log_management.add_log)
-            self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
-            # self.__results_container.init_struct(game_type.number_team)
+            if game_type.type == "league":
+                self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
+            elif game_type.type == "classic":
+                self.__results_container = ResultsContainer(self.__log_management.add_log)
 
             self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
 
             self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
 
-            # b = json.load(open("tables/instruction/lane/lane_league_light.json", encoding='utf8'))
-            # b2 = json.load(open("tables/instruction/main/main_league_6_light.json", encoding='utf8'))
             self.__create_table_main = CreateTableMain(self.__results_manager,
                                                        self.__config["dir_fonts"],
                                                        self.__config["dir_template_main"],
                                                        self.__config["file_output_main"],
                                                        self.__config["dir_instructions_main"],
-                                                       self.__log_management.add_log
-                                                       )
+                                                       self.__log_management.add_log)
             self.__create_table_lane = CreateTableLane(self.__results_manager,
                                                        self.__config["dir_fonts"],
                                                        self.__config["dir_template_lane"],
@@ -81,6 +84,8 @@ class Main():
             self.__log_management.add_log(10, "GTM_READ_ERROR", e.code, e.message)
         except PlayerLicensesError as e:
             self.__log_management.add_log(10, "PLI_READ_ERROR", e.code, e.message)
+        except CategoryTypesManagerError as e:
+            self.__log_management.add_log(10, "CTM_READ_ERROR", e.code, e.message)
 
     def __loop(self):
         start_time = time.time()  # Pobierz czas rozpoczęcia

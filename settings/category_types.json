@@ -1,0 +1,17 @@
+{
+    "CLM": {
+        "list_category": ["Młodzik", "Junior"],
+        "only_valid": true,
+        "with_loaned": false
+    },
+    "SM": {
+        "list_category": ["Junior młodszy", "Junior", "Mężczyzna"],
+        "only_valid": true,
+        "with_loaned": true
+    },
+    "Zawody seniorskie": {
+        "list_category": ["Junior", "Mężczyzna", "Juniorka", "Kobieta"],
+        "only_valid": true,
+        "with_loaned": false
+    }
+}

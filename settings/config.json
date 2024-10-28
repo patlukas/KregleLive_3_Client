@@ -3,6 +3,7 @@
     "socket_timeout": 1.0,
     "number_of_lanes": 6,
     "file_with_licenses_config": "settings/licenses.json",
+    "file_with_category_types": "settings/category_types.json",
     "dir_fonts": "tables/fonts/",
     "dir_template_lane": "tables/img_template/lane/",
     "dir_template_main": "tables/img_template/main/",

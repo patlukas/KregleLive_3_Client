@@ -2,6 +2,9 @@ import json
 import os
 import pandas as pd
 
+from category_type_manager import CategoryType
+
+
 # TODO: Add comments
 class PlayerLicensesError(Exception):
     """
@@ -31,13 +34,17 @@ class PlayerLicenses:
         self.__players_loaned_loaning: list[_Player] = []
         self.__settings: dict = self.__load_settings(path_to_config)
         self.load_licenses()
+        self.__category_type: None | CategoryType = None
 
-    def get_players(self, team: str | None, list_category: list[str], with_loaned: bool, only_valid: bool) -> list[_Player]:
+    def get_players(self, team: str | None) -> list[_Player]:
+        with_loaned, list_category, only_valid = False, None, False
+        if self.__category_type is not None:
+            with_loaned, list_category, only_valid = self.__category_type.with_loaned, self.__category_type.list_category, self.__category_type.only_valid
         return_list: list[_Player] = []
         for player in self.__players_not_loaned + (self.__players_loaned_lending if with_loaned else self.__players_loaned_loaning):
             if team is not None and player.team != team:
                 continue
-            if player.category not in list_category:
+            if list_category is not None and player.category not in list_category:
                 continue
             if only_valid and not player.valid:
                 continue
@@ -45,8 +52,8 @@ class PlayerLicenses:
         return_list.sort(key=lambda e: e.name)
         return return_list
 
-    def get_teams(self, list_category: list[str], with_loaned: bool, only_valid: bool) -> list[str]:
-        list_players = self.get_players(None, list_category, with_loaned, only_valid)
+    def get_teams(self) -> list[str]:
+        list_players = self.get_players(None)
         list_teams: list[str] = []
         for player in list_players:
             if player.team not in list_teams:
@@ -89,3 +96,6 @@ class PlayerLicenses:
             else:
                 self.__players_loaned_loaning.append(_Player(lic, t, n, c, v))
                 self.__players_loaned_lending.append(_Player(lic, l, n, c, v))
+
+    def set_category_type(self, category_type: CategoryType | None):
+        self.__category_type = category_type
