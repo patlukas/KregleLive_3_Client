@@ -42,9 +42,11 @@ class CategoryTypesManager:
             return self.__category_types[self.__selected_key]
         return None
 
-    def select_category_type(self, category_type_name: str) -> CategoryType | None:
+    def select_category_type(self, category_type_name: str) -> bool:
+        if self.__selected_key == category_type_name:
+            return False
         self.__selected_key = category_type_name
-        return self.get_selected_category_type()
+        return True
 
     @staticmethod
     def __get_category_types(path_to_category_type: str) -> dict:

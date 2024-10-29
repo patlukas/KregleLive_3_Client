@@ -11,14 +11,13 @@ from table_instruction import TableInstruction, TableInstructionError
 
 class _CreateResultTable(MethodsToDrawOnImage):
     def __init__(self, table_type: str, font_path: str, template_dir: str, output_path: str, instructions_path: str,
-                 number_tables: int, get_results: Callable[[list[str]], list[dict | None]],
-                 on_add_log: Callable[[int, str, str, str], None]):
+                 number_tables: int, on_add_log: Callable[[int, str, str, str], None]):
         """
 
         """
         super().__init__()
         self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
-        self.__get_results: Callable[[list[str]], list[dict | None]] = get_results
+        self.__get_results: Callable[[list[str]], list[dict | None]] | None = None
         self.__number_images: int = number_tables
         self.__old_results: list[dict] = [{}] * number_tables
         self.__old_tables: list[Image.Image | None] = [None] * number_tables
@@ -27,18 +26,28 @@ class _CreateResultTable(MethodsToDrawOnImage):
         self.__instructions: list[TableInstruction] = self.__load_instructions(table_type, instructions_path, template_dir)
         self.__instructions_index: int = 0
 
-    def change_instruction(self, index: int) -> None:
+    def add_func_to_get_results(self, on_get_results: Callable[[list[str]], list[dict | None]] | None) -> None:
+        self.__get_results = on_get_results
+
+    def change_instruction(self, index: int) -> bool:
         if self.__instructions_index == index:
-            return
+            return False
         if index < 0 or index >= len(self.__instructions):
-            return
+            return False
         self.__instructions_index = index
         for i in range(self.__number_images):
             self.__old_results[i] = {}
             self.__old_tables[i] = None
+        return True
+
+    def get_list_instructions_name(self) -> list[str]:
+        return_list = []
+        for instruction in self.__instructions:
+            return_list.append(instruction.get_name())
+        return return_list
 
     def make_table(self):
-        if self.__instructions_index >= len(self.__instructions):
+        if self.__instructions_index >= len(self.__instructions) or self.__get_results is None:
             return None
         instruction = self.__instructions[self.__instructions_index]
 
@@ -100,14 +109,12 @@ class _CreateResultTable(MethodsToDrawOnImage):
         return old_table
 
 class CreateTableMain(_CreateResultTable):
-    def __init__(self, results_manager: ResultsManager | None, fonts_dir: str, template_dir: str, output_path: str,
+    def __init__(self, fonts_dir: str, template_dir: str, output_path: str,
                  instruction_dir: str, on_add_log: Callable[[int, str, str, str], None]):
-        super().__init__("main", fonts_dir, template_dir, output_path, instruction_dir, 1,
-                         results_manager.get_scores, on_add_log)
+        super().__init__("main", fonts_dir, template_dir, output_path, instruction_dir, 1, on_add_log)
 
 
 class CreateTableLane(_CreateResultTable):
-    def __init__(self, results_manager: ResultsManager | None, fonts_dir: str, template_dir: str, output_path: str,
+    def __init__(self, fonts_dir: str, template_dir: str, output_path: str,
                  instruction_dir: str, number_of_lanes: int, on_add_log: Callable[[int, str, str, str], None]):
-        super().__init__("lane", fonts_dir, template_dir, output_path, instruction_dir, number_of_lanes,
-                         results_manager.get_scores_of_players_now_playing, on_add_log)
+        super().__init__("lane", fonts_dir, template_dir, output_path, instruction_dir, number_of_lanes, on_add_log)

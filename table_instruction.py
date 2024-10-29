@@ -43,6 +43,9 @@ class TableInstruction:
         w, h, b = self.__instruction["width"], self.__instruction["height"], self.__instruction["background_color"]
         return w, h, b
 
+    def get_name(self) -> str:
+        return self.__instruction["name"]
+
     def __load_instruction(self, table_type: str, path: str) -> dict:
         try:
             file = open(path, encoding='utf8')

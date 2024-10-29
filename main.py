@@ -1,20 +1,60 @@
-from time import sleep
+import sys
+from PyQt6.QtCore import QThread
+from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QHBoxLayout
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
-from game_type_manager import GameTypesManager, GameTypesManagerError, GameType
+from game_type_manager import GameTypesManager, GameTypesManagerError
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
 from messages_interpreter import MessagesInterpreter
 from player_licenses import PlayerLicenses, PlayerLicensesError
 from results_container import ResultsContainerLeague, ResultsContainer
 from results_manager import ResultsManager
+
+from gui.settings_section import SettingsSection
+from gui.game_type_section import GameTypeSection
+from gui.socket_selection import SocketSelection
 from socket_manager import SocketManager
-import time
 
+class WorkerThread(QThread):
+    def __init__(self, log_management: LogManagement, socket_manager: SocketManager, messages_interpreter: MessagesInterpreter,
+                 create_table_main: CreateTableMain, create_table_lane: CreateTableLane):
+        super().__init__()
+        self.__log_management: LogManagement = log_management
+        self.__socket_manager: SocketManager = socket_manager
+        self.__message_interpreter: MessagesInterpreter = messages_interpreter
+        self.__create_table_main: CreateTableMain = create_table_main
+        self.__create_table_lane: CreateTableLane = create_table_lane
+        self.__running: bool = False
 
-class Main():
+    def run(self):
+        self.__log_management.add_log(7, "LOOP_START", "", "Uruchomiono pętlę główną aplikacji")
+        self.__running = True
+        while self.__running:
+            socket_status = self.__socket_manager.get_connection_status()
+            if socket_status == 1:
+                recv_code, recv_data = self.__socket_manager.recv()
+                if recv_code > 0:
+                    self.__message_interpreter.add_messages(recv_data)
+                    self.__message_interpreter.interpret_messages()
+                    self.create_table_lane()
+                    self.create_table_main()
+            self.msleep(500)
+
+    def stop(self):
+        self.__log_management.add_log(7, "LOOP_STOP", "", "Zatrzymano pętlę główną aplikacji")
+        self.__running = False
+
+    def create_table_lane(self):
+        self.__create_table_lane.make_table()
+
+    def create_table_main(self):
+        self.__create_table_main.make_table()
+
+class Main(QWidget):
     def __init__(self):
+        super().__init__()
         self.__log_management = None
         self.__socket_manager: None | SocketManager = None
         self.__results_container: None | ResultsContainer = None
@@ -25,9 +65,17 @@ class Main():
         self.__game_type_manager: None | GameTypesManager = None
         self.__player_licenses: None | PlayerLicenses = None
         self.__category_type_manager: None | CategoryTypesManager = None
+        self.__thread: WorkerThread | None = None
+
         self.__init_program()
-        self.__socket_manager.connect("localhost", 3000 ) # TODO: To można zrobić tylko jak nie jest None
-        self.__loop()
+        self.__layout = QHBoxLayout()
+        self.setLayout(self.__layout)
+        self.__loop_is_running: bool = False
+        self.__button_start: QPushButton = QPushButton("Rozpocznij")
+        self.__button_stop: QPushButton = QPushButton("Zatrzymaj")
+        self.__column1_layout = QGridLayout()
+
+        self.init_gui()
 
     def __init_program(self):
         """
@@ -41,39 +89,20 @@ class Main():
         try:
             self.__config = ConfigReader().get_configuration()
             self.__log_management.add_log(2, "CNF_READ", "", "Pobrano konfigurację")
-            self.__log_management.set_minimum_number_of_lines_to_write(
-                self.__config["minimum_number_of_lines_to_write_in_log_file"]
-            )
+            self.__log_management.set_minimum_number_of_lines_to_write(self.__config["minimum_number_of_lines_to_write_in_log_file"])
             self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"])
             self.__category_type_manager = CategoryTypesManager(self.__config["file_with_category_types"])
-            l = self.__category_type_manager.get_list_category_type_name()
-            g = self.__category_type_manager.select_category_type(l[1])
-            self.__player_licenses.set_category_type(g)
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
 
             self.__game_type_manager = GameTypesManager()
-            self.__game_type_manager.select_game_type("Liga 6-osobowa")
-            game_type: GameType = self.__game_type_manager.game_type
-            # game_type: GameType = self.__game_type_manager.get_game_type("Zawody")
 
-            if game_type.type == "league":
-                self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
-            elif game_type.type == "classic":
-                self.__results_container = ResultsContainer(self.__log_management.add_log)
-
-            self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
-
-            self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
-
-            self.__create_table_main = CreateTableMain(self.__results_manager,
-                                                       self.__config["dir_fonts"],
+            self.__create_table_main = CreateTableMain(self.__config["dir_fonts"],
                                                        self.__config["dir_template_main"],
                                                        self.__config["file_output_main"],
                                                        self.__config["dir_instructions_main"],
                                                        self.__log_management.add_log)
-            self.__create_table_lane = CreateTableLane(self.__results_manager,
-                                                       self.__config["dir_fonts"],
+            self.__create_table_lane = CreateTableLane(self.__config["dir_fonts"],
                                                        self.__config["dir_template_lane"],
                                                        self.__config["file_output_lane"],
                                                        self.__config["dir_instructions_lane"],
@@ -88,29 +117,79 @@ class Main():
         except CategoryTypesManagerError as e:
             self.__log_management.add_log(10, "CTM_READ_ERROR", e.code, e.message)
 
-    def __loop(self):
-        start_time = time.time()  # Pobierz czas rozpoczęcia
-        index = 0
-        while True:
-            socket_status = self.__socket_manager.get_connection_status()
-            if socket_status == 1:
-                recv_code, recv_data = self.__socket_manager.recv()
-                if recv_code > 0:
-                    self.__message_interpreter.add_messages(recv_data)
-                    self.__message_interpreter.interpret_messages()
-            elif socket_status == 0:
-                if self.__socket_manager.reconnect() < 0:
-                    pass
-            self.__create_table_main.make_table()
-            self.__create_table_lane.make_table()
+    def init_gui(self):
+        game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
+        settings_section = SettingsSection(
+            self.__category_type_manager, lambda: print("Sukces"),
+            self.__create_table_lane, self.__on_change_table_lane,
+            self.__create_table_main, self.__on_change_table_main)
+        socket_section = SocketSelection(self.__socket_manager)
 
-            current_time = time.time()  # Aktualny czas
-            elapsed_seconds = int(current_time - start_time)  # Czas, który upłynął w sekundach
-            if elapsed_seconds > 0 and elapsed_seconds >= 10:
-                index = (index + 1) % 2
-                self.__create_table_lane.change_instruction(index)
-                start_time = current_time
-            sleep(0.5)
+        column1 = QWidget()
+        column1.setLayout(self.__column1_layout)
+
+        self.__column1_layout.addWidget(socket_section, 0, 0)
+        self.__column1_layout.addWidget(settings_section, 1, 0)
+        self.__column1_layout.addWidget(game_type_selection, 2, 0)
+        self.__column1_layout.addWidget(self.__button_start, 3, 0)
+        self.__button_start.setEnabled(False)
+        self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
+        self.__button_start.clicked.connect(self.__on_start_loop)
+        self.__button_stop.clicked.connect(self.__on_stop_loop)
+
+        self.__layout.addWidget(column1)
+
+        self.setGeometry(300, 300, 350, 250)
+        self.show()
+
+    def __on_start_loop(self):
+        #TODO: Check nic nie jest None
+        self.__button_start.setParent(None)
+        self.__column1_layout.addWidget(self.__button_stop, 3, 0)
+        if self.__game_type_manager.game_type is None:
+            return
+        self.__thread.start()
+
+    def __on_stop_loop(self):
+        self.__button_stop.setParent(None)
+        self.__column1_layout.addWidget(self.__button_start, 3, 0)
+        self.__thread.stop()
+
+    def __on_select_game_type(self):
+        self.__button_start.setToolTip("")
+        self.__button_start.setEnabled(True)
+        game_type = self.__game_type_manager.game_type
+        if game_type is None:
+            return
+        self.__log_management.add_log(7, "GTP_SELECT", "", f"Wybrano rodzaj gry: {game_type.name}")
+        if game_type.type == "league":
+            self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
+        elif game_type.type == "classic":
+            self.__results_container = ResultsContainer(self.__log_management.add_log)
+
+        self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
+        self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
+        self.__create_table_main.add_func_to_get_results(self.__results_manager.get_scores)
+        self.__create_table_lane.add_func_to_get_results(self.__results_manager.get_scores_of_players_now_playing)
+
+        self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
+                                     self.__create_table_main, self.__create_table_lane)
+
+    def __on_change_table_lane(self):
+        if self.__thread is None:
+            return
+        self.__thread.create_table_lane()
+
+    def __on_change_table_main(self):
+        if self.__thread is None:
+            return
+        self.__thread.create_table_main()
 
 
-Main()
+def main():
+    app = QApplication(sys.argv)
+    ex = Main()
+    sys.exit(app.exec())
+
+if __name__ == '__main__':
+    main()
