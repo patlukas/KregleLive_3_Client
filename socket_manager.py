@@ -49,6 +49,7 @@ class SocketManager:
         self.__port: int = -1
         self.__socket: None | socket.socket = None
         self.__time_last_msg: float = 0
+        self.number_of_failed_reconnections: int = 0
 
     def connect(self, ip_address: str, port: int) -> tuple[int, str]:
         """
@@ -123,6 +124,8 @@ class SocketManager:
         result_connect = self.__connect()
         if result_connect in [-2, -3, -4]:
             self.__ip_address, self.__port = "", -1
+        if result_connect != 1:
+            self.number_of_failed_reconnections += 1
         match result_connect:
             case 1:
                 self.__on_add_log(6, "SKT_RCNCT_OK", "", "Ponownie połączono się z serwerem")
@@ -176,6 +179,7 @@ class SocketManager:
         :return: <bool> True - successfully disconnected, False - there was no connection
         :logs:  SKT_DSCNT_NCNCT (7), SKT_DSCNT_OK (5)
         """
+        self.number_of_failed_reconnections = 0
         if self.__socket is None and self.__ip_address == "" and self.__port == -1:
             self.__on_add_log(7, "SKT_DSCNT_NCNCT", "", "Nie istniało połączenie, więc nie rozłączono")
             return False

@@ -25,6 +25,7 @@ class SocketSelection(QGroupBox):
         self.__widget_connected: QWidget = QWidget()
         self.__layout_connected = QGridLayout()
         self.__label_connect_ip: QLabel = QLabel("")
+        self.__label_failed: QLabel = QLabel("")
         self.__label_status: QLabel = QLabel("")
         self.__button_disconnect: QPushButton = QPushButton("Rozłącz")
 
@@ -48,6 +49,7 @@ class SocketSelection(QGroupBox):
 
         self.__button_disconnect.clicked.connect(self.__disconnect)
         self.__layout_connected.addWidget(self.__label_connect_ip, 0, 0)
+        self.__layout_connected.addWidget(self.__label_failed, 0, 1)
         self.__layout_connected.addWidget(self.__label_status, 1, 0)
         self.__layout_connected.addWidget(self.__button_disconnect, 1, 1)
         self.__widget_connected.setLayout(self.__layout_connected)
@@ -81,7 +83,10 @@ class SocketSelection(QGroupBox):
             self.__label_status.setText(f"Status: połączono")
         else:
             status_reconnect = self.__socket_manager.reconnect()
+            self.__label_failed.setText(f"Liczba nieudanych prób połączenia: {self.__socket_manager.number_of_failed_reconnections}")
             if status_reconnect == 1:
+                self.__label_status.setStyleSheet("")
                 self.__label_status.setText(f"Status: ponownie połączono")
             else:
+                self.__label_status.setStyleSheet("color: red;")
                 self.__label_status.setText(f"Status: nie udane ponowne połączenie")
