@@ -1,6 +1,7 @@
 import json
 import os
 import pandas as pd
+import locale
 
 from category_type_manager import CategoryType
 
@@ -29,6 +30,7 @@ class _Player:
 
 class PlayerLicenses:
     def __init__(self, path_to_config: str):
+        locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")
         self.__players_not_loaned: list[_Player] = []
         self.__players_loaned_lending: list[_Player] = []
         self.__players_loaned_loaning: list[_Player] = []
@@ -37,6 +39,8 @@ class PlayerLicenses:
         self.__category_type: None | CategoryType = None
 
     def get_players(self, team: str | None) -> list[_Player]:
+        if team == "":
+            team = None
         with_loaned, list_category, only_valid = False, None, False
         if self.__category_type is not None:
             with_loaned, list_category, only_valid = self.__category_type.with_loaned, self.__category_type.list_category, self.__category_type.only_valid
@@ -49,12 +53,19 @@ class PlayerLicenses:
             if only_valid and not player.valid:
                 continue
             return_list.append(player)
-        return_list.sort(key=lambda e: e.name)
+        return_list.sort(key=lambda e: locale.strxfrm(e.name))
+        return return_list
+
+    def get_list_players_name(self, team: str | None) -> list[str]:
+        list_players = self.get_players(team)
+        return_list = [""]
+        for player in list_players:
+            return_list.append(player.name)
         return return_list
 
     def get_teams(self) -> list[str]:
         list_players = self.get_players(None)
-        list_teams: list[str] = []
+        list_teams: list[str] = [""]
         for player in list_players:
             if player.team not in list_teams:
                 list_teams.append(player.team)
@@ -63,7 +74,7 @@ class PlayerLicenses:
     @staticmethod
     def __load_settings(path_to_config: str) -> dict:
         try:
-            file = open(path_to_config)
+            file = open(path_to_config, encoding='utf8')
         except FileNotFoundError:
             raise PlayerLicensesError("15-000", "Nie znaleziono pliku {}".format(os.path.abspath(path_to_config)))
         try:
@@ -91,6 +102,8 @@ class PlayerLicenses:
             c = row.iloc[self.__settings["category_column"]]
             v = row.iloc[self.__settings["valid_license_column"]] in self.__settings["license_is_valid_when_there_is_text"]
             l = row.iloc[self.__settings["where_loaned_column"]]
+            if pd.isna(n):
+                continue
             if pd.isna(l):
                 self.__players_not_loaned.append(_Player(lic, t, n, c, v))
             else:

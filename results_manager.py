@@ -38,7 +38,7 @@ class ResultsManager:
         self.__block_is_running: bool = False
         self.__round: int = -1
         self.__status_on_lanes: list[list[int] | None] = [([] if l == 1 else None) for l in game_type.lanes]
-        self.__results_container.init_struct(self.__game_type.number_team, self.__game_type.number_player_in_team)
+        self.__results_container.init_struct(self.__game_type.number_team, self.__game_type.number_player_in_team_in_period)
         if self.__game_type.type == "league":
             for _ in range(self.__game_type.number_periods):
                 self.add_block("")
@@ -266,6 +266,18 @@ class ResultsManager:
         self.__results_container.set_player_name((team, player), name)
         return True
 
+    def set_player_list_name(self, team: int, player: int, list_name: list[tuple[str, int]]) -> bool:
+        """
+        This method set player name or player's if was playing more than one player
+
+        :param team: <int> team number
+        :param player: <int> player number
+        :param list_name: <list[tuple[str, int]]> player name and throw number when he started playing
+        :return: True
+        """
+        self.__results_container.set_player_list_name((team, player), list_name)
+        return True
+
     def set_player_previous_sum(self, team: int, player: int, previous_sum: int) -> bool:
         """
         This method sets the player previous sum e.g. the result from the elimination
@@ -311,7 +323,7 @@ class ResultsManager:
             return False
         if status < 3:
             player[2] = -1
-        player[1] += block * self.__game_type.number_player_in_team
+        player[1] += block * self.__game_type.number_player_in_team_in_period
         return status, tuple(player)
 
     def __get_player_on_lane_for_results_or_time(self, lane: int) -> tuple[int, int, int] | bool:
@@ -343,7 +355,7 @@ class ResultsManager:
             if len(self.__list_of_blocks) <= block:
                 return None
             player = copy.deepcopy(self.__list_of_blocks[block].schema[lane_in_block][i])
-            player[1] += self.__block_number * self.__game_type.number_player_in_team
+            player[1] += self.__block_number * self.__game_type.number_player_in_team_in_period
             status = list_status_on_lane[self.__round]
             list_playing_players.append((status, player))
         return list_playing_players

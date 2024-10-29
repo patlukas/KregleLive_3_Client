@@ -44,7 +44,7 @@ class GameTypesManager:
     @staticmethod
     def __get_game_types() -> dict:
         try:
-            file = open("settings/game_types.json")
+            file = open("settings/game_types.json", encoding='utf8')
         except FileNotFoundError:
             raise GameTypesManagerError("13-000", "Nie znaleziono pliku {}".format(os.path.abspath("settings/game_types.json")))
         try:
@@ -152,14 +152,14 @@ class Transition:
 class GameType:
     def __init__(self, name: str, game_type: Literal["classic", "league"], lanes: list[Literal[0, 1]],
                  number_of_changes: int | None, number_periods: int | None, number_team: int,
-                 number_player_in_team: int, transitions: dict[str: Transition], default_transitions: str | None):
+                 number_player_in_team_in_period: int, transitions: dict[str: Transition], default_transitions: str | None):
         self.name: str = name
         self.type: Literal["classic", "league"] = game_type
         self.lanes: list[Literal[0, 1]] = lanes
         self.number_of_changes: int = number_of_changes
         self.number_periods: int = number_periods
         self.number_team: int = number_team
-        self.number_player_in_team: int = number_player_in_team
+        self.number_player_in_team_in_period: int = number_player_in_team_in_period
         self.transitions: dict[str: Transition] = transitions
         self.default_transitions: str = default_transitions
 

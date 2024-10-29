@@ -1,11 +1,16 @@
 {
     "CLM": {
-        "list_category": ["Młodzik", "Junior"],
+        "list_category": ["Młodzik", "Junior młodszy","Junior", "Młodziczka","Juniorka młodsza", "Juniorka"],
         "only_valid": true,
         "with_loaned": false
     },
-    "SM": {
+    "Superliga Mężczyzn": {
         "list_category": ["Junior młodszy", "Junior", "Mężczyzna"],
+        "only_valid": true,
+        "with_loaned": true
+    },
+    "Superliga Kobiet": {
+        "list_category": ["Juniorka młodsza", "Juniorka", "Kobieta"],
         "only_valid": true,
         "with_loaned": true
     },

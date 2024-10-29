@@ -29,7 +29,7 @@ class ConfigReader:
                 12-002 - KeyError - if config doesn't have required fields
         """
         try:
-            file = open("settings/config.json")
+            file = open("settings/config.json", encoding='utf8')
         except FileNotFoundError:
             raise ConfigReaderError("12-000", "Nie znaleziono pliku {}".format(os.path.abspath("settings/config.json")))
         try:

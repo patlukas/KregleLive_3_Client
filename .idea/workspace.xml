@@ -4,10 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="GUI: Add widget to select main settings. Separate the main loop to the second thread">
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="GUI: Add statistics about number of failed reconnections and change style if there is no connection">
+      <change afterPath="$PROJECT_DIR$/gui/players_section.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gui/socket_selection.py" beforeDir="false" afterPath="$PROJECT_DIR$/gui/socket_selection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/socket_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/socket_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/category_type_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/category_type_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/config_reader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_type_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_type_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/player_licenses.py" beforeDir="false" afterPath="$PROJECT_DIR$/player_licenses.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_container_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container_player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings/category_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/category_types.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings/game_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/game_types.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,23 +64,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Docker.Unnamed.executor": "Run",
-    "Python.create_table_lane.executor": "Run",
-    "Python.create_table_main.executor": "Run",
-    "Python.game_type_manager.executor": "Run",
-    "Python.gui.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.player_licenses.executor": "Debug",
-    "Python.results_manager.executor": "Run",
-    "Python.speedtest.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/48724/Documents/GitHub/KregleLive_3_Server",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Docker.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create_table_lane.executor&quot;: &quot;Run&quot;,
+    &quot;Python.create_table_main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.game_type_manager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.gui.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.player_licenses.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.results_manager.executor&quot;: &quot;Run&quot;,
+    &quot;Python.speedtest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/48724/Documents/GitHub/KregleLive_3_Client&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\48724\Documents\GitHub\KregleLive_3_Client\tables" />
@@ -431,7 +440,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730203755366</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="GUI: Add statistics about number of failed reconnections and change style if there is no connection">
+      <option name="closed" value="true" />
+      <created>1730204984677</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1730204984677</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -478,7 +495,8 @@
     <MESSAGE value="GUI: Add widget to manage socket connection. Add in socket_manager.py ping message" />
     <MESSAGE value="GUI: Add widget to select game type ( game_type_section.py )" />
     <MESSAGE value="GUI: Add widget to select main settings. Separate the main loop to the second thread" />
-    <option name="LAST_COMMIT_MESSAGE" value="GUI: Add widget to select main settings. Separate the main loop to the second thread" />
+    <MESSAGE value="GUI: Add statistics about number of failed reconnections and change style if there is no connection" />
+    <option name="LAST_COMMIT_MESSAGE" value="GUI: Add statistics about number of failed reconnections and change style if there is no connection" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

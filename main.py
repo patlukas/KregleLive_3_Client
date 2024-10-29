@@ -1,10 +1,11 @@
 import sys
 from PyQt6.QtCore import QThread
-from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QHBoxLayout
+from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QHBoxLayout, QSizePolicy, QMessageBox
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError
+from gui.players_section import PlayersSectionLeague
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
 from messages_interpreter import MessagesInterpreter
@@ -66,14 +67,16 @@ class Main(QWidget):
         self.__player_licenses: None | PlayerLicenses = None
         self.__category_type_manager: None | CategoryTypesManager = None
         self.__thread: WorkerThread | None = None
+        self.__player_section: None | PlayersSectionLeague = None
 
         self.__init_program()
-        self.__layout = QHBoxLayout()
+        self.__layout = QGridLayout()
         self.setLayout(self.__layout)
         self.__loop_is_running: bool = False
         self.__button_start: QPushButton = QPushButton("Rozpocznij")
         self.__button_stop: QPushButton = QPushButton("Zatrzymaj")
         self.__column1_layout = QGridLayout()
+        self.__column2_layout = QGridLayout()
 
         self.init_gui()
 
@@ -120,13 +123,19 @@ class Main(QWidget):
     def init_gui(self):
         game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
         settings_section = SettingsSection(
-            self.__category_type_manager, lambda: print("Sukces"),
+            self.__category_type_manager, self.__on_change_category_type,
             self.__create_table_lane, self.__on_change_table_lane,
             self.__create_table_main, self.__on_change_table_main)
         socket_section = SocketSelection(self.__socket_manager)
 
         column1 = QWidget()
         column1.setLayout(self.__column1_layout)
+        column1.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
+
+        column2 = QWidget()
+        column2.setLayout(self.__column2_layout)
+        column2.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
+
 
         self.__column1_layout.addWidget(socket_section, 0, 0)
         self.__column1_layout.addWidget(settings_section, 1, 0)
@@ -137,7 +146,8 @@ class Main(QWidget):
         self.__button_start.clicked.connect(self.__on_start_loop)
         self.__button_stop.clicked.connect(self.__on_stop_loop)
 
-        self.__layout.addWidget(column1)
+        self.__layout.addWidget(column1, 0, 0)
+        self.__layout.addWidget(column2, 0, 1)
 
         self.setGeometry(300, 300, 350, 250)
         self.show()
@@ -151,6 +161,16 @@ class Main(QWidget):
         self.__thread.start()
 
     def __on_stop_loop(self):
+        reply = QMessageBox.question(
+            self,
+            'Zatrzymanie pętli',
+            'Czy na pewno chcesz zatrzymać pętlę?',
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+
+        if reply == QMessageBox.StandardButton.No:
+            return
         self.__button_stop.setParent(None)
         self.__column1_layout.addWidget(self.__button_start, 3, 0)
         self.__thread.stop()
@@ -172,6 +192,13 @@ class Main(QWidget):
         self.__create_table_main.add_func_to_get_results(self.__results_manager.get_scores)
         self.__create_table_lane.add_func_to_get_results(self.__results_manager.get_scores_of_players_now_playing)
 
+        if game_type.type == "league":
+            self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses)
+        elif game_type.type == "classic":
+            self.__player_section = None # TODO
+
+        self.__column2_layout.addWidget(self.__player_section, 4, 0)
+
         self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
                                      self.__create_table_main, self.__create_table_lane)
 
@@ -185,6 +212,11 @@ class Main(QWidget):
             return
         self.__thread.create_table_main()
 
+    def __on_change_category_type(self):
+        self.__player_licenses.set_category_type(self.__category_type_manager.get_selected_category_type())
+        if self.__player_section is None:
+            return
+        self.__player_section.load_data_from_new_category()
 
 def main():
     app = QApplication(sys.argv)

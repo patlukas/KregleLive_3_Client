@@ -114,6 +114,16 @@ class ResultsContainerPlayer:
         """
         self.list_name[0] = (name, 0)
 
+    def set_list_name(self, list_name: list[tuple[str, int]]) -> None:
+        """
+        This method set player name or player's if was playing more than one player
+
+        :param list_name: <list[tuple[str, int]]> player name and throw number when he started playing
+        :return: None
+        """
+        list_name.sort(key=lambda x: x[1])
+        self.list_name = list_name
+
     def get_stat(self, lane: str, stat: str, option: str) -> str:
         """
         This method returns the value of the statistic

@@ -114,6 +114,16 @@ class ResultsContainer:
         """
         self.teams[who[0]].players[who[1]].set_name(name)
 
+    def set_player_list_name(self, who: tuple[int, int], list_name: list[tuple[str, int]]) -> None:
+        """
+        This method set player name or player's if was playing more than one player
+
+        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param list_name: <list[tuple[str, int]]> player name and throw number when he started playing
+        :return: None
+        """
+        self.teams[who[0]].players[who[1]].set_list_name(list_name)
+
     def set_player_previous_sum(self, who: tuple[int, int], previous_sum: int) -> None:
         """
         This method sets the previous sum e.g. the result from the elimination

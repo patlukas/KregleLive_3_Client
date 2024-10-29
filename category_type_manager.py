@@ -51,7 +51,7 @@ class CategoryTypesManager:
     @staticmethod
     def __get_category_types(path_to_category_type: str) -> dict:
         try:
-            file = open(path_to_category_type)
+            file = open(path_to_category_type, encoding='utf8')
         except FileNotFoundError:
             raise CategoryTypesManagerError("16-000", "Nie znaleziono pliku {}".format(os.path.abspath(path_to_category_type)))
         try:
