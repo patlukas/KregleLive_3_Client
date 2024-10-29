@@ -26,6 +26,7 @@ class GameTypesManagerError(Exception):
 class GameTypesManager:
     def __init__(self):
         self.__game_types: dict[str: GameType] = {}
+        self.game_type: GameType | None = None
         loaded_game_types: dict = self.__get_game_types()
         self.__dict_with_transitions = {}
         self.__check_correctness_data(loaded_game_types)
@@ -34,8 +35,11 @@ class GameTypesManager:
     def get_list_game_type_name(self) -> list[str]:
         return list(self.__game_types.keys())
 
-    def get_game_type(self, game_type_name: str):
-        return self.__game_types[game_type_name]
+    def select_game_type(self, game_type_name: str):
+        if game_type_name in self.__game_types:
+            self.game_type = self.__game_types[game_type_name]
+            return True
+        return False
 
     @staticmethod
     def __get_game_types() -> dict:

@@ -53,7 +53,8 @@ class Main():
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
 
             self.__game_type_manager = GameTypesManager()
-            game_type: GameType = self.__game_type_manager.get_game_type("Liga 6-osobowa")
+            self.__game_type_manager.select_game_type("Liga 6-osobowa")
+            game_type: GameType = self.__game_type_manager.game_type
             # game_type: GameType = self.__game_type_manager.get_game_type("Zawody")
 
             if game_type.type == "league":
