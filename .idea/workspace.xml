@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="GUI: Add statistics about number of failed reconnections and change style if there is no connection">
-      <change afterPath="$PROJECT_DIR$/gui/players_section.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/category_type_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/category_type_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_reader.py" beforeDir="false" afterPath="$PROJECT_DIR$/config_reader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game_type_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/game_type_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/player_licenses.py" beforeDir="false" afterPath="$PROJECT_DIR$/player_licenses.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_container.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_container_player.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_container_player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/results_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings/category_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/category_types.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings/game_types.json" beforeDir="false" afterPath="$PROJECT_DIR$/settings/game_types.json" afterDir="false" />
-    </list>
+    <list default="true" id="d300ed50-7a85-4ae6-9bb3-b90ed49d4618" name="Changes" comment="GUI: Add section to set player names in league gametype. Fix bug wrong read polish signs from json" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -448,7 +435,15 @@
       <option name="project" value="LOCAL" />
       <updated>1730204984677</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="GUI: Add section to set player names in league gametype. Fix bug wrong read polish signs from json">
+      <option name="closed" value="true" />
+      <created>1730245490675</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1730245490675</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -496,7 +491,8 @@
     <MESSAGE value="GUI: Add widget to select game type ( game_type_section.py )" />
     <MESSAGE value="GUI: Add widget to select main settings. Separate the main loop to the second thread" />
     <MESSAGE value="GUI: Add statistics about number of failed reconnections and change style if there is no connection" />
-    <option name="LAST_COMMIT_MESSAGE" value="GUI: Add statistics about number of failed reconnections and change style if there is no connection" />
+    <MESSAGE value="GUI: Add section to set player names in league gametype. Fix bug wrong read polish signs from json" />
+    <option name="LAST_COMMIT_MESSAGE" value="GUI: Add section to set player names in league gametype. Fix bug wrong read polish signs from json" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

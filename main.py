@@ -1,4 +1,5 @@
 import sys
+from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
 from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QHBoxLayout, QSizePolicy, QMessageBox
 
@@ -79,6 +80,16 @@ class Main(QWidget):
         self.__column2_layout = QGridLayout()
 
         self.init_gui()
+
+    def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+        reply = QMessageBox.question(self, 'Potwierdź zamknięcie',
+                                     'Czy na pewno chcesz zamknąć aplikację?',
+                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                                     QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            event.accept()
+        else:
+            event.ignore()
 
     def __init_program(self):
         """
