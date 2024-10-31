@@ -1,13 +1,15 @@
 import sys
 from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
-from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox
+from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox, QStatusBar, \
+    QMenuBar
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError
 from gui.logs_section import LogsSection
 from gui.players_section import PlayersSectionLeague
+from gui.statistics_section import StatisticsSection
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
 from messages_interpreter import MessagesInterpreter
@@ -70,6 +72,7 @@ class Main(QWidget):
         self.__category_type_manager: None | CategoryTypesManager = None
         self.__thread: WorkerThread | None = None
         self.__player_section: None | PlayersSectionLeague = None
+        self.__statistics_section: None | StatisticsSection = None
 
         self.__init_program()
         self.__layout = QGridLayout()
@@ -139,6 +142,7 @@ class Main(QWidget):
             self.__create_table_main, self.__on_change_table_main)
         socket_section = SocketSelection(self.__socket_manager)
         logs_section = LogsSection(self.__log_management)
+        self.__statistics_section = StatisticsSection(6)
 
         column1 = QWidget()
         column1.setLayout(self.__column1_layout)
@@ -153,7 +157,8 @@ class Main(QWidget):
         self.__column1_layout.addWidget(settings_section, 1, 0)
         self.__column1_layout.addWidget(game_type_selection, 2, 0)
         self.__column1_layout.addWidget(self.__button_start, 3, 0)
-        self.__column1_layout.addWidget(logs_section, 4, 0)
+        self.__column1_layout.addWidget(self.__statistics_section, 4, 0)
+        self.__column1_layout.addWidget(logs_section, 5, 0)
 
         self.__button_start.setEnabled(False)
         self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
@@ -169,11 +174,14 @@ class Main(QWidget):
 
     def __on_start_loop(self):
         #TODO: Check nic nie jest None
-        self.__button_start.setParent(None)
-        self.__column1_layout.addWidget(self.__button_stop, 3, 0)
-        if self.__game_type_manager.game_type is None:
-            return
-        self.__thread.start()
+        try:
+            self.__button_start.setParent(None)
+            self.__column1_layout.addWidget(self.__button_stop, 3, 0)
+            if self.__game_type_manager.game_type is None:
+                return
+            self.__thread.start()
+        except Exception as e:
+            print("=", e)
 
     def __on_stop_loop(self):
         reply = QMessageBox.question(
@@ -191,34 +199,33 @@ class Main(QWidget):
         self.__thread.stop()
 
     def __on_select_game_type(self):
-        try:
-            self.__button_start.setToolTip("")
-            self.__button_start.setEnabled(True)
-            game_type = self.__game_type_manager.game_type
-            if game_type is None:
-                return
-            self.__log_management.add_log(7, "GTP_SELECT", "", f"Wybrano rodzaj gry: {game_type.name}", False)
-            if game_type.type == "league":
-                self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
-            elif game_type.type == "classic":
-                self.__results_container = ResultsContainer(self.__log_management.add_log)
+        self.__button_start.setToolTip("")
+        self.__button_start.setEnabled(True)
+        game_type = self.__game_type_manager.game_type
+        if game_type is None:
+            return
+        self.__log_management.add_log(7, "GTP_SELECT", "", f"Wybrano rodzaj gry: {game_type.name}", False)
+        if game_type.type == "league":
+            self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
+        elif game_type.type == "classic":
+            self.__results_container = ResultsContainer(self.__log_management.add_log)
 
-            self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
-            self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
-            self.__create_table_main.add_func_to_get_results(self.__results_manager.get_scores)
-            self.__create_table_lane.add_func_to_get_results(self.__results_manager.get_scores_of_players_now_playing)
+        self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
+        self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__config["number_of_lanes"], self.__log_management.add_log)
+        self.__create_table_main.add_func_to_get_results(self.__results_manager.get_scores)
+        self.__create_table_lane.add_func_to_get_results(self.__results_manager.get_scores_of_players_now_playing)
 
-            if game_type.type == "league":
-                self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses)
-            elif game_type.type == "classic":
-                self.__player_section = None # TODO
+        self.__statistics_section.set_messages_interpreter(self.__message_interpreter)
 
-            self.__column2_layout.addWidget(self.__player_section, 4, 0)
+        if game_type.type == "league":
+            self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses)
+        elif game_type.type == "classic":
+            self.__player_section = None # TODO
 
-            self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
-                                         self.__create_table_main, self.__create_table_lane)
-        except Exception as e:
-            print(e)
+        self.__column2_layout.addWidget(self.__player_section, 4, 0)
+
+        self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
+                                     self.__create_table_main, self.__create_table_lane)
 
     def __on_change_table_lane(self):
         if self.__thread is None:

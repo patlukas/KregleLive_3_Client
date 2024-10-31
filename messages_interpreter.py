@@ -9,10 +9,14 @@ class MessagesInterpreter:
         Logs:
 
     """
-    def __init__(self, results_manager: ResultsManager, on_add_log: Callable[[int, str, str, str, bool], None]):
+    def __init__(self, results_manager: ResultsManager, number_of_lane: int, on_add_log: Callable[[int, str, str, str, bool], None]):
         self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
         self.__results_manager: ResultsManager = results_manager
         self.__messages = b""
+        self.__number_of_lane: int = number_of_lane
+        self.__list_number_of_receive_message_from_lane = [0] * number_of_lane
+        self.__list_number_of_receive_message_to_lane = [0] * number_of_lane
+        self.__number_of_unrecognized_message = 0
 
     def add_messages(self, messages: bytes) -> None:
         self.__on_add_log(4, "INT_ADD_MSG", "", f"Add new message to interpreter: {messages}", False)
@@ -27,25 +31,31 @@ class MessagesInterpreter:
 
     def __interpret_message(self, message: bytes):
         if len(message) < 6:
+            self.__number_of_unrecognized_message += 1
             self.__on_add_log(6, "INT_MINT_SHORT", "", f"Message is too short: {message}", False)
             return
         if not self.__checksum_checker(message):
-            self.__on_add_log(6, "INT_MINT_CHECKSUM", "", f"Message has invalid checksum: {message}", False)
+            self.__number_of_unrecognized_message += 1
+            self.__on_add_log(6, "INT_MINT_CHECKSUM", "", f"Message has invalid checksum: {message}", True)
             return
         recipient, sender, content = message[:2], message[2:4], message[4:-2]
         recipient_int, recipient_name = self.__interpret_lane(recipient)
         sender_int, sender_name = self.__interpret_lane(sender)
         if recipient_int == -1 or sender_int == -1 or (recipient_int == 8 and sender_int == 8):
-            self.__on_add_log(6, "INT_MINT_IROS", "", f"Message has invalid recipient or sender: {message}", False)
+            self.__number_of_unrecognized_message += 1
+            self.__on_add_log(6, "INT_MINT_IROS", "", f"Message has invalid recipient or sender: {message}", True)
             return
-        if recipient_int == 8 :
+        if recipient_int == 8:
+            self.__list_number_of_receive_message_from_lane[sender_int] += 1
             self.__interpret_message_from_lane(sender_int, sender_name, content)
         else:
+            self.__list_number_of_receive_message_to_lane[recipient_int] += 1
             self.__interpret_message_to_lane(recipient_int, recipient_name, content)
 
     def __interpret_message_from_lane(self, sender_int: int, sender_name: str, content: bytes) -> None:
         length = len(content)
         if length == 0:
+            self.__number_of_unrecognized_message += 1
             self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
             return
         x = content[0:1]
@@ -61,13 +71,16 @@ class MessagesInterpreter:
                 status = 1 if content[1:2] == b"1" else 2
                 self.__set_lane_status(sender_int, status)
             else:
+                self.__number_of_unrecognized_message += 1
                 self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
         elif length == 9 and x == b"s":
             s = "on" if content[1:2] == b"1" else "off"
             self.__on_add_log(0, "INT_LANE_IGNORE", f"IS_{s.upper()}", f"Lane {sender_name} is {s}", False)
             if content[2:5] != b"000" or content[5:6] not in [b"0", b"1"] or content[6:7] not in [b"0", b"1"] or content[7:9] not in [b"FF", b"38"]:
+                self.__number_of_unrecognized_message += 1
                 self.__on_add_log(9, "INT_LANE_UNKNOWN", "s", f"Unknown message from {sender_name} with content: {content}", True)
         else:
+            self.__number_of_unrecognized_message += 1
             self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
 
     def __interpret_message_to_lane(self, recipient_int: int, recipient_str: str, content: bytes) -> None:
@@ -80,6 +93,7 @@ class MessagesInterpreter:
             if x == b"S":
                 self.__on_add_log(0, "INT_TOLANE_IGNORE", "IS_ON?", f"In lane {recipient_str} was a question whether is on or off", False)
             else:
+                self.__number_of_unrecognized_message += 1
                 self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
             return
         y = content[1:2]
@@ -100,8 +114,10 @@ class MessagesInterpreter:
             elif y == b"D":
                 self.__on_add_log(0, "INT_TOLANE_IGNORE", "PRINT_DATE", f"In lane {recipient_str} was set data to print: date={content}", False)
             else:
+                self.__number_of_unrecognized_message += 1
                 self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
         else:
+            self.__number_of_unrecognized_message += 1
             self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
 
     def __set_lane_status(self, lane: int, status: int):
@@ -135,7 +151,7 @@ class MessagesInterpreter:
         total_sum = self.__bytes2int(result[10:13])
         next_arrangements = self.__bytes2int(result[13:16])
         all_x = self.__bytes2int(result[16:19])
-        time = self.__bytes2int(result[19:22])
+        time = self.__bytes2int(result[19:22]) / 10
         beaten_arrangements = self.__bytes2int(result[22:25])
         card = self.__bytes2int(result[26:27])
         self.__results_manager.add_result_to_lane(lane, type_update, throw, throw_result, lane_sum, total_sum,
@@ -179,3 +195,25 @@ class MessagesInterpreter:
         if message_tail == checksum:
             return True
         return False
+
+    def get_statistics(self):
+        list_from, list_to, list_sum = [], [], []
+        sum_from, sum_to = 0, 0
+
+        for number in self.__list_number_of_receive_message_from_lane:
+            list_from.append(number)
+            list_sum.append(number)
+            sum_from += number
+
+        for index, number in enumerate(self.__list_number_of_receive_message_to_lane):
+            list_to.append(number)
+            list_sum[index] += number
+            sum_to += number
+
+        list_from.append(sum_from)
+        list_to.append(sum_to)
+        list_sum.append(sum_from + sum_to)
+        return [list_from, list_to, list_sum]
+
+    def get_number_of_unrecognized_messages(self) -> int:
+        return self.__number_of_unrecognized_message

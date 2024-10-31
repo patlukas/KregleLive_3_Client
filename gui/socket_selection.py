@@ -64,6 +64,7 @@ class SocketSelection(QGroupBox):
         status_code, status_comment = self.__socket_manager.connect(ip, port)
         if status_code == 1:
             self.__label_connect_ip.setText(f"Adres serwera {ip}:{port}")
+            self.__label_status.setStyleSheet("")
             self.__label_status.setText(f"Status: połączono")
             self.__stacked_layout.setCurrentWidget(self.__widget_connected)
             self.__timer.start(2000)

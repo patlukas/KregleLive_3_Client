@@ -2,7 +2,6 @@
 from typing import Callable
 
 from PIL import ImageFont, ImageDraw, Image
-#TODO: MAny func to del
 
 class MethodsToDrawOnImage:
     def __init__(self, on_add_log: Callable[[int, str, str, str, bool], None]):

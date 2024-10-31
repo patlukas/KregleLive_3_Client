@@ -163,7 +163,7 @@ class ResultsManager:
                 if list_status_lane[-1] != 5 or len(list_status_lane) < round_to_end_block:
                     return False
         self.__block_is_running = False
-        self.__on_add_log(6, "RST_PERIOD_END", f"", f"Zakończono blok: {self.__block_number} na wszystkich torach", True)
+        self.__on_add_log(6, "RST_PERIOD_END", f"", f"Zakończono blok: {self.__block_number + 1} na wszystkich torach", True)
         return True
 
     def change_time_on_lane(self, lane: int, time: float) -> bool:

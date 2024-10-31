@@ -5,14 +5,12 @@ from PyQt6.QtWidgets import QGroupBox, QGridLayout, QLabel, QStackedLayout, QPus
 
 from log_management import LogManagement
 
-# TODO: Dodaj statystyki torów
-
 class LogsSection(QGroupBox):
     """
         TODO: Add comment
     """
     def __init__(self, log_management: LogManagement):
-        super().__init__("Statystyki i logi")
+        super().__init__("Logi")
         self.__log_management: LogManagement = log_management
         self.__show_list_logs: bool = False
 
@@ -49,6 +47,8 @@ class LogsSection(QGroupBox):
         self.__table_logs.setFixedHeight(130)
 
         self.setLayout(self.__layout)
+        self.__timer.timeout.connect(self.update_logs)
+        self.__timer.start(1000)
 
     def update_logs(self):
         data = self.__log_management.get_logs(0, 250, 100)
@@ -56,8 +56,8 @@ class LogsSection(QGroupBox):
         for index, log in enumerate(data):
             if int(log[2]) == 10:
                 number_of_errors += 1
-            self.__label_number_error.setText(f"Liczba błędów: {number_of_errors}")
-            self.__label_number_logs.setText(f"Liczba logów: {len(data)}")
+        self.__label_number_error.setText(f"Liczba błędów: {number_of_errors}")
+        self.__label_number_logs.setText(f"Liczba logów: {len(data)}")
 
         if self.__show_list_logs:
             self.__table_logs.setRowCount(0)
