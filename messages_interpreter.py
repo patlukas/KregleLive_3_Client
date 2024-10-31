@@ -9,13 +9,13 @@ class MessagesInterpreter:
         Logs:
 
     """
-    def __init__(self, results_manager: ResultsManager, on_add_log: Callable[[int, str, str, str], None]):
-        self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
+    def __init__(self, results_manager: ResultsManager, on_add_log: Callable[[int, str, str, str, bool], None]):
+        self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
         self.__results_manager: ResultsManager = results_manager
         self.__messages = b""
 
     def add_messages(self, messages: bytes) -> None:
-        self.__on_add_log(4, "INT_ADD_MSG", "", f"Add new message to interpreter: {messages}")
+        self.__on_add_log(4, "INT_ADD_MSG", "", f"Add new message to interpreter: {messages}", False)
         self.__messages += messages
 
     def interpret_messages(self):
@@ -27,16 +27,16 @@ class MessagesInterpreter:
 
     def __interpret_message(self, message: bytes):
         if len(message) < 6:
-            self.__on_add_log(6, "INT_MINT_SHORT", "", f"Message is too short: {message}")
+            self.__on_add_log(6, "INT_MINT_SHORT", "", f"Message is too short: {message}", False)
             return
         if not self.__checksum_checker(message):
-            self.__on_add_log(6, "INT_MINT_CHECKSUM", "", f"Message has invalid checksum: {message}")
+            self.__on_add_log(6, "INT_MINT_CHECKSUM", "", f"Message has invalid checksum: {message}", False)
             return
         recipient, sender, content = message[:2], message[2:4], message[4:-2]
         recipient_int, recipient_name = self.__interpret_lane(recipient)
         sender_int, sender_name = self.__interpret_lane(sender)
         if recipient_int == -1 or sender_int == -1 or (recipient_int == 8 and sender_int == 8):
-            self.__on_add_log(6, "INT_MINT_IROS", "", f"Message has invalid recipient or sender: {message}")
+            self.__on_add_log(6, "INT_MINT_IROS", "", f"Message has invalid recipient or sender: {message}", False)
             return
         if recipient_int == 8 :
             self.__interpret_message_from_lane(sender_int, sender_name, content)
@@ -46,7 +46,7 @@ class MessagesInterpreter:
     def __interpret_message_from_lane(self, sender_int: int, sender_name: str, content: bytes) -> None:
         length = len(content)
         if length == 0:
-            self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}")
+            self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
             return
         x = content[0:1]
         if length == 28 and x in [b"w", b"g", b"h", b"k", b"f"]:
@@ -61,26 +61,26 @@ class MessagesInterpreter:
                 status = 1 if content[1:2] == b"1" else 2
                 self.__set_lane_status(sender_int, status)
             else:
-                self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}")
+                self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
         elif length == 9 and x == b"s":
             s = "on" if content[1:2] == b"1" else "off"
-            self.__on_add_log(0, "INT_LANE_IGNORE", f"IS_{s.upper()}", f"Lane {sender_name} is {s}")
+            self.__on_add_log(0, "INT_LANE_IGNORE", f"IS_{s.upper()}", f"Lane {sender_name} is {s}", False)
             if content[2:5] != b"000" or content[5:6] not in [b"0", b"1"] or content[6:7] not in [b"0", b"1"] or content[7:9] not in [b"FF", b"38"]:
-                self.__on_add_log(9, "INT_LANE_UNKNOWN", "s", f"Unknown message from {sender_name} with content: {content}")
+                self.__on_add_log(9, "INT_LANE_UNKNOWN", "s", f"Unknown message from {sender_name} with content: {content}", True)
         else:
-            self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}")
+            self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
 
     def __interpret_message_to_lane(self, recipient_int: int, recipient_str: str, content: bytes) -> None:
         length = len(content)
         if length == 0:
-            self.__on_add_log(0, "INT_TOLANE_IGNORE", "HEARTBEAT", f"In lane {recipient_str} heartbeat sent")
+            self.__on_add_log(0, "INT_TOLANE_IGNORE", "HEARTBEAT", f"In lane {recipient_str} heartbeat sent", False)
             return
         x = content[0:1]
         if length == 1:
             if x == b"S":
-                self.__on_add_log(0, "INT_TOLANE_IGNORE", "IS_ON?", f"In lane {recipient_str} was a question whether is on or off")
+                self.__on_add_log(0, "INT_TOLANE_IGNORE", "IS_ON?", f"In lane {recipient_str} was a question whether is on or off", False)
             else:
-                self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}")
+                self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
             return
         y = content[1:2]
         if length == 21 and x == b"I" and y == b"G":
@@ -91,26 +91,26 @@ class MessagesInterpreter:
             self.__interpretation_of_trail_run(recipient_int, content[1:])
         elif length == 2 and x == b"E":
             s = "enable" if y == b"1" else "disable"
-            self.__on_add_log(0, "INT_TOLANE_IGNORE", s.upper(), f"In lane {recipient_str} communications {s}")
+            self.__on_add_log(0, "INT_TOLANE_IGNORE", s.upper(), f"In lane {recipient_str} communications {s}", False)
         elif x == b"M":
             if y == b"S":
                 self.__set_lane_status(recipient_int, 3)
                 self.__set_player_name_if_not_set(recipient_int, content[2:])
-                self.__on_add_log(6, "INT_TOLANE_NAME", "PRINT_SURNAME", f"In lane {recipient_str} was set data to print: name={content}")
+                self.__on_add_log(6, "INT_TOLANE_NAME", "PRINT_SURNAME", f"In lane {recipient_str} was set data to print: name={content}", False)
             elif y == b"D":
-                self.__on_add_log(0, "INT_TOLANE_IGNORE", "PRINT_DATE", f"In lane {recipient_str} was set data to print: date={content}")
+                self.__on_add_log(0, "INT_TOLANE_IGNORE", "PRINT_DATE", f"In lane {recipient_str} was set data to print: date={content}", False)
             else:
-                self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}")
+                self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
         else:
-            self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}")
+            self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
 
     def __set_lane_status(self, lane: int, status: int):
-        self.__on_add_log(3, "INT_TOLANE_STATUS", f"{lane}", f"Na torze {lane} ustawiono status {status}")
+        self.__on_add_log(3, "INT_TOLANE_STATUS", f"{lane}", f"Na torze {lane} ustawiono status {status}", False)
         self.__results_manager.change_lane_status(lane, status)
 
     def __set_lane_time(self, lane: int, time_bytes: bytes):
         time = self.__bytes2int(time_bytes) / 10
-        self.__on_add_log(0, "INT_TOLANE_TIME", f"{lane}", f"Na torze {lane} ustawiono czas {time}")
+        self.__on_add_log(0, "INT_TOLANE_TIME", f"{lane}", f"Na torze {lane} ustawiono czas {time}", False)
         self.__results_manager.change_time_on_lane(lane, time)
 
     def __interpretation_of_trail_run(self, lane: int, trial_setup: bytes):
@@ -149,7 +149,7 @@ class MessagesInterpreter:
         try:
             return int(hex_bytes, 16)
         except ValueError as e:
-            self.__on_add_log(3, "INT_CONVERT_ERROR", "", f"Błąd podczas próby konwercji liczby szesnastkowej {hex_bytes}")
+            self.__on_add_log(3, "INT_CONVERT_ERROR", "", f"Błąd podczas próby konwercji liczby szesnastkowej {hex_bytes}: {e}", True)
             return 0
 
     @staticmethod

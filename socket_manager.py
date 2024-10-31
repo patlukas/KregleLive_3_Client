@@ -32,10 +32,10 @@ class SocketManager:
             SKT_RECV_EMPTY - 1 - Nothing was received
 
     """
-    def __init__(self, socket_timeout: float, on_add_log: Callable[[int,str,str,str], None]):
+    def __init__(self, socket_timeout: float, on_add_log: Callable[[int,str,str,str,bool], None]):
         """
         :param socket_timeout: <float> number of seconds waiting for recv data and connection
-        :param on_add_log: <Callable[[int,str,str,str], None]> function to add logs
+        :param on_add_log: <Callable[[int,str,str,str,bool], None]> function to add logs
 
         self.__socket_timeout - same like :param socket_timeout:
         self._on_add_log - same like :param on_add_log:
@@ -44,11 +44,12 @@ class SocketManager:
         self.__socket - <None | socket.socket> an instance of the socket object, or None if there is no connection
         """
         self.__socket_timeout: float = socket_timeout
-        self.__on_add_log: Callable[[int,str,str,str], None] = on_add_log
+        self.__on_add_log: Callable[[int,str,str,str,bool], None] = on_add_log
         self.__ip_address: str = ""
         self.__port: int = -1
         self.__socket: None | socket.socket = None
         self.__time_last_msg: float = 0
+        self.__time_problem_occurred: int = 0
         self.number_of_failed_reconnections: int = 0
 
     def connect(self, ip_address: str, port: int) -> tuple[int, str]:
@@ -69,7 +70,7 @@ class SocketManager:
                     SKT_INIT_WADDR (5), SKT_INIT_WPORT (5)
         """
         if self.__socket is not None:
-            self.__on_add_log(7, "SKT_INIT_EXIST", "", "Połączenie jest nawiązane, więc nie można nawiązać nowego")
+            self.__on_add_log(7, "SKT_INIT_EXIST", "", "Połączenie jest nawiązane, więc nie można nawiązać nowego", False)
             return -6, "Połączenie jest już nawiązane"
         if not isinstance(port, int):
             try:
@@ -79,24 +80,24 @@ class SocketManager:
         self.__ip_address, self.__port = ip_address, port
         result_connect = self.__connect()
         if result_connect == 1:
-            self.__on_add_log(5, "SKT_INIT_OK", "", f"Nawiązano połączenie z IP: {ip_address}, port: {port}")
+            self.__on_add_log(5, "SKT_INIT_OK", "", f"Nawiązano połączenie z IP: {ip_address}, port: {port}", False)
             return 1, ""
         self.__ip_address, self.__port = "", -1
         match result_connect:
             case -1:
-                self.__on_add_log(5, "SKT_INIT_TOUT", "", "Nie udało się połączyć z powodu timeoutut.")
+                self.__on_add_log(5, "SKT_INIT_TOUT", "", "Nie udało się połączyć z powodu timeoutut.", False)
                 return -1, "Nie udało się nawiązać połączenia."
             case -2:
-                self.__on_add_log(7, "SKT_INIT_WTYPE", "", f"Błędny typ danych ip ({ip_address}) ma być str jest {type(ip_address)}, port ({port}) ma być int jest {type(port)}")
+                self.__on_add_log(7, "SKT_INIT_WTYPE", "", f"Błędny typ danych ip ({ip_address}) ma być str jest {type(ip_address)}, port ({port}) ma być int jest {type(port)}", False)
                 return -2, "Niepoprawny typ danych"
             case -3:
-                self.__on_add_log(5, "SKT_INIT_WADDR", "", f"Błędny adres IP ({ip_address})")
+                self.__on_add_log(5, "SKT_INIT_WADDR", "", f"Błędny adres IP ({ip_address})", False)
                 return -3, "Niepoprawny adres IP"
             case -4:
-                self.__on_add_log(5, "SKT_INIT_WPORT", "", f"Błędny numer portu, musi być z zakresu 0-65535, a jest {port}")
+                self.__on_add_log(5, "SKT_INIT_WPORT", "", f"Błędny numer portu, musi być z zakresu 0-65535, a jest {port}", False)
                 return -4, "Niepoprawny numer portu"
             case -5:
-                self.__on_add_log(7, "SKT_INIT_ECRTE", "", f"Błąd podczas tworzenia soketa")
+                self.__on_add_log(7, "SKT_INIT_ECRTE", "", f"Błąd podczas tworzenia soketa", False)
                 return -5, "Błąd podczas tworzenia soketa"
 
     def reconnect(self) -> int:
@@ -116,10 +117,10 @@ class SocketManager:
                 SKT_RCNCT_ECRTE (7), SKT_RCNCT_OK (6), SKT_RCNCT_TOUT (5)
         """
         if self.__socket is not None:
-            self.__on_add_log(7, "SKT_RCNCT_EXIST", "", "Połączenie jest nawiązane, więc nie można nawiązać nowego")
+            self.__on_add_log(7, "SKT_RCNCT_EXIST", "", "Połączenie jest nawiązane, więc nie można nawiązać nowego", False)
             return -7
         if self.__port == -1 or self.__ip_address == "":
-            self.__on_add_log(7, "SKT_RCNCT_NSADDR", "", "Nie ma ustawionego adresu serwer, więc nie można się połączyć")
+            self.__on_add_log(7, "SKT_RCNCT_NSADDR", "", "Nie ma ustawionego adresu serwer, więc nie można się połączyć", False)
             return -6
         result_connect = self.__connect()
         if result_connect in [-2, -3, -4]:
@@ -128,17 +129,19 @@ class SocketManager:
             self.number_of_failed_reconnections += 1
         match result_connect:
             case 1:
-                self.__on_add_log(6, "SKT_RCNCT_OK", "", "Ponownie połączono się z serwerem")
+                t = int(time.time() - self.__time_last_msg)
+                self.number_of_failed_reconnections = 0
+                self.__on_add_log(6, "SKT_RCNCT_OK", "", f"Ponownie połączono się z serwerem po {t} sekundach braku połaczenia", True)
             case -1:
-                self.__on_add_log(5, "SKT_RCNCT_TOUT", "", "Nie udało się połączyć z powodu timeoutut.")
+                self.__on_add_log(5, "SKT_RCNCT_TOUT", "", "Nie udało się połączyć z powodu timeoutut.", False)
             case -2:
-                self.__on_add_log(9, "SKT_RCNCT_WTYPE", "", f"Błędny typ danych ip ({self.__ip_address}) ma być str jest {type(self.__ip_address)}, port ({self.__port}) ma być int jest {type(self.__port)}")
+                self.__on_add_log(9, "SKT_RCNCT_WTYPE", "", f"Błędny typ danych ip ({self.__ip_address}) ma być str jest {type(self.__ip_address)}, port ({self.__port}) ma być int jest {type(self.__port)}", False)
             case -3:
-                self.__on_add_log(9, "SKT_RCNCT_WADDR", "", f"Błędny adres IP ({self.__ip_address})")
+                self.__on_add_log(9, "SKT_RCNCT_WADDR", "", f"Błędny adres IP ({self.__ip_address})", False)
             case -4:
-                self.__on_add_log(9, "SKT_RCNCT_WPORT", "", f"Błędny numer portu, musi być z zakresu 0-65535, a jest {self.__port}")
+                self.__on_add_log(9, "SKT_RCNCT_WPORT", "", f"Błędny numer portu, musi być z zakresu 0-65535, a jest {self.__port}", False)
             case -5:
-                self.__on_add_log(7, "SKT_RCNCT_ECRTE", "", f"Błąd podczas tworzenia soketa")
+                self.__on_add_log(7, "SKT_RCNCT_ECRTE", "", f"Błąd podczas tworzenia soketa", False)
         return result_connect
 
     def __connect(self) -> int:
@@ -154,7 +157,7 @@ class SocketManager:
                     1 - New connection successful
         :logs: SKT_CNCT_START (2)
         """
-        self.__on_add_log(2, "SKT_CNCT_START", "", f"Próba stworzenia soketu")
+        self.__on_add_log(2, "SKT_CNCT_START", "", f"Próba stworzenia soketu", False)
         try:
             socket_el = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             socket_el.settimeout(self.__socket_timeout)
@@ -167,7 +170,7 @@ class SocketManager:
             return -3
         except OverflowError:
             return -4
-        except OSError as e:
+        except OSError:
             return -5
         self.__socket = socket_el
         return 1
@@ -181,10 +184,10 @@ class SocketManager:
         """
         self.number_of_failed_reconnections = 0
         if self.__socket is None and self.__ip_address == "" and self.__port == -1:
-            self.__on_add_log(7, "SKT_DSCNT_NCNCT", "", "Nie istniało połączenie, więc nie rozłączono")
+            self.__on_add_log(7, "SKT_DSCNT_NCNCT", "", "Nie istniało połączenie, więc nie rozłączono", False)
             return False
         else:
-            self.__on_add_log(5, "SKT_DSCNT_OK", "", f"Rozłączono się z IP: {self.__ip_address} port: {self.__port}")
+            self.__on_add_log(5, "SKT_DSCNT_OK", "", f"Rozłączono się z IP: {self.__ip_address} port: {self.__port}", False)
             if self.__socket is not None:
                 self.__socket.close()
                 self.__socket = None
@@ -219,24 +222,25 @@ class SocketManager:
                             -3 - there is no connection to the server
         :logs: SKT_RECV_ERROR (10), SKT_RCV_LSRVR (10), SKT_RECV_NCNCT (7), SKT_RECV_OK (4), SKT_RECV_EMPTY (1)
         """
-        self.__time_last_msg = time.time()
         if self.__socket is None:
-            self.__on_add_log(7, "SKT_RECV_NCNCT", "", f"Nie można odebrać danych bo nie ma połaczenia")
+            self.__on_add_log(7, "SKT_RECV_NCNCT", "", f"Nie można odebrać danych bo nie ma połaczenia", False)
             return -3, b""
         try:
             msg = self.__socket.recv(1024)
         except socket.timeout:
-            self.__on_add_log(1, "SKT_RECV_EMPTY", "", f"Nic nie odebrano")
+            self.__on_add_log(1, "SKT_RECV_EMPTY", "", f"Nic nie odebrano", False)
+            self.__time_last_msg = time.time()
             return 0, b""
         except socket.error as e:
-            self.__on_add_log(10, "SKT_RCV_ERROR", "", f"Nieoczekiwany błąd podczas odbierania | {e}")
+            self.__on_add_log(10, "SKT_RCV_ERROR", "", f"Nieoczekiwany błąd podczas odbierania | {e}", True)
             self.__socket = None
             return -2, b""
         if len(msg) == 0:
-            self.__on_add_log(10, "SKT_RCV_LSRVR", "", f"Utracono połączenie z serwerem!")
+            self.__on_add_log(10, "SKT_RCV_LSRVR", "", f"Utracono połączenie z serwerem!", True)
             self.__socket = None
             return -1, b""
-        self.__on_add_log(4, "SKT_RCV_OK", "", f"{msg}")
+        self.__on_add_log(4, "SKT_RCV_OK", "", f"{msg}", False)
+        self.__time_last_msg = time.time()
         return 1, msg
 
     def ping(self, interval: float) -> bool:
@@ -244,16 +248,16 @@ class SocketManager:
             TODO: Add comment
         """
         if self.__socket is None:
-            self.__on_add_log(7, "SKT_PING_NCNCT", "", f"Nie można odebrać danych bo nie ma połaczenia")
+            self.__on_add_log(7, "SKT_PING_NCNCT", "", f"Nie można odebrać danych bo nie ma połaczenia", False)
             return False
         if self.__time_last_msg + interval > time.time():
             return True
-        self.__time_last_msg = time.time()
         try:
             msg = self.__socket.send(b"\r")
         except socket.error as e:
-            self.__on_add_log(10, "SKT_PING_ERROR", "", f"Nieoczekiwany błąd podczas odbierania | {e}")
+            self.__on_add_log(10, "SKT_PING_ERROR", "", f"Nieoczekiwany błąd podczas odbierania | {e}", True)
             self.__socket = None
             return False
-        self.__on_add_log(0, "SKT_PING_OK", "", f"{msg}")
+        self.__on_add_log(0, "SKT_PING_OK", "", f"{msg}", False)
+        self.__time_last_msg = time.time()
         return True

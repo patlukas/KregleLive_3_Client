@@ -165,9 +165,3 @@ class GameType:
 
     def get_list_transitions_name(self) -> list[str]:
         return list(self.transitions.keys())
-
-
-# try:
-#     GameTypesManager()
-# except GameTypesManagerError as e:
-#     print(e.code, e.message)

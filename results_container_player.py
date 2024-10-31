@@ -179,8 +179,7 @@ class ResultsContainerPlayer:
                 return int(self.ps) if self.ps == int(self.ps) else self.ps
             case "different":
                 return self.different
-            case default:
-                return None
+        return None
 
     def __get_sum_stat_value(self, stat) -> int | float:
         """

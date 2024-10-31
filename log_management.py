@@ -8,13 +8,14 @@ class LogManagement:
         """
         self.__name - <str> log file name
         self.__index - <int> index of the last saved log
+        self.__index_to_show_in_gui - <int> index of the last saved log with will be displayed in gui
         self.__number_lines_to_write - <int> how many logs are waiting to be written
         self.__minimum_number_of_lines_to_write - <int> when this number of logs are waiting,
                                                         the logs are written to the file
         self.__lines_to_writ - <str> logs waiting to be saved
-        self.__log_list - <list[tuple[int, str, int, str, str, str]]> - list contains logs, each log contains:
+        self.__log_list_to_show_in_gui - <list[tuple[int, str, int, str, str, str]]> - list contains logs, each log contains:
                                                                             int - log number
-                                                                            str - date (YYYY_MM_DD__gg_mm_ss_mmmm)
+                                                                            str - date (gg:mm:ss)
                                                                             int - priority <0..10>
                                                                             str - code
                                                                             str - port
@@ -27,10 +28,11 @@ class LogManagement:
         self.__name: str = "logs/" + self.__get_file_name()
         open(self.__name, "w").close()
         self.__index: int = 0
+        self.__index_to_show_in_gui: int = 0
         self.__number_lines_to_write: int = 0
         self.__minimum_number_of_lines_to_write: int = minimum_number_of_lines_to_write
         self.__lines_to_write: str = ""
-        self.__log_list: list[tuple[int, str, int, str, str, str]] = []
+        self.__log_list_to_show_in_gui: list[tuple[int, str, int, str, str, str]] = []
 
     def set_minimum_number_of_lines_to_write(self, minimum_number_of_lines_to_write: int) -> None:
         """
@@ -71,7 +73,21 @@ class LogManagement:
             datetime_str += "_{}".format(millisecond)
         return datetime_str
 
-    def add_log(self, priority: int, code: str, port: str, message: str) -> None:
+    @staticmethod
+    def __get_time() -> str:
+        """
+        This function returns the current time as a formatted string.
+
+        :return: str with time, format: gg:mm:ss
+        """
+        now = datetime.now()
+        hour = now.strftime("%H")
+        minute = now.strftime("%M")
+        second = now.strftime("%S")
+        time_str = "{}:{}:{}".format(hour, minute, second)
+        return time_str
+
+    def add_log(self, priority: int, code: str, port: str, message: str, show_in_gui: bool) -> None:
         """
         This method write log messages to log file. This method save logs to file, when is
         __minimum_number_of_lines_to_write logs to save.
@@ -80,6 +96,7 @@ class LogManagement:
         :param port: <str> port name, e.g. 'COM1' or '127.0.0.1'
         :param message: <str> log description
         :param priority: <int> log priority level (0 - not important, ...)
+        :param show_in_gui: <bool> if True this log will be displayed in GUI log list
         :return: None
         """
         if type(port) == tuple:
@@ -93,8 +110,11 @@ class LogManagement:
         self.__index += 1
         self.__number_lines_to_write += 1
         date = self.__get_datetime(True)
-        data = (self.__index, date, priority, code, port, message)
-        self.__log_list.append(data)
+        if show_in_gui:
+            self.__index_to_show_in_gui += 1
+            time = self.__get_time()
+            data = (self.__index_to_show_in_gui, time, priority, code, port, message)
+            self.__log_list_to_show_in_gui.append(data)
         new_line = "{}.\t{}\t{}\t{}\t{}\t{}".format(self.__index, date, priority, code.ljust(14), port.ljust(26), message)
         self.__lines_to_write += new_line + "\n"
         if priority > 1:
@@ -108,10 +128,10 @@ class LogManagement:
             self.__lines_to_write = ""
             self.__number_lines_to_write = 0
 
-        if len(self.__log_list) > 500:
-            for i in range(0, len(self.__log_list)-50):
-                if int(self.__log_list[i][2]) < 10:
-                    self.__log_list.pop(i)
+        if len(self.__log_list_to_show_in_gui) > 500:
+            for i in range(0, len(self.__log_list_to_show_in_gui)-50):
+                if int(self.__log_list_to_show_in_gui[i][2]) < 10:
+                    self.__log_list_to_show_in_gui.pop(i)
                     break
 
     def close_log_file(self) -> None:
@@ -135,7 +155,7 @@ class LogManagement:
         :return: list[tuple[int, str, int, str, str, str]]
         """
         data = []
-        for log in self.__log_list[::-1]:
+        for log in self.__log_list_to_show_in_gui[::-1]:
             if len(data) >= number_logs + number_additional_errors:
                 continue
             elif int(log[2]) == 10:

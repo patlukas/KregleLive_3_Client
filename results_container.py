@@ -4,13 +4,13 @@ from results_container_team import ResultsContailerTeam
 
 
 class ResultsContainer:
-    def __init__(self, on_add_log: Callable[[int, str, str, str], None]):
+    def __init__(self, on_add_log: Callable[[int, str, str, str, bool], None]):
         """
-        :param on_add_log:  <Callable[[int, str, str, str], None]> function to add logs
+        :param on_add_log:  <Callable[[int, str, str, str, bool], None]> function to add logs
 
         self.teams: <list[TeamsResultsContainer]> list of team
         """
-        self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
+        self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
         self.teams: list[ResultsContailerTeam] = []
 
     def init_struct(self, number_team: int, number_player_in_team: int) -> bool:
@@ -197,7 +197,7 @@ class ResultsContainerLeague(ResultsContainer):
         :return: bool - False is wrong number_team should be 2, True - everything is ok
         """
         if number_team != 2:
-            self.__on_add_log(10, "RCR_L_INIT_ERROR_TEAM", "", f"Liczba zespołów powinna być równa 2, a jest {number_team}")
+            self.__on_add_log(10, "RCR_L_INIT_ERROR_TEAM", "", f"Liczba zespołów powinna być równa 2, a jest {number_team}", True)
             return False
         return super().init_struct(number_team, number_player_in_team)
 

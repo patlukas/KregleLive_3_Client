@@ -1,8 +1,11 @@
 """Module with methods for drawing text on an image."""
+from typing import Callable
+
 from PIL import ImageFont, ImageDraw, Image
+#TODO: MAny func to del
 
 class MethodsToDrawOnImage:
-    def __init__(self):
+    def __init__(self, on_add_log: Callable[[int, str, str, str, bool], None]):
         """
         __used_fonts - {<path_font>: {<size_font>: <object font PIL>}} - dictionary with loaded fonts
         __get_font(str, int) -> PIL.ImageFont.FreeTypeFont - zwraca potrzebną czcionkę
@@ -10,6 +13,7 @@ class MethodsToDrawOnImage:
         TODO: Dodaj dodawnaie logów
         """
         self.__used_fonts: dict = {}
+        self._on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
 
     def __get_font(self, font_path: str, font_size: int) -> ImageFont.FreeTypeFont:
         """
@@ -21,6 +25,7 @@ class MethodsToDrawOnImage:
         :param font_path: <str> path to font file
         :param font_size: <str> expected font size
         :return: <ImageFont.FreeTypeFont> object with font
+        #TODO sprawdź jakie najczęściej czcioniki są używane, do pokazywania wyników, które zawsze mają ten sam rozmiar
         """
         if font_path in self.__used_fonts and font_size in self.__used_fonts[font_path]:
             return self.__used_fonts[font_path][font_size]
@@ -45,16 +50,15 @@ class MethodsToDrawOnImage:
         cell.paste(tuple(background_color), (0, 0, w, h))
         return cell
 
-    @staticmethod
-    def load_image(path: str) -> Image.Image | None:
+    def load_image(self, path: str) -> Image.Image | None:
         try:
             image = Image.open(path)
             return image
         except FileNotFoundError:
-            # TODO: ERROR image not exist | LOG
+            self._on_add_log(9, "MDI_LOADIMG_ERROR", "", f"Nie istnieje obrazek pod ścieżką: {path}", True)
             print(f"Plik '{path}' nie istnieje.")
         except OSError:
-            # TODO: ERROR wrong file | LOG
+            self._on_add_log(9, "MDI_LOADIMG_ERROR", "", f"Plik nie jest obrazkiem: {path}", True)
             print(f"Plik '{path}' nie jest poprawnym obrazem.")
         return None
 
@@ -64,13 +68,11 @@ class MethodsToDrawOnImage:
             background = tuple(background)
         return Image.new("RGB", (width, height), background)
 
-    @staticmethod
-    def save_image(img: Image.Image, path: str):
+    def save_image(self, img: Image.Image, path: str):
         try:
             img.save(path, "PNG")
-        except OSError:
-            #TODO: ERROR | LOG
-            pass
+        except OSError as e:
+            self._on_add_log(9, "MDI_SAVE_ERROR", "", f"Nie można zapisać obrazka: {path}: {e}", True)
 
     def draw_text_in_cell(self, img_cell: Image.Image, text: str, max_font_size: int, font_path: str,
                           color: tuple | list, width: int, height: int, align: str) -> Image.Image:
@@ -86,6 +88,7 @@ class MethodsToDrawOnImage:
         :param height: <int> cell height
         :param align: <str> "center", "right" or "left" - text position in cell
         :return: <Image.Image> cell with added centered text
+        TODO 'x'
         """
         if text == "":
             return img_cell

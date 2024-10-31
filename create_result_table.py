@@ -3,7 +3,6 @@ from methods_to_draw_on_image import MethodsToDrawOnImage
 from PIL import Image
 import os
 
-from results_manager import ResultsManager
 from table_instruction import TableInstruction, TableInstructionError
 
 
@@ -11,12 +10,11 @@ from table_instruction import TableInstruction, TableInstructionError
 
 class _CreateResultTable(MethodsToDrawOnImage):
     def __init__(self, table_type: str, font_path: str, template_dir: str, output_path: str, instructions_path: str,
-                 number_tables: int, on_add_log: Callable[[int, str, str, str], None]):
+                 number_tables: int, on_add_log: Callable[[int, str, str, str, bool], None]):
         """
 
         """
-        super().__init__()
-        self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
+        super().__init__(on_add_log)
         self.__get_results: Callable[[list[str]], list[dict | None]] | None = None
         self.__number_images: int = number_tables
         self.__old_results: list[dict] = [{}] * number_tables
@@ -72,7 +70,7 @@ class _CreateResultTable(MethodsToDrawOnImage):
                 instruction = TableInstruction(table_type,dir_instruction + file_path, dir_template, self.load_image)
                 return_list.append(instruction)
             except TableInstructionError as e:
-                self.__on_add_log(10, "CRT_LOAD_ERROR", e.code, e.message)
+                self._on_add_log(10, "CRT_LOAD_ERROR", e.code, e.message, True)
         return return_list
 
     def __make_single_table(self, instruction: TableInstruction, now_results: dict, table_index: int):
@@ -110,11 +108,11 @@ class _CreateResultTable(MethodsToDrawOnImage):
 
 class CreateTableMain(_CreateResultTable):
     def __init__(self, fonts_dir: str, template_dir: str, output_path: str,
-                 instruction_dir: str, on_add_log: Callable[[int, str, str, str], None]):
+                 instruction_dir: str, on_add_log: Callable[[int, str, str, str, bool], None]):
         super().__init__("main", fonts_dir, template_dir, output_path, instruction_dir, 1, on_add_log)
 
 
 class CreateTableLane(_CreateResultTable):
     def __init__(self, fonts_dir: str, template_dir: str, output_path: str,
-                 instruction_dir: str, number_of_lanes: int, on_add_log: Callable[[int, str, str, str], None]):
+                 instruction_dir: str, number_of_lanes: int, on_add_log: Callable[[int, str, str, str, bool], None]):
         super().__init__("lane", fonts_dir, template_dir, output_path, instruction_dir, number_of_lanes, on_add_log)

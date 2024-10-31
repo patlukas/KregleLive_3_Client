@@ -115,8 +115,7 @@ class ResultsContailerTeam:
                 return int(self.ps) if self.ps == int(self.ps) else self.ps
             case "different":
                 return self.different
-            case default:
-                return None
+        return None
 
     def set_name(self, name: str) -> None:
         """

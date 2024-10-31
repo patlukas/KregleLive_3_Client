@@ -131,7 +131,6 @@ class _LaneContainer:
             match stat_split[0]:
                 case "throw":
                     second = stat_split[1]
-                    t = 0
                     if second == "last":
                         t = self.number_of_throw - 1
                     else:
@@ -139,8 +138,7 @@ class _LaneContainer:
                     if t < 0 or t > len(self.list_results) or self.list_results[t] is None:
                         return ""
                     return str(self.list_results[t])
-                case default:
-                    return ""
+        return ""
 
     def get_stat_value(self, stat) -> int | float | None:
         """
@@ -168,8 +166,7 @@ class _LaneContainer:
                 return self.different
             case "time":
                 return self.time
-            case default:
-                return None
+        return None
 
 class ResultsContainerLane(_LaneContainer):
     def __init__(self) -> None:

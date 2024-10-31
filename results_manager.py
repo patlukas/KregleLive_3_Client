@@ -5,15 +5,15 @@ from results_container import ResultsContainer
 
 
 class ResultsManager:
-    def __init__(self, results_container: ResultsContainer, game_type: GameType, on_add_log: Callable[[int, str, str, str], None]):
+    def __init__(self, results_container: ResultsContainer, game_type: GameType, on_add_log: Callable[[int, str, str, str, bool], None]):
         """
         :param results_container: <ResultsContainer> container for storing results
         :param game_type: <GameType> an object with details about the selected game type
-        :param on_add_log: <Callable[[int, str, str, str], None]> function to add logs
+        :param on_add_log: <Callable[[int, str, str, str, bool], None]> function to add logs
 
         self.__results_container: <ResultsContainer> container for storing results
         self.__game_type: <GameType> an object with details about the selected game type
-        self.__on_add_log: <Callable[[int, str, str, str], None]> function to add logs
+        self.__on_add_log: <Callable[[int, str, str, str, bool], None]> function to add logs
         self.__list_of_blocks: <list[Transition]> every single object is one block
         self.__block_number: <int> the largest block number in which all the lanes are
         self.__max_block_number: <int> the largest block number in which at least one track is
@@ -30,7 +30,7 @@ class ResultsManager:
         # TODO: Add lists every logs
         """
         self.__results_container: ResultsContainer = results_container
-        self.__on_add_log: Callable[[int, str, str, str], None] = on_add_log
+        self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
         self.__game_type: GameType = game_type
         self.__list_of_blocks: list[Transition] = []
         self.__block_number: int = -1
@@ -57,12 +57,12 @@ class ResultsManager:
         if transitions_name not in self.__game_type.transitions:
             return False
         block_number = len(self.__list_of_blocks) + 1
-        self.__on_add_log(3, "RST_BLOCK_ADD", f"", f"Dodano blok numer {block_number} o nazwie {transitions_name}")
+        self.__on_add_log(3, "RST_BLOCK_ADD", f"", f"Dodano blok numer {block_number} o nazwie {transitions_name}", False)
 
         transition: Transition = self.__game_type.transitions[transitions_name]
         self.__list_of_blocks.append(transition)
         self.__results_container.init_block(transition.number_lane)
-        self.__on_add_log(0, "RST_BLOCK_EADD", f"", f"Pomślnie dodano blok numer {block_number} o nazwie {transitions_name}")
+        self.__on_add_log(0, "RST_BLOCK_EADD", f"", f"Pomślnie dodano blok numer {block_number} o nazwie {transitions_name}", False)
         return True
 
     def change_lane_status(self, lane: int, status_new: int) -> bool:
@@ -93,13 +93,13 @@ class ResultsManager:
         else:
             status_old = self.__status_on_lanes[lane][-1]
             if status_old + 1 == status_new:
-                self.__on_add_log(3, "RST_STATUS_OK", f"{lane + 1}", f"Poprawna zmiana statusu rundy na torze {lane + 1}: poprzedni status {status_old}, nowy {status_new}")
+                self.__on_add_log(3, "RST_STATUS_OK", f"{lane + 1}", f"Poprawna zmiana statusu rundy na torze {lane + 1}: poprzedni status {status_old}, nowy {status_new}", False)
                 self.__status_on_lanes[lane][-1] = status_new
             elif status_old == status_new:
                 if status_old != 3:
-                    self.__on_add_log(9, "RST_STATUS_EQ", f"{lane + 1}", f"Status rundy na torze {lane + 1} nie zmienił się: poprzedni status {status_old}, nowy {status_new}")
+                    self.__on_add_log(9, "RST_STATUS_EQ", f"{lane + 1}", f"Status rundy na torze {lane + 1} nie zmienił się: poprzedni status {status_old}, nowy {status_new}", True)
             elif status_old + 1 < status_new or (status_new < 2 and status_old <= 2):
-                self.__on_add_log(9, "RST_STATUS_JMP", f"{lane + 1}", f"Zmiana statusu rundy na torze {lane + 1}: poprzedni status {status_old}, nowy {status_new}")
+                self.__on_add_log(9, "RST_STATUS_JMP", f"{lane + 1}", f"Zmiana statusu rundy na torze {lane + 1}: poprzedni status {status_old}, nowy {status_new}", True)
                 self.__status_on_lanes[lane][-1] = status_new
             else:
                 self.__change_lane_status__add_new_round(lane, status_new)
@@ -123,9 +123,9 @@ class ResultsManager:
             RST_BLOCK_NEW - 3 - A new block has been started on all lanes
         """
         if status_new == 0 or status_new == 3:
-            self.__on_add_log(3, "RST_STATUS_OK", f"{lane + 1}", f"Nowa runda na torze {lane + 1}. Status: {status_new}")
+            self.__on_add_log(3, "RST_STATUS_OK", f"{lane + 1}", f"Nowa runda na torze {lane + 1}. Status: {status_new}", False)
         else:
-            self.__on_add_log(9, "RST_STATUS_JMP", f"{lane + 1}", f"Nowa runda na torze {lane + 1}. Status: {status_new}, powinien być 0 lub 3")
+            self.__on_add_log(9, "RST_STATUS_JMP", f"{lane + 1}", f"Nowa runda na torze {lane + 1}. Status: {status_new}, powinien być 0 lub 3", True)
         self.__status_on_lanes[lane].append(status_new)
 
         new_round = len(self.__status_on_lanes[lane]) - 1
@@ -136,17 +136,17 @@ class ResultsManager:
 
         if len(self.__status_on_lanes[lane]) - 1 >= sum([block.number_lane for block in self.__list_of_blocks[:self.__max_block_number+1]]):
             self.__max_block_number += 1
-            self.__on_add_log(3, "RST_BLOCK_NEWO", f"", f"Rozpoczęto blok numer {self.__max_block_number + 1} zainicjował go tor {lane}")
+            self.__on_add_log(3, "RST_BLOCK_NEWO", f"", f"Rozpoczęto blok numer {self.__max_block_number + 1} zainicjował go tor {lane}", False)
             if self.__max_block_number == len(self.__list_of_blocks):
                 self.add_block(self.__game_type.default_transitions)
 
         if new_round != self.__round:
-            self.__on_add_log(3, "RST_ROUND_CHANGE", f"", f"Zmiana rundy. Stara: {self.__round}, nowa: {new_round}")
+            self.__on_add_log(3, "RST_ROUND_CHANGE", f"", f"Zmiana rundy. Stara: {self.__round}, nowa: {new_round}", False)
             self.__round = new_round
             if self.__round == sum([block.number_lane for block in self.__list_of_blocks[:self.__block_number+1]]):
                 self.__block_number += 1
                 self.__block_is_running = True
-                self.__on_add_log(3, "RST_BLOCK_NEW", f"", f"Rozpoczęto blok numer {self.__block_number + 1} na wszystkich torach")
+                self.__on_add_log(3, "RST_BLOCK_NEW", f"", f"Rozpoczęto blok numer {self.__block_number + 1} na wszystkich torach", True)
 
 
     def __check_end_block(self) -> bool:
@@ -163,7 +163,7 @@ class ResultsManager:
                 if list_status_lane[-1] != 5 or len(list_status_lane) < round_to_end_block:
                     return False
         self.__block_is_running = False
-        self.__on_add_log(6, "RST_PERIOD_END", f"", f"Zakończono okres: {self.__block_number}")
+        self.__on_add_log(6, "RST_PERIOD_END", f"", f"Zakończono blok: {self.__block_number} na wszystkich torach", True)
         return True
 
     def change_time_on_lane(self, lane: int, time: float) -> bool:

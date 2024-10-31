@@ -87,6 +87,8 @@ class SocketSelection(QGroupBox):
             if status_reconnect == 1:
                 self.__label_status.setStyleSheet("")
                 self.__label_status.setText(f"Status: ponownie połączono")
+                self.__label_failed.setText("")
             else:
                 self.__label_status.setStyleSheet("color: red;")
                 self.__label_status.setText(f"Status: nie udane ponowne połączenie")
+                self.__label_failed.setText(f"Liczba nieudanych prób połączenia: {self.__socket_manager.number_of_failed_reconnections}")

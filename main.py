@@ -1,11 +1,12 @@
 import sys
 from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
-from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QHBoxLayout, QSizePolicy, QMessageBox
+from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError
+from gui.logs_section import LogsSection
 from gui.players_section import PlayersSectionLeague
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
@@ -31,7 +32,7 @@ class WorkerThread(QThread):
         self.__running: bool = False
 
     def run(self):
-        self.__log_management.add_log(7, "LOOP_START", "", "Uruchomiono pętlę główną aplikacji")
+        self.__log_management.add_log(7, "LOOP_START", "", "Uruchomiono pętlę główną aplikacji", False)
         self.__running = True
         while self.__running:
             socket_status = self.__socket_manager.get_connection_status()
@@ -45,7 +46,7 @@ class WorkerThread(QThread):
             self.msleep(500)
 
     def stop(self):
-        self.__log_management.add_log(7, "LOOP_STOP", "", "Zatrzymano pętlę główną aplikacji")
+        self.__log_management.add_log(7, "LOOP_STOP", "", "Zatrzymano pętlę główną aplikacji", False)
         self.__running = False
 
     def create_table_lane(self):
@@ -98,11 +99,10 @@ class Main(QWidget):
         :logs:  CNF_READ_ERROR (10), CNF_READ (2), START (0)
         """
         self.__log_management = LogManagement()
-        self.__log_management.add_log(0, "START", "", "Aplikacja została uruchomiona")
-
+        self.__log_management.add_log(0, "START", "", "Aplikacja została uruchomiona", False)
         try:
             self.__config = ConfigReader().get_configuration()
-            self.__log_management.add_log(2, "CNF_READ", "", "Pobrano konfigurację")
+            self.__log_management.add_log(2, "CNF_READ", "", "Pobrano konfigurację", False)
             self.__log_management.set_minimum_number_of_lines_to_write(self.__config["minimum_number_of_lines_to_write_in_log_file"])
             self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"])
             self.__category_type_manager = CategoryTypesManager(self.__config["file_with_category_types"])
@@ -123,13 +123,13 @@ class Main(QWidget):
                                                        self.__config["number_of_lanes"],
                                                        self.__log_management.add_log)
         except ConfigReaderError as e:
-            self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message)
+            self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message, True)
         except GameTypesManagerError as e:
-            self.__log_management.add_log(10, "GTM_READ_ERROR", e.code, e.message)
+            self.__log_management.add_log(10, "GTM_READ_ERROR", e.code, e.message, True)
         except PlayerLicensesError as e:
-            self.__log_management.add_log(10, "PLI_READ_ERROR", e.code, e.message)
+            self.__log_management.add_log(10, "PLI_READ_ERROR", e.code, e.message, True)
         except CategoryTypesManagerError as e:
-            self.__log_management.add_log(10, "CTM_READ_ERROR", e.code, e.message)
+            self.__log_management.add_log(10, "CTM_READ_ERROR", e.code, e.message, True)
 
     def init_gui(self):
         game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
@@ -138,6 +138,7 @@ class Main(QWidget):
             self.__create_table_lane, self.__on_change_table_lane,
             self.__create_table_main, self.__on_change_table_main)
         socket_section = SocketSelection(self.__socket_manager)
+        logs_section = LogsSection(self.__log_management)
 
         column1 = QWidget()
         column1.setLayout(self.__column1_layout)
@@ -152,6 +153,8 @@ class Main(QWidget):
         self.__column1_layout.addWidget(settings_section, 1, 0)
         self.__column1_layout.addWidget(game_type_selection, 2, 0)
         self.__column1_layout.addWidget(self.__button_start, 3, 0)
+        self.__column1_layout.addWidget(logs_section, 4, 0)
+
         self.__button_start.setEnabled(False)
         self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
         self.__button_start.clicked.connect(self.__on_start_loop)
@@ -159,6 +162,7 @@ class Main(QWidget):
 
         self.__layout.addWidget(column1, 0, 0)
         self.__layout.addWidget(column2, 0, 1)
+
 
         self.setGeometry(300, 300, 350, 250)
         self.show()
@@ -187,31 +191,34 @@ class Main(QWidget):
         self.__thread.stop()
 
     def __on_select_game_type(self):
-        self.__button_start.setToolTip("")
-        self.__button_start.setEnabled(True)
-        game_type = self.__game_type_manager.game_type
-        if game_type is None:
-            return
-        self.__log_management.add_log(7, "GTP_SELECT", "", f"Wybrano rodzaj gry: {game_type.name}")
-        if game_type.type == "league":
-            self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
-        elif game_type.type == "classic":
-            self.__results_container = ResultsContainer(self.__log_management.add_log)
+        try:
+            self.__button_start.setToolTip("")
+            self.__button_start.setEnabled(True)
+            game_type = self.__game_type_manager.game_type
+            if game_type is None:
+                return
+            self.__log_management.add_log(7, "GTP_SELECT", "", f"Wybrano rodzaj gry: {game_type.name}", False)
+            if game_type.type == "league":
+                self.__results_container = ResultsContainerLeague(self.__log_management.add_log)
+            elif game_type.type == "classic":
+                self.__results_container = ResultsContainer(self.__log_management.add_log)
 
-        self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
-        self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
-        self.__create_table_main.add_func_to_get_results(self.__results_manager.get_scores)
-        self.__create_table_lane.add_func_to_get_results(self.__results_manager.get_scores_of_players_now_playing)
+            self.__results_manager = ResultsManager(self.__results_container, game_type, self.__log_management.add_log)
+            self.__message_interpreter = MessagesInterpreter(self.__results_manager, self.__log_management.add_log)
+            self.__create_table_main.add_func_to_get_results(self.__results_manager.get_scores)
+            self.__create_table_lane.add_func_to_get_results(self.__results_manager.get_scores_of_players_now_playing)
 
-        if game_type.type == "league":
-            self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses)
-        elif game_type.type == "classic":
-            self.__player_section = None # TODO
+            if game_type.type == "league":
+                self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses)
+            elif game_type.type == "classic":
+                self.__player_section = None # TODO
 
-        self.__column2_layout.addWidget(self.__player_section, 4, 0)
+            self.__column2_layout.addWidget(self.__player_section, 4, 0)
 
-        self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
-                                     self.__create_table_main, self.__create_table_lane)
+            self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
+                                         self.__create_table_main, self.__create_table_lane)
+        except Exception as e:
+            print(e)
 
     def __on_change_table_lane(self):
         if self.__thread is None:
