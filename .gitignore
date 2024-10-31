@@ -1,2 +1,3 @@
 */*.log
 /tables/img_temporary/*.png
+/.idea/*

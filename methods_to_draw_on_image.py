@@ -109,142 +109,14 @@ class MethodsToDrawOnImage:
             if max_font_size <= 0:
                 break
         if align == "center":
-            x = (width - w) // 2
+            anchor = "mm"
+            x = width / 2
         elif align == "right":
-            x = width - w
+            anchor = "rm"
+            x = width
         else:
+            anchor = "lm"
             x = 0
-        x, y = width / 2, height / 2
-        draw.text((x, y), text, font=font, fill=color, anchor="mm")
+        y = height / 2
+        draw.text((x, y), text, font=font, fill=color, anchor=anchor)
         return img_cell
-
-    def draw_center_text_in_cell(self, img_cell: Image.Image, text: str | int | float, font_size: int,
-                                 font_path: str, color: tuple | list, width: int, height: int) -> Image.Image:
-        """
-        Return of the cell image with added vertically and horizontally centered text.
-
-        :param img_cell: <Image.Image> cell image
-        :param text: <str | int | float> the text to be added to the cell
-        :param font_size: <int> the largest size, if it does not fit, it will set the largest possible size
-        :param font_path: <str>
-        :param color: <tuple | list> font color saved in format (B, G, R)
-        :param width: <int> cell width
-        :param height: <int> cell height
-        :return: <Image.Image> cell with added centered text
-        """
-        text = str(text)
-        if text == "":
-            return img_cell
-        color = tuple(color)
-        font_size = int(font_size)
-
-        draw = ImageDraw.Draw(img_cell)
-        while True:
-            try:
-                font = self.__get_font(font_path, font_size)
-            except OSError:
-                return img_cell
-            w, h = draw.textsize(text, font=font)
-            if w <= width and h <= height:
-                break
-            font_size -= 1
-            if font_size <= 0:
-                break
-        x = (width - w) // 2
-        y = (height - h) // 2
-        draw.text((x, y), text, font=font, fill=color)
-        return img_cell
-
-    def draw_center_text_by_coord(self, img: Image.Image, text: str | int | float, font_size: int,
-                                  font_path: str, color: tuple | list,
-                                  coords: list[int, int, int, int] | tuple[int, int, int, int]) -> Image.Image:
-        """
-        Methods for drawing text on a cell image with an added caption centered vertically and horizontally.
-
-        :param img: <Image.Image> cell image
-        :param text: <str | int | float> the text to be added to the cell
-        :param font_size: <int> the largest size, if it does not fit, it will set the largest possible size
-        :param font_path: <str>
-        :param color: <tuple | list> font color saved in format (B, G, R)
-        :param coords: <list | tuple> coordinates: left, right, top, bottom
-        :return: <Image.Image> cell with added centered text
-        """
-        return self.__draw_text_by_coord("center", img, text, font_size, font_path, color, coords)
-
-    def draw_left_text_by_coord(self, img: Image.Image, text: str | int | float, font_size: int,
-                                  font_path: str, color: tuple | list,
-                                  coords: list[int, int, int, int] | tuple[int, int, int, int]) -> Image.Image:
-        """
-        Returns an image of a cell with a left-justified and leveled caption added.
-
-        :param img: <Image.Image> cell image
-        :param text: <str | int | float> the text to be added to the cell
-        :param font_size: <int> the largest size, if it does not fit, it will set the largest possible size
-        :param font_path: <str>
-        :param color: <tuple | list> font color saved in format (B, G, R)
-        :param coords: <list | tuple> coordinates: left, right, top, bottom
-        :return: <Image.Image> cell with added text on the left edge
-        """
-        return self.__draw_text_by_coord("left", img, text, font_size, font_path, color, coords)
-
-    def draw_right_text_by_coord(self, img: Image.Image, text: str | int | float, font_size: int,
-                                 font_path: str, color: tuple | list,
-                                 coords: list[int, int, int, int] | tuple[int, int, int, int]) -> Image.Image:
-        """
-        Returns an image of a cell with a right-justified and leveled caption added.
-
-        :param img: <Image.Image> cell image
-        :param text: <str | int | float> the text to be added to the cell
-        :param font_size: <int> the largest size, if it does not fit, it will set the largest possible size
-        :param font_path: <str>
-        :param color: <tuple | list> font color saved in format (B, G, R)
-        :param coords: <list | tuple> coordinates: left, right, top, bottom
-        :return: <Image.Image> cell with added text on the right edge
-        """
-        return self.__draw_text_by_coord("right", img, text, font_size, font_path, color, coords)
-
-    def __draw_text_by_coord(self, kind_position: str, img: Image.Image, text: str | int | float, font_size: int,
-                             font_path: str, color: tuple | list,
-                             coords: list[int, int, int, int] | tuple[int, int, int, int]) -> Image.Image:
-        """
-        Returns an image of the cell with the selected caption justified and leveled.
-
-        :param kind_position: <str> how the text should be arranged: right/center/left
-        :param img: <Image.Image> cell image
-        :param text: <str | int | float> the text to be added to the cell
-        :param font_size: <int> the largest size, if it does not fit, it will set the largest possible size
-        :param font_path: <str>
-        :param color: <tuple | list> font color saved in format (B, G, R)
-        :param coords: <list | tuple> coordinates: left, right, top, bottom
-        :return: <Image.Image> cell with added centered text
-        """
-        text = str(text)
-        if text == "":
-            return img
-        color = tuple(color)
-        font_size = int(font_size)
-
-        width = coords[1] - coords[0]
-        height = coords[3] - coords[2]
-
-        draw = ImageDraw.Draw(img)
-        while True:
-            try:
-                font = self.__get_font(font_path, font_size)
-            except OSError:
-                return img
-            w, h = draw.textsize(text, font=font)
-            if w <= width and h <= height:
-                break
-            font_size -= 1
-            if font_size <= 0:
-                break
-        if kind_position == "right":
-            x = coords[1] - w
-        elif kind_position == "center":
-            x = (width - w) // 2 + coords[0]
-        else:
-            x = coords[0]
-        y = (height - h) // 2 + coords[2]
-        draw.text((x, y), text, font=font, fill=color)
-        return img
