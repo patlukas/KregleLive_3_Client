@@ -97,20 +97,29 @@ class PlayersSectionLeague(QGroupBox):
 
     def load_data_from_new_category(self):
         list_team = self.__player_licenses.get_teams()
-        for column in self.__columns:
+        for i, column in enumerate(self.__columns):
+            column.filter_team.blockSignals(True)
             column.filter_team.clear()
             column.filter_team.addItems(list_team)
-            self.__set_list_of_players(column, "")
+            column.filter_team.blockSignals(False)
+            self.__set_list_of_players(column, None)
 
-    def __set_list_of_players(self, column: _PlayersSectionLeagueTeam, team: str):
+    def __set_list_of_players(self, column: _PlayersSectionLeagueTeam, team: str | None):
         list_players = self.__player_licenses.get_list_players_name(team)
-        column.team.setText(team)
+        if team is not None:
+            column.team.setText(team)
         for player in column.list_players:
+            old_text = player.currentText()
             player.clear()
             player.addItems(list_players)
+            if team is None:
+                player.setEditText(old_text)
         for change in column.list_changes:
+            old_text = change.player_in.currentText()
             change.player_in.clear()
             change.player_in.addItems(list_players)
+            if team is None:
+                change.player_in.setEditText(old_text)
 
     def __after_select_team(self, x: _PlayersSectionLeagueTeam):
         team_filter = x.filter_team.currentText()

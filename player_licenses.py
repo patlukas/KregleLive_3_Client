@@ -1,5 +1,8 @@
 import json
 import os
+import urllib.error
+from typing import Callable
+
 import pandas as pd
 import locale
 
@@ -29,11 +32,12 @@ class _Player:
         self.valid: bool = valid
 
 class PlayerLicenses:
-    def __init__(self, path_to_config: str):
+    def __init__(self, path_to_config: str, on_add_log: Callable[[int, str, str, str, bool], None]):
         locale.setlocale(locale.LC_COLLATE, "pl_PL.UTF-8")
         self.__players_not_loaned: list[_Player] = []
         self.__players_loaned_lending: list[_Player] = []
         self.__players_loaned_loaning: list[_Player] = []
+        self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
         self.__settings: dict = self.__load_settings(path_to_config)
         self.load_licenses()
         self.__category_type: None | CategoryType = None
@@ -94,7 +98,12 @@ class PlayerLicenses:
         self.__players_not_loaned = []
         self.__players_loaned_loaning = []
         self.__players_loaned_lending = []
-        data = pd.read_csv(self.__settings["path"])
+        try:
+            data = pd.read_csv(self.__settings["path"])
+        except urllib.error.URLError as e:
+            print(f"e {e}")
+            self.__on_add_log(10, "PLI_LOADLIC_ERROR", "", f"Brak połączenia internetowego, więc nie można pobrać licencji | {e}", True)
+            return
         for index, row in data.iterrows():
             lic = row.iloc[self.__settings["license_column"]]
             t = row.iloc[self.__settings["team_column"]]

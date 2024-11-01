@@ -1,6 +1,7 @@
 import sys
 from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
+from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox, QStatusBar, \
     QMenuBar
 
@@ -21,6 +22,8 @@ from gui.settings_section import SettingsSection
 from gui.game_type_section import GameTypeSection
 from gui.socket_selection import SocketSelection
 from socket_manager import SocketManager
+
+APP_VERSION = "1.0.1"
 
 class WorkerThread(QThread):
     def __init__(self, log_management: LogManagement, socket_manager: SocketManager, messages_interpreter: MessagesInterpreter,
@@ -45,7 +48,7 @@ class WorkerThread(QThread):
                     self.__message_interpreter.interpret_messages()
                     self.create_table_lane()
                     self.create_table_main()
-            self.msleep(500)
+            self.msleep(250)
 
     def stop(self):
         self.__log_management.add_log(7, "LOOP_STOP", "", "Zatrzymano pętlę główną aplikacji", False)
@@ -107,7 +110,7 @@ class Main(QWidget):
             self.__config = ConfigReader().get_configuration()
             self.__log_management.add_log(2, "CNF_READ", "", "Pobrano konfigurację", False)
             self.__log_management.set_minimum_number_of_lines_to_write(self.__config["minimum_number_of_lines_to_write_in_log_file"])
-            self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"])
+            self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"], self.__log_management.add_log)
             self.__category_type_manager = CategoryTypesManager(self.__config["file_with_category_types"])
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
@@ -135,6 +138,8 @@ class Main(QWidget):
             self.__log_management.add_log(10, "CTM_READ_ERROR", e.code, e.message, True)
 
     def init_gui(self):
+        self.setWindowTitle("Kręgle Live - Klient")
+        self.setWindowIcon(QtGui.QIcon('icon/icon.ico'))
         game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
         settings_section = SettingsSection(
             self.__category_type_manager, self.__on_change_category_type,
@@ -152,6 +157,7 @@ class Main(QWidget):
         column2.setLayout(self.__column2_layout)
         column2.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
 
+        self.__layout.setMenuBar(self.__create_menu_bar())
 
         self.__column1_layout.addWidget(socket_section, 0, 0)
         self.__column1_layout.addWidget(settings_section, 1, 0)
@@ -168,9 +174,37 @@ class Main(QWidget):
         self.__layout.addWidget(column1, 0, 0)
         self.__layout.addWidget(column2, 0, 1)
 
-
         self.setGeometry(300, 300, 350, 250)
         self.show()
+
+    def __create_menu_bar(self) -> QMenuBar:
+        menu_bar = QMenuBar(self)
+        licenses_menu = menu_bar.addMenu("Licencje")
+        refresh_licenses_action = QAction("Odśwież listę licencji", self)
+        refresh_licenses_action.triggered.connect(self.__refresh_licenses)
+        licenses_menu.addAction(refresh_licenses_action)
+
+        help_menu = menu_bar.addMenu("Pomoc")
+        about_action = QAction("O aplikacji", self)
+        about_action.triggered.connect(self.__show_about)
+        help_menu.addAction(about_action)
+
+        return menu_bar
+
+    def __show_about(self):
+        about_text = (
+            f"<h3>Kręgle Live - Klient</h3>"
+            f"<p>Wersja: {APP_VERSION}</p>"
+            "<p>Aplikacja wykonana w PyQt6.</p>"
+        )
+        QMessageBox.information(self, "O aplikacji", about_text)
+
+    def __refresh_licenses(self):
+        if self.__player_licenses is not None:
+            self.__player_licenses.load_licenses()
+        if self.__player_section is None:
+            return
+        self.__player_section.load_data_from_new_category()
 
     def __on_start_loop(self):
         #TODO: Check nic nie jest None
