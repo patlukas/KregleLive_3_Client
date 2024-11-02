@@ -1,9 +1,11 @@
 {
     "type": "lane",
-    "name": "Tabelki ligowe ciemne",
+    "name": "Tabelki ligowe niebieskie",
     "path_to_table": {
-        "7": "lane_trial_dark.png",
-        "56": "lane_game_dark.png"
+        "3": "lane_trial_blue2.png",
+        "4": "lane_trial_blue2_end.png",
+        "24": "lane_game_blue2.png",
+        "32": "lane_game_blue2_end.png"
     },
     "background_color": [255, 0, 255],
     "width": 807,
@@ -104,6 +106,7 @@
                 "width": 124
             },
             "T|P|L|p||56": {
+                "font_color": [255, 255, 0],
                 "left": 65,
                 "width": 22,
                 "top": 32
@@ -116,6 +119,7 @@
                 "width": 34
             },
             "T|P|trial|time||7": {
+                "font_color": [255, 255, 255],
                 "top": 16,
                 "left": 89,
                 "width": 34

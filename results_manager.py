@@ -27,7 +27,6 @@ class ResultsManager:
                 the time between when a new block starts on some track and when a new block starts on all tracks
             2. you cannot remove blocks whose indexes are less than or equal to "self.__block_is_running"
         # TODO: uproszczenie self.__status_on_lanes z list[int, ....] do list[int, int]
-        # TODO: Add lists every logs
         """
         self.__results_container: ResultsContainer = results_container
         self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log

@@ -23,7 +23,7 @@ from gui.game_type_section import GameTypeSection
 from gui.socket_selection import SocketSelection
 from socket_manager import SocketManager
 
-APP_VERSION = "1.0.1"
+APP_VERSION = "1.0.2"
 
 class WorkerThread(QThread):
     def __init__(self, log_management: LogManagement, socket_manager: SocketManager, messages_interpreter: MessagesInterpreter,
@@ -115,7 +115,7 @@ class Main(QWidget):
 
             self.__socket_manager = SocketManager(self.__config["socket_timeout"], self.__log_management.add_log)
 
-            self.__game_type_manager = GameTypesManager()
+            self.__game_type_manager = GameTypesManager(self.__config["file_with_game_types"])
 
             self.__create_table_main = CreateTableMain(self.__config["dir_fonts"],
                                                        self.__config["dir_template_main"],
@@ -140,39 +140,45 @@ class Main(QWidget):
     def init_gui(self):
         self.setWindowTitle("Kręgle Live - Klient")
         self.setWindowIcon(QtGui.QIcon('icon/icon.ico'))
-        game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
-        settings_section = SettingsSection(
-            self.__category_type_manager, self.__on_change_category_type,
-            self.__create_table_lane, self.__on_change_table_lane,
-            self.__create_table_main, self.__on_change_table_main)
-        socket_section = SocketSelection(self.__socket_manager)
+
         logs_section = LogsSection(self.__log_management)
-        self.__statistics_section = StatisticsSection(6)
 
-        column1 = QWidget()
-        column1.setLayout(self.__column1_layout)
-        column1.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
+        if self.__player_licenses is None or self.__category_type_manager is None or self.__socket_manager is None or self.__game_type_manager is None or self.__create_table_main is None or self.__create_table_lane is None:
+            self.__layout.addWidget(logs_section)
+        else:
+            game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
+            settings_section = SettingsSection(
+                self.__category_type_manager, self.__on_change_category_type,
+                self.__create_table_lane, self.__on_change_table_lane,
+                self.__create_table_main, self.__on_change_table_main)
+            socket_section = SocketSelection(self.__socket_manager)
+            logs_section = LogsSection(self.__log_management)
+            self.__statistics_section = StatisticsSection(6)
 
-        column2 = QWidget()
-        column2.setLayout(self.__column2_layout)
-        column2.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
+            column1 = QWidget()
+            column1.setLayout(self.__column1_layout)
+            column1.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
 
-        self.__layout.setMenuBar(self.__create_menu_bar())
+            column2 = QWidget()
+            column2.setLayout(self.__column2_layout)
+            column2.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Maximum)
 
-        self.__column1_layout.addWidget(socket_section, 0, 0)
-        self.__column1_layout.addWidget(settings_section, 1, 0)
-        self.__column1_layout.addWidget(game_type_selection, 2, 0)
-        self.__column1_layout.addWidget(self.__button_start, 3, 0)
-        self.__column1_layout.addWidget(self.__statistics_section, 4, 0)
-        self.__column1_layout.addWidget(logs_section, 5, 0)
+            self.__layout.setMenuBar(self.__create_menu_bar())
 
-        self.__button_start.setEnabled(False)
-        self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
-        self.__button_start.clicked.connect(self.__on_start_loop)
-        self.__button_stop.clicked.connect(self.__on_stop_loop)
+            self.__column1_layout.addWidget(socket_section, 0, 0)
+            self.__column1_layout.addWidget(settings_section, 1, 0)
+            self.__column1_layout.addWidget(game_type_selection, 2, 0)
+            self.__column1_layout.addWidget(self.__button_start, 3, 0)
+            self.__column1_layout.addWidget(self.__statistics_section, 4, 0)
+            self.__column1_layout.addWidget(logs_section, 5, 0)
 
-        self.__layout.addWidget(column1, 0, 0)
-        self.__layout.addWidget(column2, 0, 1)
+            self.__button_start.setEnabled(False)
+            self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
+            self.__button_start.clicked.connect(self.__on_start_loop)
+            self.__button_stop.clicked.connect(self.__on_stop_loop)
+
+            self.__layout.addWidget(column1, 0, 0)
+            self.__layout.addWidget(column2, 0, 1)
 
         self.setGeometry(300, 300, 350, 250)
         self.show()
@@ -207,7 +213,6 @@ class Main(QWidget):
         self.__player_section.load_data_from_new_category()
 
     def __on_start_loop(self):
-        #TODO: Check nic nie jest None
         try:
             self.__button_start.setParent(None)
             self.__column1_layout.addWidget(self.__button_stop, 3, 0)

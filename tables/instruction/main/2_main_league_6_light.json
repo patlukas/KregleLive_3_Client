@@ -1,0 +1,349 @@
+{
+    "type": "main",
+    "name": "Liga 6 osobowa",
+    "path_to_table": {
+        "63": "main_league_6_light.png"
+    },
+    "background_color": [255, 0, 255],
+    "width": 1280,
+    "height": 170,
+    "table_cords": [
+        {
+            "top": 0,
+            "left": 0
+        }
+    ],
+    "cell_in_table": {
+        "metadata_default": {
+            "font_path": "MartianMono_Condensed-Regular.ttf",
+            "font_color": [0,0,0],
+            "max_font_size": 12,
+            "left": 0,
+            "top": 0,
+            "width": 10,
+            "height": 13,
+            "text": null,
+            "background": null,
+            "writeIfNoChange": false,
+            "text_align": "center",
+            "breakIfEmpty": false
+        },
+        "cells": {
+            "&nameH": {
+                "top": 35,
+                "left": 21,
+                "width": 148,
+                "text": "Imię i nazwisko",
+                "font_color": [60, 60, 60],
+                "max_font_size": 10
+            },
+            "&nameG": {
+                "left": 1111
+            },
+            "&tor1H": {
+                "left": 171,
+                "width": 34,
+                "text": "Tor 1"
+            },
+            "&tor1G": {
+                "left": 967
+            },
+            "&tor2H": {
+                "left": 207,
+                "text": "Tor 2"
+            },
+            "&tor2G": {
+                "left": 1003
+            },
+            "&tor3H": {
+                "left": 243,
+                "text": "Tor 3"
+            },
+            "&tor3G": {
+                "left": 1039
+            },
+            "&tor4H": {
+                "left": 279,
+                "text": "Tor 4"
+            },
+            "&tor4G": {
+                "left": 1075
+            },
+            "&pelneH": {
+                "left": 346,
+                "text": "P"
+            },
+            "&pelneG": {
+                "left": 901
+            },
+            "&zbieraneH": {
+                "left": 380,
+                "text": "Z"
+            },
+            "&zbieraneG": {
+                "left": 867
+            },
+            "&sumaH": {
+                "left": 434,
+                "text": "Suma"
+            },
+            "&sumaG": {
+                "left": 813
+            },
+            "&psH": {
+                "width": 31,
+                "left": 468,
+                "text": "PS"
+            },
+            "&psG": {
+                "left": 782
+            },
+            "&pdH": {
+                "width": 23,
+                "left": 499,
+                "text": "PD"
+            },
+            "&pdG": {
+                "left": 759
+            },
+            "&xH": {
+                "width": 20,
+                "left": 414,
+                "text": "X"
+            },
+            "&xG": {
+                "left": 847
+            },
+            "&throwH": {
+                "left": 314,
+                "width": 32,
+                "text": "Rzut"
+            },
+            "&throwG": {
+                "left": 935
+            },
+            "for|_x_|0|5": {
+                "metadata": {
+                    "max_font_size": 12,
+                    "font_color": [0,0,0],
+                    "text": null,
+                    "top": 50
+                },
+                "metadata_step": {
+                    "top": 15
+                },
+                "cells": {
+                    "0|_x_||name|261375|": {
+                        "left": 21,
+                        "width": 148,
+                        "breakIfEmpty": true,
+                        "background": [186, 255, 201]
+                    },
+                    "0|_x_||name|260859|": {
+                        "background": [255, 255, 186]
+                    },
+                    "0|_x_||name|260603|": {
+                        "background": null
+                    },
+                    "1|_x_||name|261375|": {
+                        "left": 1111,
+                        "background": [186, 255, 201]
+                    },
+                    "1|_x_||name|260859|": {
+                        "background": [255, 255, 186]
+                    },
+                    "1|_x_||name|260603|": {
+                        "background": null
+                    },
+                    "for|_y_|0|3": {
+                        "metadata": {
+                            "text": null,
+                            "left": 171,
+                            "width": 34
+                        },
+                        "metadata_step": {
+                            "left": 36
+                        },
+                        "cells": {
+                            "0|_x_|_y_|s|262136|": {
+                                "background": [186, 255, 201]
+                            },
+                            "0|_x_|_y_|s|262132|": {
+                                "background": [255, 255, 186]
+                            },
+                            "0|_x_|_y_|s|262130|": {
+                                "background": null
+                            }
+                        }
+                    },
+                    "for|_y_|0|3&2": {
+                        "metadata": {
+                            "text": null,
+                            "left": 967
+                        },
+                        "metadata_step": {
+                            "left": 36
+                        },
+                        "cells": {
+                            "1|_x_|_y_|s|262136|": {
+                                "background": [186, 255, 201]
+                            },
+                            "1|_x_|_y_|s|262132|": {
+                                "background": [255, 255, 186]
+                            },
+                            "1|_x_|_y_|s|262130|": {
+                                "background": null
+                            }
+                        }
+                    },
+                    "0|_x_||number_throw|262127|": {
+                        "breakIfEmpty": false,
+                        "background": null,
+                        "left": 314,
+                        "width": 32
+                    },
+                    "1|_x_||number_throw|262127|": {
+                        "left": 935
+                    },
+                    "0|_x_||p|262127|": {
+                        "width": 34,
+                        "left": 346
+                    },
+                    "0|_x_||z|262127|": {
+                        "left": 380
+                    },
+                    "0|_x_||s|262127|": {
+                        "left": 434
+                    },
+                    "1|_x_||p|262127|": {
+                        "left": 901
+                    },
+                    "1|_x_||z|262127|": {
+                        "left": 867
+                    },
+                    "1|_x_||s|262127|": {
+                        "left": 813
+                    },
+                    "0|_x_||x|262127|": {
+                        "width": 20,
+                        "left": 414
+                    },
+                    "1|_x_||x|262127|": {
+                        "left": 847
+                    },
+                    "0|_x_||ps|262127|": {
+                        "width": 31,
+                        "left": 468
+                    },
+                    "1|_x_||ps|262127|": {
+                        "left": 782
+                    },
+                    "0|_x_||pd|262127|": {
+                        "width": 23,
+                        "left": 499
+                    },
+                    "1|_x_||pd|262127|": {
+                        "left": 759
+                    }
+                }
+            },
+            "0|||number_throw||": {
+                "top": 140,
+                "left": 314,
+                "width": 32
+            },
+            "1|||number_throw||": {
+                "left": 935
+            },
+            "0|||p||": {
+                "width": 34,
+                "left": 346
+            },
+            "0|||z||": {
+                "left": 380
+            },
+            "0|||s||": {
+                "left": 434
+            },
+            "1|||p||": {
+                "left": 901
+            },
+            "1|||z||": {
+                "left": 867
+            },
+            "1|||s||": {
+                "left": 813
+            },
+            "0|||x||": {
+                "width": 20,
+                "left": 414
+            },
+            "1|||x||": {
+                "left": 847
+            },
+            "0|||ps||": {
+                "width": 31,
+                "left": 468
+            },
+            "1|||ps||": {
+                "left": 782
+            },
+            "0|||pd||": {
+                "left": 587,
+                "top": 113,
+                "width": 45,
+                "height": 25,
+                "max_font_size": 24,
+                "text_align": "right"
+            },
+            "1|||pd||": {
+                "left": 648,
+                "text_align": "left"
+            },
+            "0|||name||": {
+                "background": null,
+                "height": 18,
+                "top": 13,
+                "left": 21,
+                "width": 500,
+                "font_color": [0, 0, 150],
+                "text_align": "center"
+            },
+            "1|||name||": {
+                "left": 759
+            },
+            "0|||different|249855|": {
+                "height": 17,
+                "top": 117,
+                "left": 537,
+                "width": 50,
+                "font_color": [150, 0, 0],
+                "max_font_size": 16,
+                "text_align": "right"
+            },
+            "1|||different|249855|": {
+                "left": 693,
+                "text_align": "left"
+            },
+            "&wynik": {
+                "background": null,
+                "font_color": [0, 0, 150],
+                "text": "WYNIK",
+                "left": 560,
+                "width": 160,
+                "top": 98,
+                "height": 15,
+                "max_font_size": 15,
+                "text_align": "center"
+            },
+            "&:": {
+                "text": ":",
+                "left": 632,
+                "width": 16,
+                "top": 115,
+                "height": 21,
+                "max_font_size": 20
+            }
+        }
+    }
+}

@@ -1,8 +1,8 @@
 {
     "type": "main",
-    "name": "Liga 6 osobowa",
+    "name": "Liga 6  - jasny niebieski",
     "path_to_table": {
-        "63": "main_league_6_light.png"
+        "63": "main_league_6_light_blue.png"
     },
     "background_color": [255, 0, 255],
     "width": 1280,
@@ -15,9 +15,9 @@
     ],
     "cell_in_table": {
         "metadata_default": {
-            "font_path": "ubuntu.ttf",
+            "font_path": "MartianMono_Condensed-Regular.ttf",
             "font_color": [0,0,0],
-            "max_font_size": 15,
+            "max_font_size": 12,
             "left": 0,
             "top": 0,
             "width": 10,
@@ -124,7 +124,7 @@
             },
             "for|_x_|0|5": {
                 "metadata": {
-                    "max_font_size": 13,
+                    "max_font_size": 12,
                     "font_color": [0,0,0],
                     "text": null,
                     "top": 50
@@ -289,34 +289,40 @@
                 "left": 782
             },
             "0|||pd||": {
-                "left": 609,
-                "top": 111,
-                "width": 28,
+                "left": 587,
+                "top": 113,
+                "width": 45,
                 "height": 25,
-                "max_font_size": 25
+                "max_font_size": 24,
+                "text_align": "right"
             },
             "1|||pd||": {
-                "left": 643
+                "left": 648,
+                "text_align": "left"
             },
             "0|||name||": {
+                "max_font_size": 14,
                 "height": 18,
                 "top": 13,
                 "left": 21,
                 "width": 500,
-                "font_color": [0, 0, 150]
+                "text_align": "center"
             },
             "1|||name||": {
                 "left": 759
             },
             "0|||different|249855|": {
                 "height": 17,
-                "top": 115,
-                "left": 542,
-                "width": 67,
-                "font_color": [150, 0, 0]
+                "top": 117,
+                "left": 537,
+                "width": 50,
+                "font_color": [150, 0, 0],
+                "max_font_size": 16,
+                "text_align": "right"
             },
             "1|||different|249855|": {
-                "left": 671
+                "left": 693,
+                "text_align": "left"
             },
             "&wynik": {
                 "font_color": [0, 0, 150],
@@ -325,15 +331,16 @@
                 "width": 160,
                 "top": 98,
                 "height": 15,
-                "max_font_size": 20
+                "max_font_size": 15,
+                "text_align": "center"
             },
             "&:": {
                 "text": ":",
-                "left": 637,
-                "width": 6,
-                "top": 113,
+                "left": 632,
+                "width": 16,
+                "top": 115,
                 "height": 21,
-                "max_font_size": 35
+                "max_font_size": 20
             }
         }
     }

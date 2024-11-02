@@ -10,7 +10,6 @@ class MethodsToDrawOnImage:
         __used_fonts - {<path_font>: {<size_font>: <object font PIL>}} - dictionary with loaded fonts
         __get_font(str, int) -> PIL.ImageFont.FreeTypeFont - zwraca potrzebną czcionkę
 
-        TODO: Dodaj dodawnaie logów
         """
         self.__used_fonts: dict = {}
         self._on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
@@ -91,12 +90,10 @@ class MethodsToDrawOnImage:
         :param height: <int> cell height
         :param align: <str> "center", "right" or "left" - text position in cell
         :return: <Image.Image> cell with added centered text
-        TODO 'x'
         """
         if text == "":
             return img_cell
         color = tuple(color)
-
         draw = ImageDraw.Draw(img_cell)
         while True:
             try:

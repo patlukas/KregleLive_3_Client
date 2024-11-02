@@ -2,7 +2,6 @@ from typing import Callable
 
 from results_manager import ResultsManager
 
-# todo add more logs
 # TODO: Add Comments
 class MessagesInterpreter:
     """

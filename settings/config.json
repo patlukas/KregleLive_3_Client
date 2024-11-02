@@ -2,6 +2,7 @@
     "minimum_number_of_lines_to_write_in_log_file": 1,
     "socket_timeout": 1.0,
     "number_of_lanes": 6,
+    "file_with_game_types": "settings/game_types.json",
     "file_with_licenses_config": "settings/licenses.json",
     "file_with_category_types": "settings/category_types.json",
     "dir_fonts": "tables/fonts/",

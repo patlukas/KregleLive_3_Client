@@ -1,6 +1,5 @@
 """This module read game types from game_types.json"""
 #TODO Add comments
-#TODO: przekaż ścieżkę do pliku config w argumencie, ścieżkę przechowuje w settings
 import json
 import os
 from typing import Literal
@@ -9,8 +8,8 @@ from typing import Literal
 class GameTypesManagerError(Exception):
     """
         List code:
-            13-000 - FileNotFoundError - if game_types.json does not exist
-            13-001 - ValueError - if config.json format is not correct
+            13-000 - FileNotFoundError - if file does not exist
+            13-001 - ValueError - if file's format is not correct
             13-002 - KeyError - if config doesn't have required fields
             13-003 - TypeError - parameter has wrong type
             13-004 - ConditionError - parameter doesn't meet the condition
@@ -24,10 +23,10 @@ class GameTypesManagerError(Exception):
 
 
 class GameTypesManager:
-    def __init__(self):
+    def __init__(self, path_to_game_types: str):
         self.__game_types: dict[str: GameType] = {}
         self.game_type: GameType | None = None
-        loaded_game_types: dict = self.__get_game_types()
+        loaded_game_types: dict = self.__get_game_types(path_to_game_types)
         self.__dict_with_transitions = {}
         self.__check_correctness_data(loaded_game_types)
         self.__check_transitions(loaded_game_types)
@@ -42,15 +41,15 @@ class GameTypesManager:
         return False
 
     @staticmethod
-    def __get_game_types() -> dict:
+    def __get_game_types(path) -> dict:
         try:
-            file = open("settings/game_types.json", encoding='utf8')
+            file = open(path, encoding='utf8')
         except FileNotFoundError:
-            raise GameTypesManagerError("13-000", "Nie znaleziono pliku {}".format(os.path.abspath("settings/game_types.json")))
+            raise GameTypesManagerError("13-000", "Nie znaleziono pliku {}".format(os.path.abspath(path)))
         try:
             data = json.load(file)
         except ValueError:
-            raise GameTypesManagerError("13-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath("settings/game_types.json")))
+            raise GameTypesManagerError("13-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath(path)))
         return data
 
     def __check_correctness_data(self, loaded_game_types: dict):

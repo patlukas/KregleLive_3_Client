@@ -61,6 +61,7 @@ class ConfigReader:
             "dir_instructions_lane",
             "dir_instructions_main",
             "file_with_licenses_config",
-            "file_with_category_types"
+            "file_with_category_types",
+            "file_with_game_types"
         ]
         return list_settings

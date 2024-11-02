@@ -1,3 +1,6 @@
 */*.log
 /tables/img_temporary/*
 /.idea/*
+/build/*
+/dist/*
+*.spec
