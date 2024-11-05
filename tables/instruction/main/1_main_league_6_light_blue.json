@@ -306,12 +306,14 @@
                 "top": 13,
                 "left": 21,
                 "width": 500,
-                "text_align": "center"
+                "text_align": "center",
+                "font_path": "MartianMono_SemiExpanded-ExtraBold.ttf"
             },
             "1|||name||": {
                 "left": 759
             },
             "0|||different|249855|": {
+                "font_path": "MartianMono_Condensed-Regular.ttf",
                 "height": 17,
                 "top": 117,
                 "left": 537,
@@ -325,6 +327,7 @@
                 "text_align": "left"
             },
             "&wynik": {
+                "font_path": "MartianMono_SemiExpanded-ExtraBold.ttf",
                 "font_color": [0, 0, 150],
                 "text": "WYNIK",
                 "left": 560,
@@ -335,6 +338,7 @@
                 "text_align": "center"
             },
             "&:": {
+                "font_path": "MartianMono_Condensed-Regular.ttf",
                 "text": ":",
                 "left": 632,
                 "width": 16,

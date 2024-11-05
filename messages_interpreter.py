@@ -35,7 +35,7 @@ class MessagesInterpreter:
             return
         if not self.__checksum_checker(message):
             self.__number_of_unrecognized_message += 1
-            self.__on_add_log(6, "INT_MINT_CHECKSUM", "", f"Message has invalid checksum: {message}", True)
+            self.__on_add_log(10, "INT_MINT_CHECKSUM", "", f"Message has invalid checksum: {message}", True)
             return
         recipient, sender, content = message[:2], message[2:4], message[4:-2]
         recipient_int, recipient_name = self.__interpret_lane(recipient)
@@ -75,7 +75,7 @@ class MessagesInterpreter:
         elif length == 9 and x == b"s":
             s = "on" if content[1:2] == b"1" else "off"
             self.__on_add_log(0, "INT_LANE_IGNORE", f"IS_{s.upper()}", f"Lane {sender_name} is {s}", False)
-            if content[2:5] != b"000" or content[5:6] not in [b"0", b"1"] or content[6:7] not in [b"0", b"1"] or content[7:9] not in [b"FF", b"38"]:
+            if content[2:4] != b"00" or content[4:5] not in [b"0", b"2"] or content[5:6] not in [b"0", b"1"] or content[6:7] not in [b"0", b"1"] or content[7:9] not in [b"FF", b"38"]:
                 self.__number_of_unrecognized_message += 1
                 self.__on_add_log(9, "INT_LANE_UNKNOWN", "s", f"Unknown message from {sender_name} with content: {content}", True)
         else:
@@ -157,8 +157,12 @@ class MessagesInterpreter:
                       next_arrangements, all_x, time, beaten_arrangements, card, result)
 
     def __set_player_name_if_not_set(self, lane: int, name_bytes: bytes):
-        name = name_bytes.decode("utf-8")
-        self.__results_manager.set_player_name_if_not_set(lane, name)
+        try:
+            name = name_bytes.decode("Windows-1250")
+            self.__results_manager.set_player_name_if_not_set(lane, name)
+        except UnicodeError as e:
+            self.__number_of_unrecognized_message += 1
+            self.__on_add_log(10, "INT_DECODE_ERROR", "", f"Błąd podczas dekodowania nazwy gracza {name_bytes}: {e}", True)
 
     def __bytes2int(self, hex_bytes: bytes) -> int:
         try:
@@ -185,6 +189,7 @@ class MessagesInterpreter:
 
         :param message:
         :return:
+        #TODO Zdarza się z jakiegoś powodu że suma jest "0F" jak przesyłane są np specyficzne imiona np "ĄąŹź" pomimo że wedłuug obliczeń powinna być inna
         """
         message_head, message_tail = message[:-2], message[-2:]
         sum_ascii = 0

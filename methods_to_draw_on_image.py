@@ -24,7 +24,6 @@ class MethodsToDrawOnImage:
         :param font_path: <str> path to font file
         :param font_size: <str> expected font size
         :return: <ImageFont.FreeTypeFont> object with font
-        #TODO sprawdź jakie najczęściej czcioniki są używane, do pokazywania wyników, które zawsze mają ten sam rozmiar
         """
         if font_path in self.__used_fonts and font_size in self.__used_fonts[font_path]:
             return self.__used_fonts[font_path][font_size]

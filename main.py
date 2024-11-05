@@ -23,7 +23,7 @@ from gui.game_type_section import GameTypeSection
 from gui.socket_selection import SocketSelection
 from socket_manager import SocketManager
 
-APP_VERSION = "1.0.2"
+APP_VERSION = "1.0.3"
 
 class WorkerThread(QThread):
     def __init__(self, log_management: LogManagement, socket_manager: SocketManager, messages_interpreter: MessagesInterpreter,
