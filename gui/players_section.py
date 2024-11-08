@@ -112,13 +112,13 @@ class PlayersSectionLeague(QGroupBox):
             old_text = player.currentText()
             player.clear()
             player.addItems(list_players)
-            if team is None:
+            if team is None or old_text in list_players:
                 player.setEditText(old_text)
         for change in column.list_changes:
             old_text = change.player_in.currentText()
             change.player_in.clear()
             change.player_in.addItems(list_players)
-            if team is None:
+            if team is None or old_text in list_players:
                 change.player_in.setEditText(old_text)
 
     def __after_select_team(self, x: _PlayersSectionLeagueTeam):
