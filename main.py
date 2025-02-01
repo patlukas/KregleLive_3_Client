@@ -10,6 +10,7 @@ from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError
 from gui.logs_section import LogsSection
 from gui.players_section import PlayersSectionLeague
+from gui.splash_screen import SplashScreen
 from gui.statistics_section import StatisticsSection
 from log_management import LogManagement
 from config_reader import ConfigReader, ConfigReaderError
@@ -182,7 +183,7 @@ class Main(QWidget):
             self.__layout.addWidget(column1, 0, 0)
             self.__layout.addWidget(column2, 0, 1)
 
-        self.setGeometry(300, 300, 350, 250)
+        self.setGeometry(150, 150, 50, 50)
         self.show()
 
     def __create_menu_bar(self) -> QMenuBar:
@@ -293,7 +294,9 @@ class Main(QWidget):
 
 def main():
     app = QApplication(sys.argv)
+    s = SplashScreen(APP_VERSION)
     ex = Main()
+    s.finish(ex)
     sys.exit(app.exec())
 
 if __name__ == '__main__':
