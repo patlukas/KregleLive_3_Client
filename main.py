@@ -153,7 +153,7 @@ class Main(QWidget):
                 self.__category_type_manager, self.__on_change_category_type,
                 self.__create_table_lane, self.__on_refresh_table_lane,
                 self.__create_table_main, self.__on_refresh_table_main)
-            socket_section = SocketSelection(self.__socket_manager)
+            socket_section = SocketSelection(self.__socket_manager, self.__config["server_ip"], self.__config["server_port"])
             logs_section = LogsSection(self.__log_management)
             self.__statistics_section = StatisticsSection(6)
 

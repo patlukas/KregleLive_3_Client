@@ -76,7 +76,9 @@ class ConfigReader:
             ["file_with_licenses_config", "path"],
             ["file_with_category_types", "path"],
             ["file_with_game_types", "path"],
-            ["loop_interval_ms", "int"]
+            ["loop_interval_ms", "int"],
+            ["server_ip", "str"],
+            ["server_port", "str"]
         ]
         return list_settings
 

@@ -7,9 +7,11 @@ class SocketSelection(QGroupBox):
     """
         TODO: Add comment
     """
-    def __init__(self, socket_manager: SocketManager):
+    def __init__(self, socket_manager: SocketManager, default_ip: str, default_port: str):
         super().__init__("Łączenie z serwerem")
         self.__socket_manager: SocketManager = socket_manager
+        self.__default_ip: str = default_ip
+        self.__default_port: str = default_port
 
         self.__stacked_layout: QStackedLayout = QStackedLayout()
 
@@ -32,9 +34,13 @@ class SocketSelection(QGroupBox):
         self.__timer: QTimer = QTimer()
         self.__layout_to_select_type()
 
+        self.__connect(True)
+
     def __layout_to_select_type(self):
         """."""
         self.__button_connect.clicked.connect(self.__connect)
+        self.__line_ip.returnPressed.connect(self.__connect)
+        self.__line_port.returnPressed.connect(self.__connect)
         self.__layout_connect.addWidget(self.__label_ip, 0, 0, Qt.AlignmentFlag.AlignRight)
         self.__layout_connect.addWidget(self.__line_ip, 0, 1)
         self.__layout_connect.addWidget(self.__label_port, 0, 3, Qt.AlignmentFlag.AlignRight)
@@ -46,6 +52,8 @@ class SocketSelection(QGroupBox):
         self.__layout_connect.setColumnStretch(4, 1)
         self.__widget_connect.setLayout(self.__layout_connect)
         self.__stacked_layout.addWidget(self.__widget_connect)
+        self.__line_ip.setText(self.__default_ip)
+        self.__line_port.setText(self.__default_port)
 
         self.__button_disconnect.clicked.connect(self.__disconnect)
         self.__layout_connected.addWidget(self.__label_connect_ip, 0, 0)
@@ -59,7 +67,7 @@ class SocketSelection(QGroupBox):
 
         self.__timer.timeout.connect(self.__check_connection)
 
-    def __connect(self):
+    def __connect(self, without_failed_msg: bool = False):
         ip, port = self.__line_ip.text(), self.__line_port.text()
         status_code, status_comment = self.__socket_manager.connect(ip, port)
         if status_code == 1:
@@ -69,7 +77,8 @@ class SocketSelection(QGroupBox):
             self.__stacked_layout.setCurrentWidget(self.__widget_connected)
             self.__timer.start(2000)
         else:
-            self.__label_info.setText(status_comment)
+            if not without_failed_msg:
+                self.__label_info.setText(status_comment)
 
     def __disconnect(self):
         self.__socket_manager.disconnect()

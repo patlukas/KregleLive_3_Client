@@ -12,5 +12,7 @@
     "dir_instructions_main": "tables/instruction/main/",
     "file_output_lane": "%TEMP%/KL3/lane.png",
     "file_output_main": "%TEMP%/KL3/main.png",
-    "loop_interval_ms": 250
+    "loop_interval_ms": 250,
+    "server_ip": "127.0.0.1",
+    "server_port": "3000"
 }
