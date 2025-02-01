@@ -1,5 +1,6 @@
 """Module with methods for drawing text on an image."""
 import os
+import shutil
 from typing import Callable
 
 from PIL import ImageFont, ImageDraw, Image
@@ -69,9 +70,8 @@ class MethodsToDrawOnImage:
     def save_image(self, img: Image.Image, path: str):
         #TODO: maybe os.replace will be better and problem with obs will be rarer
         try:
-            img.save(path, "PNG")
-            # img.save(path + "t", "PNG")
-            # os.replace(path + "t", path)
+            img.save(path + "_temp", "PNG")
+            shutil.move(path + "_temp", path)
         except OSError as e:
             self._on_add_log(9, "MDI_SAVE_ERROR", "", f"Nie można zapisać obrazka: {path}: {e}", True)
 
