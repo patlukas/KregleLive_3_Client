@@ -2,6 +2,7 @@
     "type": "main",
     "name": "Liga 6  - jasny niebieski",
     "path_to_table": {
+        "0": "main_league_6_light_blue.png",
         "63": "main_league_6_light_blue.png"
     },
     "background_color": [255, 0, 255],

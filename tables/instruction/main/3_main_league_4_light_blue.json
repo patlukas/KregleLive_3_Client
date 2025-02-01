@@ -1,16 +1,16 @@
 {
     "type": "main",
-    "name": "Liga 6 osobowa",
+    "name": "Liga 4  - jasny niebieski",
     "path_to_table": {
-        "0": "main_league_6_light.png",
-        "63": "main_league_6_light.png"
+        "0": "main_league_4_light_blue.png",
+        "63": "main_league_4_light_blue.png"
     },
     "background_color": [255, 0, 255],
     "width": 1280,
     "height": 170,
     "table_cords": [
         {
-            "top": 0,
+            "top": 30,
             "left": 0
         }
     ],
@@ -123,7 +123,7 @@
             "&throwG": {
                 "left": 935
             },
-            "for|_x_|0|5": {
+            "for|_x_|0|3": {
                 "metadata": {
                     "max_font_size": 12,
                     "font_color": [0,0,0],
@@ -249,7 +249,7 @@
                 }
             },
             "0|||number_throw||": {
-                "top": 140,
+                "top": 110,
                 "left": 314,
                 "width": 32
             },
@@ -291,7 +291,7 @@
             },
             "0|||pd||": {
                 "left": 587,
-                "top": 113,
+                "top": 83,
                 "width": 45,
                 "height": 25,
                 "max_font_size": 24,
@@ -302,20 +302,21 @@
                 "text_align": "left"
             },
             "0|||name||": {
-                "background": null,
+                "max_font_size": 14,
                 "height": 18,
                 "top": 13,
                 "left": 21,
                 "width": 500,
-                "font_color": [0, 0, 150],
-                "text_align": "center"
+                "text_align": "center",
+                "font_path": "MartianMono_SemiExpanded-ExtraBold.ttf"
             },
             "1|||name||": {
                 "left": 759
             },
             "0|||different|249855|": {
+                "font_path": "MartianMono_Condensed-Regular.ttf",
                 "height": 17,
-                "top": 117,
+                "top": 87,
                 "left": 537,
                 "width": 50,
                 "font_color": [150, 0, 0],
@@ -327,21 +328,22 @@
                 "text_align": "left"
             },
             "&wynik": {
-                "background": null,
+                "font_path": "MartianMono_SemiExpanded-ExtraBold.ttf",
                 "font_color": [0, 0, 150],
                 "text": "WYNIK",
                 "left": 560,
                 "width": 160,
-                "top": 98,
+                "top": 68,
                 "height": 15,
                 "max_font_size": 15,
                 "text_align": "center"
             },
             "&:": {
+                "font_path": "MartianMono_Condensed-Regular.ttf",
                 "text": ":",
                 "left": 632,
                 "width": 16,
-                "top": 115,
+                "top": 85,
                 "height": 21,
                 "max_font_size": 20
             }

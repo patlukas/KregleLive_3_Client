@@ -4,6 +4,7 @@
     "path_to_table": {
         <str: str{ścieżka do pliku z tabelą do wpisywania danych}>
         klucze:
+            0 - specjalny tryb - ten template jest wybierany podczas tworzenia obrazu przy uruchomieniu apki
             <1..63> - status na torze - przydatne przy tworzeniu
     },
     "background_color": <list[int, int, int]: kolor tła (płótna) na którym będą umieszczone tabele, w formacie BGR>

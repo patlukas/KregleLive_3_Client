@@ -128,6 +128,8 @@ class Main(QWidget):
                                                        self.__config["dir_instructions_lane"],
                                                        self.__config["number_of_lanes"],
                                                        self.__log_management.add_log)
+            self.__on_refresh_tables()
+
         except ConfigReaderError as e:
             self.__log_management.add_log(10, "CNF_READ_ERROR", e.code, e.message, True)
         except GameTypesManagerError as e:
@@ -146,11 +148,11 @@ class Main(QWidget):
         if self.__player_licenses is None or self.__category_type_manager is None or self.__socket_manager is None or self.__game_type_manager is None or self.__create_table_main is None or self.__create_table_lane is None:
             self.__layout.addWidget(logs_section)
         else:
-            game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type)
+            game_type_selection = GameTypeSection(self.__game_type_manager, self.__on_select_game_type, self.__on_refresh_tables)
             settings_section = SettingsSection(
                 self.__category_type_manager, self.__on_change_category_type,
-                self.__create_table_lane, self.__on_change_table_lane,
-                self.__create_table_main, self.__on_change_table_main)
+                self.__create_table_lane, self.__on_refresh_table_lane,
+                self.__create_table_main, self.__on_refresh_table_main)
             socket_section = SocketSelection(self.__socket_manager)
             logs_section = LogsSection(self.__log_management)
             self.__statistics_section = StatisticsSection(6)
@@ -257,7 +259,7 @@ class Main(QWidget):
         self.__statistics_section.set_messages_interpreter(self.__message_interpreter)
 
         if game_type.type == "league":
-            self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses)
+            self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
         elif game_type.type == "classic":
             self.__player_section = None # TODO
 
@@ -266,15 +268,21 @@ class Main(QWidget):
         self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
                                      self.__create_table_main, self.__create_table_lane, self.__config["loop_interval_ms"])
 
-    def __on_change_table_lane(self):
+    def __on_refresh_table_lane(self):
         if self.__thread is None:
+            self.__create_table_lane.make_table()
             return
         self.__thread.create_table_lane()
 
-    def __on_change_table_main(self):
+    def __on_refresh_table_main(self):
         if self.__thread is None:
+            self.__create_table_main.make_table()
             return
         self.__thread.create_table_main()
+
+    def __on_refresh_tables(self):
+        self.__on_refresh_table_lane()
+        self.__on_refresh_table_main()
 
     def __on_change_category_type(self):
         self.__player_licenses.set_category_type(self.__category_type_manager.get_selected_category_type())

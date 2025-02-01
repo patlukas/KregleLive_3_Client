@@ -45,21 +45,29 @@ class _CreateResultTable(MethodsToDrawOnImage):
         return return_list
 
     def make_table(self):
-        if self.__instructions_index >= len(self.__instructions) or self.__get_results is None:
+        if self.__instructions_index >= len(self.__instructions):
             return None
-        instruction = self.__instructions[self.__instructions_index]
 
-        new_list_results: list[dict | None] | None = self.__get_results(instruction.list_of_cell_names)
+        instruction = self.__instructions[self.__instructions_index]
         [width, height, background] = instruction.get_background_settings()
         final_img = self.create_img(width, height, background)
-        if new_list_results is not None:
-            for i, results in enumerate(new_list_results):
-                if results is not None:
-                    table = self.__make_single_table(instruction, results, i)
-                    if table is None:
-                        continue
-                    [left, top] = instruction.list_table_cords[i]
+
+        if self.__get_results is not None:
+            new_list_results: list[dict | None] | None = self.__get_results(instruction.list_of_cell_names)
+            if new_list_results is not None:
+                for i, results in enumerate(new_list_results):
+                    if results is not None:
+                        table = self.__make_single_table(instruction, results, i)
+                        if table is None:
+                            continue
+                        [left, top] = instruction.list_table_cords[i]
+                        final_img = self.paste_img(final_img, table, left, top)
+        else:
+            for i, [left, top] in enumerate(instruction.list_table_cords):
+                _, table = instruction.get_img_template("0")
+                if table is not None:
                     final_img = self.paste_img(final_img, table, left, top)
+
         self.save_image(final_img, self.__output_path)
 
     def __load_instructions(self, table_type: str, dir_instruction: str, dir_template: str) -> list[TableInstruction]:

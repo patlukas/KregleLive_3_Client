@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QGroupBox, QGridLayout, QLabel, QStackedLayout, QComboBox, QPushButton, QLineEdit
+from collections.abc import Callable
 
 from game_type_manager import GameType
 from player_licenses import PlayerLicenses
@@ -25,8 +26,10 @@ class PlayersSectionLeague(QGroupBox):
     """
         TODO: Add comment
     """
-    def __init__(self, results_manager: ResultsManager, game_type: GameType, player_licenses: PlayerLicenses):
+    def __init__(self, results_manager: ResultsManager, game_type: GameType, player_licenses: PlayerLicenses,
+                 on_refresh_tables: Callable[[], None]):
         super().__init__("Ustawianie nazw")
+        self.__on_refresh_tables: Callable[[], None] = on_refresh_tables
         self.__results_manager: ResultsManager = results_manager
         self.__player_licenses: PlayerLicenses = player_licenses
 
@@ -144,3 +147,4 @@ class PlayersSectionLeague(QGroupBox):
                     list_players[index].append((player_in, throw_int))
             for i, player in enumerate(list_players):
                 self.__results_manager.set_player_list_name(team_index, i, player)
+        self.__on_refresh_tables()

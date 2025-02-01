@@ -1,6 +1,5 @@
 from collections.abc import Callable
-from PyQt6.QtWidgets import QWidget, QPushButton, QGroupBox, QGridLayout, QLabel, QLineEdit, QStackedLayout, QComboBox, \
-    QMessageBox
+from PyQt6.QtWidgets import QPushButton, QGroupBox, QGridLayout, QLabel, QLineEdit, QStackedLayout, QComboBox, QMessageBox
 
 from game_type_manager import GameTypesManager
 
@@ -9,10 +8,11 @@ class GameTypeSection(QGroupBox):
     """
         TODO: Add comment
     """
-    def __init__(self, game_type_manager: GameTypesManager, on_selected_game_type: Callable[[], None]):
+    def __init__(self, game_type_manager: GameTypesManager, on_selected_game_type: Callable[[], None], on_refresh_tables: Callable[[], None]):
         super().__init__("Rodzaj gry")
         self.__game_type_manager: GameTypesManager = game_type_manager
         self.__on_after_selected_game_type: Callable[[], None] = on_selected_game_type
+        self.__on_refresh_tables: Callable[[], None] = on_refresh_tables
 
         self.__stacked_layout: QStackedLayout = QStackedLayout()
 
@@ -56,6 +56,4 @@ class GameTypeSection(QGroupBox):
             self.__layout.addWidget(self.__label_game_type, 0, 1)
             self.__button_select.setParent(None)
             self.__combo_game_type.setParent(None)
-
-    # def __connect(self):
-
+            self.__on_refresh_tables()

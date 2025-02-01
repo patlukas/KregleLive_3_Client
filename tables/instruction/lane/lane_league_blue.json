@@ -2,6 +2,7 @@
     "type": "lane",
     "name": "Tabelki ligowe niebieskie",
     "path_to_table": {
+        "0": "lane_game_blue2.png",
         "3": "lane_trial_blue2.png",
         "4": "lane_trial_blue2_end.png",
         "24": "lane_game_blue2.png",
