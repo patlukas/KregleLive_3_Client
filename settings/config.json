@@ -10,6 +10,7 @@
     "dir_template_main": "tables/img_template/main/",
     "dir_instructions_lane": "tables/instruction/lane/",
     "dir_instructions_main": "tables/instruction/main/",
-    "file_output_lane": "tables/img_temporary/lane.png",
-    "file_output_main": "tables/img_temporary/main.png"
+    "file_output_lane": "%TEMP%/KL3/lane.png",
+    "file_output_main": "%TEMP%/KL3/main.png",
+    "loop_interval_ms": 250
 }

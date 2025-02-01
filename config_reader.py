@@ -1,6 +1,7 @@
 """This module read configuration from config.json"""
 import json
 import os
+from typing import Callable
 
 class ConfigReaderError(Exception):
     """
@@ -17,11 +18,19 @@ class ConfigReaderError(Exception):
 
 
 class ConfigReader:
+    def __init__(self, on_add_log: Callable[[int, str, str, str, bool], None]):
+        """
+
+        :param on_add_log:
+        """
+        self.__on_add_log: Callable[[int, str, str, str, bool], None] = on_add_log
+
     def get_configuration(self) -> dict:
         """
         This method get configuration from config.json
 
         :return: dict with config
+        :logs:  CNF_PATH_NOTEXISTED (7), CNF_READ (2), CNF_PATH_OK (1)
         :raises:
             ConfigReaderError
                 12-000 - FileNotFoundError - if config.json does not exist
@@ -37,9 +46,13 @@ class ConfigReader:
         except ValueError:
             raise ConfigReaderError("12-001", "Niewłaściwy format danych w pliku {}".format(os.path.abspath(
                 "settings/config.json")))
-        for key in self.__get_required_config_settings():
+        for key, val_type in self.__get_required_config_settings():
             if key not in data:
                 raise ConfigReaderError("12-002", "KeyError - W pliku config.json nie ma: " + key)
+            if val_type == "path":
+                data[key] = os.path.expandvars(data[key])
+                self.__check_path(data[key])
+        self.__on_add_log(2, "CNF_READ", "", "Pobrano konfigurację", False)
         return data
 
     @staticmethod
@@ -50,18 +63,29 @@ class ConfigReader:
         :return: list of required key names that must be in config.json
         """
         list_settings = [
-            "minimum_number_of_lines_to_write_in_log_file",
-            "socket_timeout",
-            "number_of_lanes",
-            "dir_fonts",
-            "dir_template_lane",
-            "dir_template_main",
-            "file_output_lane",
-            "file_output_main",
-            "dir_instructions_lane",
-            "dir_instructions_main",
-            "file_with_licenses_config",
-            "file_with_category_types",
-            "file_with_game_types"
+            ["minimum_number_of_lines_to_write_in_log_file", "int"],
+            ["socket_timeout", "float"],
+            ["number_of_lanes", "int"],
+            ["dir_fonts", "path"],
+            ["dir_template_lane", "path"],
+            ["dir_template_main", "path"],
+            ["file_output_lane", "path"],
+            ["file_output_main", "path"],
+            ["dir_instructions_lane", "path"],
+            ["dir_instructions_main", "path"],
+            ["file_with_licenses_config", "path"],
+            ["file_with_category_types", "path"],
+            ["file_with_game_types", "path"],
+            ["loop_interval_ms", "int"]
         ]
         return list_settings
+
+    def __check_path(self, path: str) -> None:
+        if not os.path.exists(path):
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
+            with open(path, "w") as f:
+                pass
+            self.__on_add_log(7, "CNF_PATH_NOTEXISTED", "", f"Nie istniałą ścieżka: {path}", True)
+        else:
+            self.__on_add_log(1, "CNF_PATH_OK", "", f"Ścieżka poprawna: {path}", True)

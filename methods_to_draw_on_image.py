@@ -1,5 +1,4 @@
 """Module with methods for drawing text on an image."""
-import os
 import shutil
 from typing import Callable
 
@@ -67,13 +66,22 @@ class MethodsToDrawOnImage:
             background = tuple(background)
         return Image.new("RGB", (width, height), background)
 
-    def save_image(self, img: Image.Image, path: str):
-        #TODO: maybe os.replace will be better and problem with obs will be rarer
+    def save_image(self, img: Image.Image, path: str) -> bool:
+        """
+        Method to save image in os.
+        First, the image is saved to a temporary location and then replaced in the appropriate location.
+
+        :param img: <Image.Image> image
+        :param path: <str> path to place where file should be saved
+        :return: <bool> was success or not
+        """
         try:
             img.save(path + "_temp", "PNG")
             shutil.move(path + "_temp", path)
+            return True
         except OSError as e:
             self._on_add_log(9, "MDI_SAVE_ERROR", "", f"Nie można zapisać obrazka: {path}: {e}", True)
+            return False
 
     def draw_text_in_cell(self, img_cell: Image.Image, text: str, max_font_size: int, font_path: str,
                           color: tuple | list, width: int, height: int, align: str) -> Image.Image:

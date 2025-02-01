@@ -27,7 +27,7 @@ APP_VERSION = "1.0.3"
 
 class WorkerThread(QThread):
     def __init__(self, log_management: LogManagement, socket_manager: SocketManager, messages_interpreter: MessagesInterpreter,
-                 create_table_main: CreateTableMain, create_table_lane: CreateTableLane):
+                 create_table_main: CreateTableMain, create_table_lane: CreateTableLane, loop_interval: int):
         super().__init__()
         self.__log_management: LogManagement = log_management
         self.__socket_manager: SocketManager = socket_manager
@@ -35,6 +35,7 @@ class WorkerThread(QThread):
         self.__create_table_main: CreateTableMain = create_table_main
         self.__create_table_lane: CreateTableLane = create_table_lane
         self.__running: bool = False
+        self.__loop_time_interval: int = loop_interval
 
     def run(self):
         self.__log_management.add_log(7, "LOOP_START", "", "Uruchomiono pętlę główną aplikacji", False)
@@ -48,7 +49,7 @@ class WorkerThread(QThread):
                     self.__message_interpreter.interpret_messages()
                     self.create_table_lane()
                     self.create_table_main()
-            self.msleep(250)
+            self.msleep(self.__loop_time_interval)
 
     def stop(self):
         self.__log_management.add_log(7, "LOOP_STOP", "", "Zatrzymano pętlę główną aplikacji", False)
@@ -102,13 +103,12 @@ class Main(QWidget):
         """
 
         :return:
-        :logs:  CNF_READ_ERROR (10), CNF_READ (2), START (0)
+        :logs:  CNF_READ_ERROR (10), CNF_PATH_NOTEXISTED (7), CNF_READ (2), CNF_PATH_OK (1), START (0),
         """
         self.__log_management = LogManagement()
         self.__log_management.add_log(0, "START", "", "Aplikacja została uruchomiona", False)
         try:
-            self.__config = ConfigReader().get_configuration()
-            self.__log_management.add_log(2, "CNF_READ", "", "Pobrano konfigurację", False)
+            self.__config = ConfigReader(self.__log_management.add_log).get_configuration()
             self.__log_management.set_minimum_number_of_lines_to_write(self.__config["minimum_number_of_lines_to_write_in_log_file"])
             self.__player_licenses = PlayerLicenses(self.__config["file_with_licenses_config"], self.__log_management.add_log)
             self.__category_type_manager = CategoryTypesManager(self.__config["file_with_category_types"])
@@ -264,7 +264,7 @@ class Main(QWidget):
         self.__column2_layout.addWidget(self.__player_section, 4, 0)
 
         self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
-                                     self.__create_table_main, self.__create_table_lane)
+                                     self.__create_table_main, self.__create_table_lane, self.__config["loop_interval_ms"])
 
     def __on_change_table_lane(self):
         if self.__thread is None:
@@ -281,6 +281,7 @@ class Main(QWidget):
         if self.__player_section is None:
             return
         self.__player_section.load_data_from_new_category()
+
 
 def main():
     app = QApplication(sys.argv)
