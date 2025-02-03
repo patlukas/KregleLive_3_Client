@@ -14,7 +14,7 @@
         "only_valid": true,
         "with_loaned": true
     },
-    "Zawody seniorskie": {
+    "Turniej seniorski": {
         "list_category": ["Junior", "Mężczyzna", "Juniorka", "Kobieta"],
         "only_valid": true,
         "with_loaned": false

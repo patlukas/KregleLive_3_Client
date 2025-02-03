@@ -27,15 +27,16 @@ class CategoryType:
 
 class CategoryTypesManager:
     def __init__(self, path_to_category_type: str):
+        self.__NO_FILTER_KEY = "Wszyscy"
         self.__category_types: dict[str: CategoryType] = {}
         loaded_game_types: dict = self.__get_category_types(path_to_category_type)
         self.__check_correctness_data(loaded_game_types)
         for key, value in loaded_game_types.items():
             self.__category_types[key] = CategoryType(key, value["list_category"], value["only_valid"], value["with_loaned"])
-        self.__selected_key: str = ""
+        self.__selected_key: str = self.__NO_FILTER_KEY
 
     def get_list_category_type_name(self) -> list[str]:
-        return [""] + list(self.__category_types.keys())
+        return [self.__NO_FILTER_KEY] + list(self.__category_types.keys())
 
     def get_selected_category_type(self) -> CategoryType | None:
         if self.__selected_key in self.__category_types:
@@ -47,6 +48,9 @@ class CategoryTypesManager:
             return False
         self.__selected_key = category_type_name
         return True
+
+    def get_selected_key(self) -> str:
+        return self.__selected_key
 
     @staticmethod
     def __get_category_types(path_to_category_type: str) -> dict:
@@ -62,8 +66,8 @@ class CategoryTypesManager:
 
     def __check_correctness_data(self, loaded_game_types: dict):
         for k, v in loaded_game_types.items():
-            if k == "":
-                raise CategoryTypesManagerError("16-004", f"Name of category type can't be empty")
+            if k == self.__NO_FILTER_KEY:
+                raise CategoryTypesManagerError("16-004", f"Name of category type can't be '{self.__NO_FILTER_KEY}' - it is reserved name")
             self.__check_value(k, v, "list_category", list, )
             self.__check_value(k, v, "only_valid", bool, )
             self.__check_value(k, v, "with_loaned", bool, )

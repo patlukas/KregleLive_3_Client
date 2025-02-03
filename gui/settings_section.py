@@ -23,10 +23,9 @@ class SettingsSection(QGroupBox):
         self.__stacked_layout: QStackedLayout = QStackedLayout()
 
         self.__layout = QGridLayout()
-        self.__label_category: QLabel = QLabel("Klasa zawodów:")
+        self.__label_category: QLabel = QLabel("Filtr zawodników:")
         self.__combo_category: QComboBox = QComboBox()
         self.__button_category: QPushButton = QPushButton("Wybierz")
-
 
         self.__label_lane: QLabel = QLabel("Tabelki z wynikami na torach:")
         self.__combo_lane: QComboBox = QComboBox()
@@ -47,7 +46,9 @@ class SettingsSection(QGroupBox):
         self.__layout.addWidget(self.__combo_main, 2, 2, 1, 2)
 
         self.__combo_category.addItems(self.__category_type_manager.get_list_category_type_name())
+        self.__combo_category.currentIndexChanged.connect(self.__check_is_new_category)
         self.__button_category.clicked.connect(self.__on_change_category)
+        self.__button_category.setEnabled(False)
 
         self.__combo_lane.addItems(self.__create_table_lane.get_list_instructions_name())
         self.__combo_lane.currentTextChanged.connect(self.__on_change_lane)
@@ -57,10 +58,18 @@ class SettingsSection(QGroupBox):
 
         self.setLayout(self.__layout)
 
+    def __check_is_new_category(self):
+        selected_key = self.__combo_category.currentText()
+        if self.__category_type_manager.get_selected_key() == selected_key:
+            self.__button_category.setEnabled(False)
+        else:
+            self.__button_category.setEnabled(True)
+
     def __on_change_category(self):
         selected_option = self.__combo_category.currentText()
         if self.__category_type_manager.select_category_type(selected_option):
             self.__on_after_change_category_type()
+        self.__button_category.setEnabled(False)
 
     def __on_change_lane(self):
         index_selected_option = self.__combo_lane.currentIndex()
