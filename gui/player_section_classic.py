@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QGroupBox, QLabel, QPushButton, QComboBox, QGridLayout
+from PyQt6.QtWidgets import QGroupBox, QLabel, QPushButton, QComboBox, QGridLayout, QLineEdit, QHBoxLayout, QWidget
 from collections.abc import Callable
+from PyQt6.QtCore import Qt
 
 from game_type_manager import GameType
 from player_licenses import PlayerLicenses
@@ -24,43 +25,104 @@ class _SectionChooseTransition(QGroupBox):
 
 
 class _SectionSetName(QGroupBox):
-    def __init__(self, name: str, number_player: int, on_save_names: Callable[[list[str]], None], on_get_names: Callable[[], None | list[str]]):
+    def __init__(self, name: str, number_player: int, with_previous_result: bool,
+                 on_save_players_data: Callable[[list[tuple[str, int]]], None],
+                 on_get_players_data: Callable[[], None | list[tuple[str, int]]]):
         super().__init__(name)
-        self.__on_save_names: Callable[[list[str]], None] = on_save_names
-        self.__on_get_names: Callable[[], None | list[str]] = on_get_names
-        self.__list_row: list[tuple[QLabel, QComboBox]] = []
-        self.__btn: QPushButton = QPushButton("Zapisz")
-        self.__btn.clicked.connect(self.__on_save)
+        self.__on_save_players_data: Callable[[list[tuple[str, int]]], None] = on_save_players_data
+        self.__on_get_players_data: Callable[[], None | list[tuple[str, int]]] = on_get_players_data
+        self.__with_previous_result: bool = with_previous_result
+        self.__list_row: list[tuple[QLabel, QComboBox, QLineEdit]] = []
+        self.__buttons: QWidget = QWidget()
+        layout_buttons: QHBoxLayout = QHBoxLayout()
+        self.__buttons.setLayout(layout_buttons)
+        self.__btn_save: QPushButton = QPushButton("Zapisz")
+        self.__btn_save.clicked.connect(self.__on_save)
+        self.__btn_cancel: QPushButton = QPushButton("Anuluj")
+        self.__btn_cancel.clicked.connect(self.load_players_data)
+        layout_buttons.addWidget(self.__btn_save)
+        layout_buttons.addWidget(self.__btn_cancel)
         self.__layout = QGridLayout()
+        self.__number_players = number_player
+
+        label_name = QLabel("Nazwisko i imię")
+        label_name.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.__layout.addWidget(label_name, 0, 1)
+
+        if self.__with_previous_result:
+            label_previous_result = QLabel("Wynik eliminacji")
+            label_previous_result.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.__layout.addWidget(label_previous_result, 0, 2)
 
         for i in range(number_player):
-            l = QLabel(f"Tor {i+1}")
-            d: QComboBox = QComboBox()
-            d.setEditable(True)
-            self.__layout.addWidget(l, i, 0)
-            self.__layout.addWidget(d, i, 1)
-            self.__list_row.append((l, d))
-
-        self.__layout.addWidget(self.__btn, number_player, 1)
+            label = QLabel(f"Tor {i+1}")
+            dropdown: QComboBox = QComboBox()
+            line_previous_result: QLineEdit = QLineEdit()
+            dropdown.setEditable(True)
+            self.__layout.addWidget(label, i+1, 0)
+            self.__layout.addWidget(dropdown, i+1, 1)
+            if self.__with_previous_result:
+                line_previous_result.setFixedWidth(85)
+                self.__layout.addWidget(line_previous_result, i+1, 2)
+            dropdown.currentIndexChanged.connect(self.__check_is_new_value)
+            dropdown.currentTextChanged.connect(self.__check_is_new_value)
+            line_previous_result.textChanged.connect(self.__check_is_new_value)
+            self.__list_row.append((label, dropdown, line_previous_result))
+        self.__layout.addWidget(self.__buttons, self.__number_players + 1, 1)
+        self.__on_disable_buttons()
         self.setLayout(self.__layout)
 
     def refresh_list_players(self, list_players):
-        for _, dropdown in self.__list_row:
+        buttons_is_visible = self.__buttons.isVisible()
+        for _, dropdown, _ in self.__list_row:
+            name = dropdown.currentText()
             dropdown.clear()
             dropdown.addItems(list_players)
+            dropdown.setCurrentText(name)
+        if not buttons_is_visible:
+            self.__on_disable_buttons()
 
     def __on_save(self):
-        list_name = []
-        for _, dropdown in self.__list_row:
-            list_name.append(dropdown.currentText())
-        self.__on_save_names(list_name)
+        list_player_data = []
+        for _, dropdown, line_previous_result in self.__list_row:
+            name = dropdown.currentText()
+            previous_result = line_previous_result.text()
+            try:
+                previous_result_int = int(previous_result)
+            except (ValueError, TypeError):
+                previous_result_int = 0
+            list_player_data.append((name, previous_result_int))
+        self.__on_save_players_data(list_player_data)
+        self.__on_disable_buttons()
 
     def load_players_data(self):
-        list_name = self.__on_get_names()
-        if list_name is None:
+        list_player_data: list[tuple[str, int]] = self.__on_get_players_data()
+        if list_player_data is None:
             return
-        for i, name in enumerate(list_name):
+        for i, [name, previous_result] in enumerate(list_player_data):
             self.__list_row[i][1].setCurrentText(name)
+            self.__list_row[i][2].setText(str(previous_result))
+        self.__on_disable_buttons()
+
+    def __on_disable_buttons(self):
+        self.__btn_save.setEnabled(False)
+        self.__btn_cancel.setEnabled(False)
+
+    def __on_enable_buttons(self):
+        self.__btn_save.setEnabled(True)
+        self.__btn_cancel.setEnabled(True)
+
+    def __check_is_new_value(self):
+        list_player_data: list[tuple[str, int]] = self.__on_get_players_data()
+        if list_player_data is None:
+            return
+        for i, [name, previous_result] in enumerate(list_player_data):
+            name_in_form = self.__list_row[i][1].currentText()
+            previous_result_in_form = self.__list_row[i][2].text()
+            if name != name_in_form or str(previous_result) != previous_result_in_form:
+                self.__on_enable_buttons()
+                return
+        self.__on_disable_buttons()
 
 
 class PlayersSectionClassic(QGroupBox):
@@ -76,19 +138,22 @@ class PlayersSectionClassic(QGroupBox):
         self.__transitions: list[str] = game_type.get_list_transitions_name()
         self.__default_transitions: str = game_type.default_transitions
         self.__number_player_in_period: int = game_type.number_player_in_team_in_period
+        self.__with_previous_result: bool = game_type.with_previous_result
 
 
         self.__section_next_set_name: _SectionSetName = _SectionSetName(
             "Następny blok",
             self.__number_player_in_period,
-            lambda list_name: self.__set_players_names_in_relative_block(1, list_name),
-            lambda: self.__get_players_names_in_relative_block(1)
+            self.__with_previous_result,
+            lambda list_player_data: self.__set_players_data_in_relative_block(1, list_player_data),
+            lambda: self.__get_players_data_in_relative_block(1)
         )
         self.__section_now_set_name: _SectionSetName = _SectionSetName(
             "Aktualny blok",
             self.__number_player_in_period,
-            lambda list_name: self.__set_players_names_in_relative_block(0, list_name),
-            lambda: self.__get_players_names_in_relative_block(0)
+            self.__with_previous_result,
+            lambda list_player_data: self.__set_players_data_in_relative_block(0, list_player_data),
+            lambda: self.__get_players_data_in_relative_block(0)
         )
         self.__section_next_select_block: _SectionChooseTransition = _SectionChooseTransition("Następny blok", self.__transitions, self.__select_transition)
 
@@ -132,17 +197,18 @@ class PlayersSectionClassic(QGroupBox):
         self.__section_now_set_name.refresh_list_players(list_payers)
         self.__section_next_set_name.refresh_list_players(list_payers)
 
-    def __set_players_names_in_relative_block(self, relative_block: int, list_name: list[str]) -> None:
-        for i, name in enumerate(list_name):
-            r = self.__results_manager.set_player_name_in_relative_block(0, i, relative_block, name)
-            print(i, name, relative_block, r)
+    def __set_players_data_in_relative_block(self, relative_block: int, list_data: list[tuple[str, int]]) -> None:
+        for i, [name, previous_sum] in enumerate(list_data):
+            self.__results_manager.set_player_name_in_relative_block(0, i, relative_block, name)
+            self.__results_manager.set_player_previous_sum_in_relative_block(0, i, relative_block, previous_sum)
+        self.__on_refresh_tables()
 
-    def __get_players_names_in_relative_block(self, relative_block: int) -> list[str] | None:
-        list_name = []
+    def __get_players_data_in_relative_block(self, relative_block: int) -> list[tuple[str, int]] | None:
+        list_data = []
         for i in range(self.__number_player_in_period):
             name = self.__results_manager.get_player_name_in_relative_block(0, i, relative_block)
-            if name is None:
+            previous_sum = self.__results_manager.get_player_previous_sum_in_relative_block(0, i, relative_block)
+            if name is None or previous_sum is None:
                 return None
-            list_name.append(name)
-        return list_name
-
+            list_data.append((name, previous_sum))
+        return list_data

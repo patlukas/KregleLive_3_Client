@@ -134,6 +134,15 @@ class ResultsContainer:
         """
         self.teams[who[0]].players[who[1]].previous_sum = previous_sum
 
+    def get_player_previous_sum(self, who: tuple[int, int]) -> int:
+        """
+        This method gets the previous sum e.g. the result from the elimination
+
+        :param who: <tuple(int: number_team, int: number_player)>
+        :return: int
+        """
+        return self.teams[who[0]].players[who[1]].previous_sum
+
     def set_team_name(self, team: int, name: str) -> None:
         """
         This method sets the team name
