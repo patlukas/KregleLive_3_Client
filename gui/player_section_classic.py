@@ -62,13 +62,13 @@ class _SectionSetName(QGroupBox):
             self.__layout.addWidget(label, i+1, 0)
             self.__layout.addWidget(dropdown, i+1, 1)
             if self.__with_previous_result:
-                line_previous_result.setFixedWidth(85)
+                line_previous_result.setFixedWidth(90)
                 self.__layout.addWidget(line_previous_result, i+1, 2)
             dropdown.currentIndexChanged.connect(self.__check_is_new_value)
             dropdown.currentTextChanged.connect(self.__check_is_new_value)
             line_previous_result.textChanged.connect(self.__check_is_new_value)
             self.__list_row.append((label, dropdown, line_previous_result))
-        self.__layout.addWidget(self.__buttons, self.__number_players + 1, 1)
+        self.__layout.addWidget(self.__buttons, self.__number_players + 1, 0, 1, 3)
         self.__on_disable_buttons()
         self.setLayout(self.__layout)
 
