@@ -145,7 +145,7 @@ class ResultsContainerPlayer:
             if stat == "name_now_playing_player":
                 return self.list_name[-1][0]
             if stat == "name":
-                return self.__get_name()
+                return self.get_name()
             if stat == "previous_sum":
                 return str(self.previous_sum)
             if stat == "total_sum":
@@ -195,7 +195,7 @@ class ResultsContainerPlayer:
                 sum_v += v
         return sum_v
 
-    def __get_name(self) -> str:
+    def get_name(self) -> str:
         """
         This method return player name, i more then one player was playing, give first letter of firstname and surname, and separate players by "/"
 

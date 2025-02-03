@@ -108,7 +108,7 @@ class ResultsContainer:
         """
         This method sets the player name
 
-        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param who: <tuple(int: number_team, int: number_player)>
         :param name: <str> player name
         :return: None
         """
@@ -118,7 +118,7 @@ class ResultsContainer:
         """
         This method set player name or player's if was playing more than one player
 
-        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param who: <tuple(int: number_team, int: number_player)>
         :param list_name: <list[tuple[str, int]]> player name and throw number when he started playing
         :return: None
         """
@@ -128,7 +128,7 @@ class ResultsContainer:
         """
         This method sets the previous sum e.g. the result from the elimination
 
-        :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
+        :param who: <tuple(int: number_team, int: number_player)>
         :param previous_sum: <int> e.g. the result from the elimination
         :return: None
         """
@@ -185,6 +185,15 @@ class ResultsContainer:
         :return: <str> "" or value
         """
         return self.teams[int(team)].get_stat(player, lane, stat, option)
+
+    def get_player_name(self, who: tuple[int, int]) -> str:
+        """
+        This method gets the player name
+
+        :param who: <tuple(int: number_team, int: number_player)>
+        :return: str
+        """
+        return self.teams[who[0]].players[who[1]].get_name()
 
 
 class ResultsContainerLeague(ResultsContainer):

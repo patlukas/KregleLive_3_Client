@@ -9,7 +9,8 @@ from category_type_manager import CategoryTypesManager, CategoryTypesManagerErro
 from create_result_table import CreateTableMain, CreateTableLane
 from game_type_manager import GameTypesManager, GameTypesManagerError
 from gui.logs_section import LogsSection
-from gui.players_section import PlayersSectionLeague
+from gui.player_section_classic import PlayersSectionClassic
+from gui.players_section_league import PlayersSectionLeague
 from gui.splash_screen import SplashScreen
 from gui.statistics_section import StatisticsSection
 from log_management import LogManagement
@@ -262,7 +263,8 @@ class Main(QWidget):
         if game_type.type == "league":
             self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
         elif game_type.type == "classic":
-            self.__player_section = None # TODO
+            self.__player_section = PlayersSectionClassic(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
+            self.__results_manager.add_function_wait_to_new_block(self.__player_section.on_after_new_block)
 
         self.__column2_layout.addWidget(self.__player_section, 4, 0)
 

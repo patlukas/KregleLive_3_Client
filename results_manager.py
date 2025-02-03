@@ -38,7 +38,8 @@ class ResultsManager:
         self.__round: int = -1
         self.__status_on_lanes: list[list[int] | None] = [([] if l == 1 else None) for l in game_type.lanes]
         self.__results_container.init_struct(self.__game_type.number_team, self.__game_type.number_player_in_team_in_period)
-        if self.__game_type.type == "league":
+        self.__functions_wait_to_new_block: list[Callable] = []
+        if self.__game_type.type == "league": # TODO Przenieś to do PlayerSectionLEague
             for _ in range(self.__game_type.number_periods):
                 self.add_block("")
 
@@ -146,7 +147,8 @@ class ResultsManager:
                 self.__block_number += 1
                 self.__block_is_running = True
                 self.__on_add_log(3, "RST_BLOCK_NEW", f"", f"Rozpoczęto blok numer {self.__block_number + 1} na wszystkich torach", True)
-
+                for f in self.__functions_wait_to_new_block:
+                    f()
 
     def __check_end_block(self) -> bool:
         """
@@ -308,7 +310,7 @@ class ResultsManager:
         :return: False | tuple[int, tuple[int, int, int]] in tuple -> status on lane, and (team_index, player_index, lane_index)
                 if lane_index == -1 it means on lane is trial
         """
-        if self.__block_number == self.__game_type.number_periods - 1 and not self.__block_is_running:
+        if self.__block_number == self.__game_type.number_periods and not self.__block_is_running:
             return False
         status_on_lane = self.__status_on_lanes[lane]
         if status_on_lane is None or len(status_on_lane) == 0:
@@ -401,3 +403,37 @@ class ResultsManager:
         :return: dict - team/player/lane statistics
         """
         return [self.__results_container.get_dict_with_results(list_of_result_names, (0, 0, 0), 0)]
+
+    def get_number_of_blocks(self) -> int:
+        return len(self.__list_of_blocks)
+
+    def add_function_wait_to_new_block(self, func: Callable):
+        self.__functions_wait_to_new_block.append(func)
+
+    def get_player_name_in_relative_block(self, team: int, player: int, relative_block: int) -> str | None:
+        """
+        :param team: <int> team number
+        :param player: <int> relative player number (player in block)
+        :param relative_block: <int> 0 - actual block, -1 - previous block, 1 - next block
+        :return: str - str - player name, None - the expected block does not exist
+        """
+        block = self.__block_number + relative_block
+        if block < 0 or block >= self.get_number_of_blocks():
+            return None
+        previous_players = block * self.__game_type.number_player_in_team_in_period
+        return self.__results_container.get_player_name((team, player + previous_players))
+
+    def set_player_name_in_relative_block(self, team: int, player: int,  relative_block: int, name: str) -> bool:
+        """
+        :param team: <int> team number
+        :param player: <int> relative player number (player in block)
+        :param relative_block: <int> 0 - actual block, -1 - previous block, 1 - next block
+        :param name: <str> new player name
+        :return: True - player name is set, False - the expected block does not exist
+        """
+        block = self.__block_number + relative_block
+        if block < 0 or block >= self.get_number_of_blocks():
+            return False
+        previous_players = block * self.__game_type.number_player_in_team_in_period
+        self.__results_container.set_player_name((team, player + previous_players), name)
+        return True
