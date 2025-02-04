@@ -1,0 +1,110 @@
+name: Package Application with PyInstaller
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          tags: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Get version from main.py
+        id: get_version
+        shell: pwsh
+        run: |
+          $NEW_VERSION = python -c "from main import APP_VERSION; print(APP_VERSION)"
+          Write-Host "NEW_VERSION=$NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $env:GITHUB_ENV
+
+      - name: Get the latest Git tag
+        id: get_tag
+        shell: pwsh
+        run: |
+          $LATEST_TAG  = git tag --list | Sort-Object -Descending | Select-Object -First 1
+          $LATEST_VERSION_WITH_BUILD = $LATEST_TAG -replace '^v', ''
+          Write-Host "Latest version with build: $LATEST_VERSION_WITH_BUILD"
+          echo "LATEST_VERSION_WITH_BUILD=$LATEST_VERSION_WITH_BUILD" >> $env:GITHUB_ENV
+
+      - name: Increment build number if version matches
+        id: increment_build
+        shell: pwsh
+        run: |
+          $NEW_VERSION = "${{ env.NEW_VERSION }}" #a.b.c
+          $LATEST_VERSION_WITH_BUILD = "${{ env.LATEST_VERSION_WITH_BUILD }}" #a.b.c.d
+
+          # Check if the latest tag matches the version prefix
+          if ($LATEST_VERSION_WITH_BUILD -like "$NEW_VERSION.*") {
+              # If the version matches, increment the build number (the last part of the tag)
+              $BUILD_NUMBER = [int]($LATEST_VERSION_WITH_BUILD -replace ".*\.(\d+)$", '$1') + 1
+              $NEW_VERSION_WITH_BUILD = "$NEW_VERSION.$BUILD_NUMBER"
+          }
+          else {
+              # If there is no match (new version), reset build to 0
+              $NEW_VERSION_WITH_BUILD = "$NEW_VERSION.0"
+          }
+
+          # Set the new tag to the environment
+          echo "NEW_VERSION_WITH_BUILD=$NEW_VERSION_WITH_BUILD" >> $env:GITHUB_ENV
+          Write-Host "New new version with build: $NEW_VERSION_WITH_BUILD"
+
+      - name: Format variables
+        run: |
+          $NEW_VERSION_WITH_BUILD__UNDERSCORED = "${{ env.NEW_VERSION_WITH_BUILD }}".Replace(".", "_")
+          echo "NEW_VERSION_WITH_BUILD__UNDERSCORED=$NEW_VERSION_WITH_BUILD__UNDERSCORED" >> $env:GITHUB_ENV
+          echo "NEW_VERSION__UNDERSCORED=${{ env.NEW_VERSION }}" | sed 's/\./_/g' >> $GITHUB_ENV
+          $NEW_VERSION__UNDERSCORED = "${{ env.NEW_VERSION }}".Replace(".", "_")
+          echo "NEW_VERSION__UNDERSCORED=$NEW_VERSION__UNDERSCORED" >> $env:GITHUB_ENV
+          echo "NEW_VERSION_WITH_BUILD__V=v${{ env.NEW_VERSION_WITH_BUILD }}" >> $env:GITHUB_ENV
+
+      - name: Debug Environment Variables
+        shell: pwsh
+        run: Get-ChildItem Env:*
+
+      - name: Create and push new tag
+        run: |
+          git fetch --tags
+          git tag ${{ env.NEW_VERSION_WITH_BUILD__V }}
+          git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }} ${{ env.NEW_VERSION_WITH_BUILD__V }}
+
+      - name: Generate version.py
+        run: python generate_rc.py
+
+      - name: Package Application with PyInstaller
+        run: pyinstaller pyinstaller.spec
+
+      - name: Create ZIP archive on Windows
+        shell: pwsh
+        run: Compress-Archive -Path dist/KL3C__${{ env.NEW_VERSION_WITH_BUILD__UNDERSCORED }}.exe, settings, tables, icon -DestinationPath KL3C__${{ env.NEW_VERSION_WITH_BUILD__UNDERSCORED }}.zip
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_VERSION_WITH_BUILD__V }}
+          name: Release ${{ env.NEW_VERSION_WITH_BUILD__V }}
+          body: "Nowa wersja aplikacji 🎉"
+          draft: false
+          prerelease: false
+          token: ${{ secrets.PAT }}
+
+      - name: Upload ZIP to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.NEW_VERSION_WITH_BUILD__V }}
+          files: KL3C__${{ env.NEW_VERSION_WITH_BUILD__UNDERSCORED }}.zip
+          token: ${{ secrets.PAT }}
