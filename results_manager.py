@@ -23,9 +23,9 @@ class ResultsManager:
 
         Info:
             1. variables "self.__block_number" and "self.__max_block_number" have equal values almost all the time.
-                "self.__block_is_running" is greater than "self.__block_number" by 1 only in
+                "self.__max_block_number" is greater than "self.__block_number" by 1 only in
                 the time between when a new block starts on some track and when a new block starts on all tracks
-            2. you cannot remove blocks whose indexes are less than or equal to "self.__block_is_running"
+            2. you cannot remove blocks whose indexes are less than or equal to "self.__max_block_number"
         # TODO: uproszczenie self.__status_on_lanes z list[int, ....] do list[int, int]
         """
         self.__results_container: ResultsContainer = results_container
@@ -310,7 +310,7 @@ class ResultsManager:
         :return: False | tuple[int, tuple[int, int, int]] in tuple -> status on lane, and (team_index, player_index, lane_index)
                 if lane_index == -1 it means on lane is trial
         """
-        if self.__block_number == self.__game_type.number_periods and not self.__block_is_running:
+        if self.__block_number == self.__game_type.number_periods - 1 and not self.__block_is_running:
             return False
         status_on_lane = self.__status_on_lanes[lane]
         if status_on_lane is None or len(status_on_lane) == 0:
