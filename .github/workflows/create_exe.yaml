@@ -82,7 +82,7 @@ jobs:
           git push https://x-access-token:${{ secrets.PAT }}@github.com/${{ github.repository }} ${{ env.NEW_VERSION_WITH_BUILD__V }}
 
       - name: Generate version.py
-        run: python generate_rc.py
+        run: python generate_version.py
 
       - name: Package Application with PyInstaller
         run: pyinstaller pyinstaller.spec
