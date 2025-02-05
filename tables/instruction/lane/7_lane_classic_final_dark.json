@@ -1,0 +1,219 @@
+{
+    "type": "lane",
+    "name": "Zawody finał | 2 wiersze rzutów | ciemne",
+    "path_to_table": {
+        "0": "lane_classic_final_game_dark.png",
+        "7": "lane_trial_dark.png",
+        "56": "lane_classic_final_game_dark.png"
+    },
+    "background_color": [255, 0, 255],
+    "width": 807,
+    "height": 113,
+    "table_cords": [
+        {
+            "top": 2,
+            "left": 2
+        },
+        {
+            "top": 2,
+            "left": 135
+        },
+        {
+            "top": 2,
+            "left": 273
+        },
+        {
+            "top": 2,
+            "left": 406
+        },
+        {
+            "top": 2,
+            "left": 544
+        },
+        {
+            "top": 2,
+            "left": 677
+        }
+    ],
+    "cell_in_table": {
+        "metadata_default": {
+            "font_path": "MartianMono-Regular.ttf",
+            "font_color": [255, 255, 255],
+            "max_font_size": 8,
+            "left": 0,
+            "top": 0,
+            "width": 7,
+            "height": 9,
+            "text": null,
+            "background": null,
+            "writeIfNoChange": false,
+            "text_align": "center",
+            "breakIfEmpty": false
+        },
+        "cells": {
+            "for|_x_|1|5": {
+                "metadata": {
+                    "top": 16,
+                    "left": 3
+                },
+                "metadata_step": {
+                    "left": 8
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|6|10": {
+                "metadata": {
+                    "left": 44
+                },
+                "metadata_step": {
+                    "left": 8
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|11|15": {
+                "metadata": {
+                    "left": 85
+                },
+                "metadata_step": {
+                    "left": 8
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|16|20": {
+                "metadata": {
+                    "top": 26,
+                    "left": 3
+                },
+                "metadata_step": {
+                    "left": 8
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|21|25": {
+                "metadata": {
+                    "left": 44
+                },
+                "metadata_step": {
+                    "left": 8
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|26|30": {
+                "metadata": {
+                    "left": 85
+                },
+                "metadata_step": {
+                    "left": 8
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "T|P||name_now_playing_player||": {
+                "top": 1,
+                "left": 2,
+                "width": 124,
+                "max_font_size": 13,
+                "height": 14
+            },
+            "for|_x_|0|3": {
+                "metadata": {
+                    "top": 37,
+                    "height": 10,
+                    "max_font_size": 9,
+                    "left": 12
+                },
+                "metadata_step": {
+                    "top": 11
+                },
+                "cells": {
+                    "T|P|_x_|p||56": {
+                        "left": 12,
+                        "width": 28
+                    },
+                    "T|P|_x_|z||56": {
+                        "left": 43
+                    },
+                    "T|P|_x_|s||56": {
+                        "left": 96
+                    },
+                    "T|P|_x_|x||56": {
+                        "left": 74,
+                        "width": 19
+                    }
+                }
+            },
+            "T|P||p||56": {
+                "background": null,
+                "top": 83,
+                "left": 12,
+                "width": 28
+            },
+            "T|P||z||56": {
+                "left": 43
+            },
+            "T|P||s||56": {
+                "left": 96
+            },
+            "T|P||x||56": {
+                "left": 74,
+                "width": 19
+            },
+            "T|P||previous_sum||56": {
+                "top": 96,
+                "left": 12,
+                "width": 42
+            },
+            "T|P||total_sum||56": {
+                "left": 82
+            },
+            "&1": {
+                "text": "1",
+                "width": 12,
+                "left": 0,
+                "top": 37
+            },
+            "&2": {
+                "text": "2",
+                "top": 48
+            },
+            "&3": {
+                "text": "3",
+                "top": 59
+            },
+            "&4": {
+                "text": "4",
+                "top": 70
+            },
+            "T|P|trial|time||7": {
+                "text":  null,
+                "top": 16,
+                "left": 89,
+                "width": 34,
+                "height": 14,
+                "max_font_size": 13
+            },
+            "T|P|trial|s||7": {
+                "left": 41
+            },
+            "T|P|trial|throw-last||7": {
+                "left": 29,
+                "width": 10
+            },
+            "T|P|trial|number_throw||7": {
+                "left": 5,
+                "width": 22
+            }
+        }
+    }
+}

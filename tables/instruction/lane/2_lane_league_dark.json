@@ -3,8 +3,10 @@
     "name": "Tabelki ligowe ciemne",
     "path_to_table": {
         "0": "lane_game_dark.png",
-        "7": "lane_trial_dark.png",
-        "56": "lane_game_dark.png"
+        "3": "lane_trial_dark.png",
+        "4": "lane_trial_dark_end.png",
+        "24": "lane_game_dark.png",
+        "32": "lane_game_dark_end.png"
     },
     "background_color": [255, 0, 255],
     "width": 807,
