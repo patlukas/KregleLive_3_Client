@@ -94,15 +94,15 @@ class ResultsContainer:
         """
         self.teams[who[0]].players[who[1]].lanes[who[2]].init_setup(number_p, number_z, time, total_sum, all_x, card)
 
-    def set_player_name_if_not_set(self,who: tuple[int, int, int], name: str) -> None:
+    def set_player_name_if_not_set(self,who: tuple[int, int, int], name: str) -> bool:
         """
         This method sets the player name if it is not already set
 
         :param who: <tuple(int: number_team, int: number_player, int: number_lane)> if lane number is -1 it means trial
         :param name: <str> player name
-        :return: None
+        :return: <bool> new name set or not
         """
-        self.teams[who[0]].players[who[1]].set_name_if_not_set(name)
+        return self.teams[who[0]].players[who[1]].set_name_if_not_set(name)
 
     def set_player_name(self, who: tuple[int, int], name: str) -> None:
         """

@@ -192,6 +192,9 @@ class PlayersSectionClassic(QGroupBox):
             self.__select_transition(self.__transitions[0])
         self.__section_now_set_name.load_players_data()
 
+    def load_data(self):
+        self.__section_now_set_name.load_players_data()
+
     def load_data_from_new_category(self):
         list_payers = self.__player_licenses.get_list_players_name(None)
         self.__section_now_set_name.refresh_list_players(list_payers)

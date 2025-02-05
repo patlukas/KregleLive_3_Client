@@ -95,15 +95,17 @@ class ResultsContainerPlayer:
         x = self.trial if lane == -1 else self.lanes[lane]
         x.update_time(time)
 
-    def set_name_if_not_set(self, name: str) -> None:
+    def set_name_if_not_set(self, name: str) -> bool:
         """
         This method sets the player name if it is not already set
 
         :param name: <str> player name
-        :return: None
+        :return: <bool> new name set or not
         """
         if len(self.list_name) == 1 and self.list_name[0][0] == "":
             self.set_name(name)
+            return True
+        return False
 
     def set_name(self, name: str) -> None:
         """

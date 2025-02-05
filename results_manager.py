@@ -39,6 +39,7 @@ class ResultsManager:
         self.__status_on_lanes: list[list[int] | None] = [([] if l == 1 else None) for l in game_type.lanes]
         self.__results_container.init_struct(self.__game_type.number_team, self.__game_type.number_player_in_team_in_period)
         self.__functions_wait_to_new_block: list[Callable] = []
+        self.__functions_after_successfully_set_player_name_if_not_set: list[Callable] = []
         if self.__game_type.type == "league": # TODO Przenieś to do PlayerSectionLEague
             for _ in range(self.__game_type.number_periods):
                 self.add_block("")
@@ -252,8 +253,11 @@ class ResultsManager:
         result = self.__get_player_on_lane(lane)
         if not result:
             return False
-        self.__results_container.set_player_name_if_not_set(result[1], name)
-        return True
+        if self.__results_container.set_player_name_if_not_set(result[1], name):
+            for f in self.__functions_after_successfully_set_player_name_if_not_set:
+                f()
+            return True
+        return False
 
     def set_player_name(self, team: int, player: int, name: str) -> bool:
         """
@@ -409,6 +413,9 @@ class ResultsManager:
 
     def add_function_wait_to_new_block(self, func: Callable):
         self.__functions_wait_to_new_block.append(func)
+        
+    def add_functions_after_successfully_set_player_name_if_not_set(self, func: Callable):
+        self.__functions_after_successfully_set_player_name_if_not_set.append(func)
 
     def get_player_name_in_relative_block(self, team: int, player: int, relative_block: int) -> str | None:
         """

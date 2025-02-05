@@ -265,6 +265,7 @@ class Main(QWidget):
         elif game_type.type == "classic":
             self.__player_section = PlayersSectionClassic(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
             self.__results_manager.add_function_wait_to_new_block(self.__player_section.on_after_new_block)
+            self.__results_manager.add_functions_after_successfully_set_player_name_if_not_set(self.__player_section.load_data)
 
         self.__column2_layout.addWidget(self.__player_section, 4, 0)
 
