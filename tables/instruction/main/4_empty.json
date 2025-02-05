@@ -1,0 +1,26 @@
+{
+    "type": "main",
+    "name": "Puste",
+    "path_to_table": {},
+    "background_color": [255, 0, 255],
+    "width": 1280,
+    "height": 170,
+    "table_cords": [],
+    "cell_in_table": {
+        "metadata_default": {
+            "font_path": "MartianMono_Condensed-Regular.ttf",
+            "font_color": [0,0,0],
+            "max_font_size": 12,
+            "left": 0,
+            "top": 0,
+            "width": 10,
+            "height": 13,
+            "text": null,
+            "background": null,
+            "writeIfNoChange": false,
+            "text_align": "center",
+            "breakIfEmpty": false
+        },
+        "cells": {}
+    }
+}
