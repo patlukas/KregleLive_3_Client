@@ -95,15 +95,17 @@ class ResultsContainerPlayer:
         x = self.trial if lane == -1 else self.lanes[lane]
         x.update_time(time)
 
-    def set_name_if_not_set(self, name: str) -> None:
+    def set_name_if_not_set(self, name: str) -> bool:
         """
         This method sets the player name if it is not already set
 
         :param name: <str> player name
-        :return: None
+        :return: <bool> new name set or not
         """
         if len(self.list_name) == 1 and self.list_name[0][0] == "":
             self.set_name(name)
+            return True
+        return False
 
     def set_name(self, name: str) -> None:
         """
@@ -145,7 +147,7 @@ class ResultsContainerPlayer:
             if stat == "name_now_playing_player":
                 return self.list_name[-1][0]
             if stat == "name":
-                return self.__get_name()
+                return self.get_name()
             if stat == "previous_sum":
                 return str(self.previous_sum)
             if stat == "total_sum":
@@ -195,7 +197,7 @@ class ResultsContainerPlayer:
                 sum_v += v
         return sum_v
 
-    def __get_name(self) -> str:
+    def get_name(self) -> str:
         """
         This method return player name, i more then one player was playing, give first letter of firstname and surname, and separate players by "/"
 
