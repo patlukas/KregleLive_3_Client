@@ -11,7 +11,7 @@ KregleLive_3_Client receives data from KregleLive_3_Server over TCP. KregleLive_
 
 ## Requirements
 - Windows
-- Python 3.12
+- Python 3.13
 - Libraries listed in `requirements.txt`
 
 ## Installation
