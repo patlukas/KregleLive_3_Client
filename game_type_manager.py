@@ -61,9 +61,11 @@ class GameTypesManager:
                 self.__check_value(k, v, "number_periods", int, '{v} > 0')
                 self.__check_value(k, v, "transitions", dict, 'list({v}.keys()) == [""]')
                 self.__check_value_not_exists(k, v, "default_transitions")
+                self.__check_value_not_exists(k, v, "with_previous_result")
             elif v["type"] == "classic":
                 self.__check_value(k, v, "transitions", dict, 'len(list({v}.keys())) > 0')
                 self.__check_value(k, v, "default_transitions", str, '{v}')
+                self.__check_value(k, v, "with_previous_result", bool, '{v} or True')
                 self.__check_value_not_exists(k, v, "number_periods")
                 self.__check_value_not_exists(k, v, "number_of_changes")
 
@@ -139,8 +141,10 @@ class GameTypesManager:
                 transitions[transition_name] = Transition(transition_name, transition, number_lane)
             self.__game_types[game_type_name] = GameType(game_type_name, raw_game_type["type"], raw_game_type["lanes"],
                                                          raw_game_type.get("number_of_changes", None),
-                                                         raw_game_type.get("number_periods", None), number_team,
-                                                         number_player_in_team, transitions, raw_game_type.get("default_transitions", None))
+                                                         raw_game_type.get("number_periods", -1), number_team,
+                                                         number_player_in_team, transitions,
+                                                         raw_game_type.get("default_transitions", None),
+                                                         raw_game_type.get("with_previous_result", False))
 
 class Transition:
     def __init__(self, name: str, schema: list[list[list[int, int, int] | int]], number_lane: int):
@@ -150,8 +154,9 @@ class Transition:
 
 class GameType:
     def __init__(self, name: str, game_type: Literal["classic", "league"], lanes: list[Literal[0, 1]],
-                 number_of_changes: int | None, number_periods: int | None, number_team: int,
-                 number_player_in_team_in_period: int, transitions: dict[str: Transition], default_transitions: str | None):
+                 number_of_changes: int | None, number_periods: int, number_team: int,
+                 number_player_in_team_in_period: int, transitions: dict[str: Transition], default_transitions: str,
+                 with_previous_result: bool):
         self.name: str = name
         self.type: Literal["classic", "league"] = game_type
         self.lanes: list[Literal[0, 1]] = lanes
@@ -161,6 +166,7 @@ class GameType:
         self.number_player_in_team_in_period: int = number_player_in_team_in_period
         self.transitions: dict[str: Transition] = transitions
         self.default_transitions: str = default_transitions
+        self.with_previous_result: bool = with_previous_result
 
     def get_list_transitions_name(self) -> list[str]:
         return list(self.transitions.keys())

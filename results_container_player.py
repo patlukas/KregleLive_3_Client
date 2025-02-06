@@ -15,6 +15,7 @@ class ResultsContainerPlayer:
         self.list_raw_messages: <list[bytes]> a list of raw messages received from lanes regarding a player's game
         self.list_raw_messages_trial: <list[bytes]> a list of raw messages received from lane regarding a player's trial
         self.previous_sum: <int> a field for storing e.g. the result from the elimination
+        self.final_sum_is_result_of_adding: <bool> then total_sum = previous + actual, otherwise total = actual
         self.trial: <LaneTrialContainer> trial
         self.players: <list[PlayerResultsContainer]> lanes
         """
@@ -27,6 +28,7 @@ class ResultsContainerPlayer:
         self.list_raw_messages: list[bytes] = []
         self.list_raw_messages_trial: list[bytes] = []
         self.previous_sum: int = 0
+        self.final_sum_is_result_of_adding: bool = True
         self.trial: ResultsContainerTrial = ResultsContainerTrial()
         self.lanes: list[ResultsContainerLane] = [ResultsContainerLane() for _ in range(number_lane)]
 
@@ -95,15 +97,17 @@ class ResultsContainerPlayer:
         x = self.trial if lane == -1 else self.lanes[lane]
         x.update_time(time)
 
-    def set_name_if_not_set(self, name: str) -> None:
+    def set_name_if_not_set(self, name: str) -> bool:
         """
         This method sets the player name if it is not already set
 
         :param name: <str> player name
-        :return: None
+        :return: <bool> new name set or not
         """
         if len(self.list_name) == 1 and self.list_name[0][0] == "":
             self.set_name(name)
+            return True
+        return False
 
     def set_name(self, name: str) -> None:
         """
@@ -145,11 +149,19 @@ class ResultsContainerPlayer:
             if stat == "name_now_playing_player":
                 return self.list_name[-1][0]
             if stat == "name":
-                return self.__get_name()
+                return self.get_name()
             if stat == "previous_sum":
                 return str(self.previous_sum)
             if stat == "total_sum":
-                return str(self.previous_sum + self.__get_sum_stat_value("s"))
+                if self.final_sum_is_result_of_adding:
+                    return str(self.previous_sum + self.__get_sum_stat_value("s"))
+                else:
+                    return str(self.__get_sum_stat_value("s"))
+            if stat == "s":
+                if self.final_sum_is_result_of_adding:
+                    return str(self.__get_sum_stat_value("s"))
+                else:
+                    return str(self.__get_sum_stat_value("s") - self.previous_sum)
             v = self.get_stat_value(stat)
             if v is None:
                 return ""
@@ -168,7 +180,7 @@ class ResultsContainerPlayer:
         :param stat: <str> statistics name
         :return: <int | float | None> int | float if statistics exists, None if not
         """
-        if stat in ["s", "p", "z", "x", "number_throw"]:
+        if stat in ["p", "z", "x", "number_throw"]:
             return self.__get_sum_stat_value(stat)
         match stat:
             case "is":
@@ -195,7 +207,7 @@ class ResultsContainerPlayer:
                 sum_v += v
         return sum_v
 
-    def __get_name(self) -> str:
+    def get_name(self) -> str:
         """
         This method return player name, i more then one player was playing, give first letter of firstname and surname, and separate players by "/"
 
