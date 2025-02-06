@@ -24,6 +24,19 @@ class _SectionChooseTransition(QGroupBox):
         self.setLayout(self.__layout)
 
 
+class _SectionSelectMethodCalculateTotalSum(QGroupBox):
+    def __init__(self, on_select: Callable[[bool], None]):
+        super().__init__("Sposób liczenia sumy całkowitej")
+        options: list[str] = ["Wynik eliminacji + Wynik z totalizatora", "Wynik z totalizatora"]
+        self.__dropdown: QComboBox = QComboBox()
+        self.__dropdown.addItems(options)
+        self.__dropdown.currentIndexChanged.connect(lambda: on_select(self.__dropdown.currentIndex() == 0))
+
+        self.__layout = QGridLayout()
+        self.__layout.addWidget(self.__dropdown, 0, 0)
+        self.setLayout(self.__layout)
+
+
 class _SectionSetName(QGroupBox):
     def __init__(self, name: str, number_player: int, with_previous_result: bool,
                  on_save_players_data: Callable[[list[tuple[str, int]]], None],
@@ -140,7 +153,7 @@ class PlayersSectionClassic(QGroupBox):
         self.__number_player_in_period: int = game_type.number_player_in_team_in_period
         self.__with_previous_result: bool = game_type.with_previous_result
 
-
+        self.__section_select_method_calculate_total_sum: _SectionSelectMethodCalculateTotalSum = _SectionSelectMethodCalculateTotalSum(self.__results_manager.set_method_of_calculate_total_sum)
         self.__section_next_set_name: _SectionSetName = _SectionSetName(
             "Następny blok",
             self.__number_player_in_period,
@@ -158,9 +171,10 @@ class PlayersSectionClassic(QGroupBox):
         self.__section_next_select_block: _SectionChooseTransition = _SectionChooseTransition("Następny blok", self.__transitions, self.__select_transition)
 
         self.__layout = QGridLayout()
-        self.__layout.addWidget(self.__section_now_set_name, 0, 0)
-        self.__layout.addWidget(self.__section_next_set_name, 0, 1)
-        self.__layout.addWidget(self.__section_next_select_block, 0, 1)
+        self.__layout.addWidget(self.__section_select_method_calculate_total_sum, 0, 0, 1, 2)
+        self.__layout.addWidget(self.__section_now_set_name, 1, 0)
+        self.__layout.addWidget(self.__section_next_set_name, 1, 1)
+        self.__layout.addWidget(self.__section_next_select_block, 1, 1)
         self.setLayout(self.__layout)
 
         self.on_after_new_block()
@@ -171,11 +185,11 @@ class PlayersSectionClassic(QGroupBox):
         self.__section_next_set_name.load_players_data()
         if self.__results_manager.get_number_of_blocks() == 1:
             self.__section_now_set_name.setParent(None)
-            self.__layout.addWidget(self.__section_next_set_name, 0, 1)
+            self.__layout.addWidget(self.__section_next_set_name, 1, 1)
             self.__section_next_select_block.setParent(None)
         else:
-            self.__layout.addWidget(self.__section_now_set_name, 0, 0)
-            self.__layout.addWidget(self.__section_next_set_name, 0, 1)
+            self.__layout.addWidget(self.__section_now_set_name, 1, 0)
+            self.__layout.addWidget(self.__section_next_set_name, 1, 1)
             self.__section_next_select_block.setParent(None)
 
     def on_after_new_block(self):
@@ -183,11 +197,11 @@ class PlayersSectionClassic(QGroupBox):
             if self.__results_manager.get_number_of_blocks() == 0:
                 self.__section_now_set_name.setParent(None)
                 self.__section_next_set_name.setParent(None)
-                self.__layout.addWidget(self.__section_next_select_block, 0, 1)
+                self.__layout.addWidget(self.__section_next_select_block, 1, 1)
             else:
-                self.__layout.addWidget(self.__section_now_set_name, 0, 0)
+                self.__layout.addWidget(self.__section_now_set_name, 1, 0)
                 self.__section_next_set_name.setParent(None)
-                self.__layout.addWidget(self.__section_next_select_block, 0, 1)
+                self.__layout.addWidget(self.__section_next_select_block, 1, 1)
         else:
             self.__select_transition(self.__transitions[0])
         self.__section_now_set_name.load_players_data()

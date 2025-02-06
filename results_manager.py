@@ -472,3 +472,8 @@ class ResultsManager:
         previous_players = block * self.__game_type.number_player_in_team_in_period
         self.__results_container.set_player_previous_sum((team, player + previous_players), previous_sum)
         return True
+
+    def set_method_of_calculate_total_sum(self, final_sum_is_result_of_adding: bool) -> None:
+        for team in self.__results_container.teams:
+            for player in team.players:
+                player.final_sum_is_result_of_adding = final_sum_is_result_of_adding
