@@ -42,16 +42,19 @@ class WorkerThread(QThread):
     def run(self):
         self.__log_management.add_log(7, "LOOP_START", "", "Uruchomiono pętlę główną aplikacji", False)
         self.__running = True
-        while self.__running:
-            socket_status = self.__socket_manager.get_connection_status()
-            if socket_status == 1:
-                recv_code, recv_data = self.__socket_manager.recv()
-                if recv_code > 0:
-                    self.__message_interpreter.add_messages(recv_data)
-                    self.__message_interpreter.interpret_messages()
-                    self.create_table_lane()
-                    self.create_table_main()
-            self.msleep(self.__loop_time_interval)
+        try:
+            while self.__running:
+                socket_status = self.__socket_manager.get_connection_status()
+                if socket_status == 1:
+                    recv_code, recv_data = self.__socket_manager.recv()
+                    if recv_code > 0:
+                        self.__message_interpreter.add_messages(recv_data)
+                        self.__message_interpreter.interpret_messages()
+                        self.create_table_lane()
+                        self.create_table_main()
+                self.msleep(self.__loop_time_interval)
+        except Exception as e:
+            print(e)
 
     def stop(self):
         self.__log_management.add_log(7, "LOOP_STOP", "", "Zatrzymano pętlę główną aplikacji", False)

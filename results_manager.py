@@ -387,6 +387,7 @@ class ResultsManager:
         :param list_of_result_names: <list[str]> - list of statistics names
         :return: None - was problem, list[dict | None] each element is a single lane, None means there is no player on lane, dict - player statistics
         """
+        # list_of_result_names.append("T|P||show_on_lane_table||")
         currently_playing_players: list[tuple[int, tuple[int, int, int]] | None] | None = self.__get_currently_playing_players()
         if currently_playing_players is None:
             return None
@@ -472,6 +473,34 @@ class ResultsManager:
         previous_players = block * self.__game_type.number_player_in_team_in_period
         self.__results_container.set_player_previous_sum((team, player + previous_players), previous_sum)
         return True
+
+    def set_show_player_in_lane_table_in_relative_block(self, team: int, player: int,  relative_block: int, show_in_lane_table: bool) -> bool:
+        """
+        :param team: <int> team number
+        :param player: <int> relative player number (player in block)
+        :param relative_block: <int> 0 - actual block, -1 - previous block, 1 - next block
+        :param show_in_lane_table: <bool> show/hide player in lane table
+        :return: True - value is set, False - the expected block does not exist
+        """
+        block = self.__block_number + relative_block
+        if block < 0 or block >= self.get_number_of_blocks():
+            return False
+        previous_players = block * self.__game_type.number_player_in_team_in_period
+        self.__results_container.teams[team].players[player + previous_players].show_in_lane_table = show_in_lane_table
+        return True
+
+    def get_show_player_in_lane_table_in_relative_block(self, team: int, player: int,  relative_block: int) -> None | bool:
+        """
+        :param team: <int> team number
+        :param player: <int> relative player number (player in block)
+        :param relative_block: <int> 0 - actual block, -1 - previous block, 1 - next block
+        :return: bool - show/hide player in lane table, None - the expected block does not exist
+        """
+        block = self.__block_number + relative_block
+        if block < 0 or block >= self.get_number_of_blocks():
+            return None
+        previous_players = block * self.__game_type.number_player_in_team_in_period
+        return self.__results_container.teams[team].players[player + previous_players].show_in_lane_table
 
     def set_method_of_calculate_total_sum(self, final_sum_is_result_of_adding: bool) -> None:
         for team in self.__results_container.teams:
