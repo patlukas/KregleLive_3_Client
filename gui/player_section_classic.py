@@ -171,7 +171,8 @@ class PlayersSectionClassic(QGroupBox):
         self.__section_next_select_block: _SectionChooseTransition = _SectionChooseTransition("Następny blok", self.__transitions, self.__select_transition)
 
         self.__layout = QGridLayout()
-        self.__layout.addWidget(self.__section_select_method_calculate_total_sum, 0, 0, 1, 2)
+        if self.__with_previous_result:
+            self.__layout.addWidget(self.__section_select_method_calculate_total_sum, 0, 0, 1, 2)
         self.__layout.addWidget(self.__section_now_set_name, 1, 0)
         self.__layout.addWidget(self.__section_next_set_name, 1, 1)
         self.__layout.addWidget(self.__section_next_select_block, 1, 1)
