@@ -16,6 +16,7 @@ class ResultsContainerPlayer:
         self.list_raw_messages_trial: <list[bytes]> a list of raw messages received from lane regarding a player's trial
         self.previous_sum: <int> a field for storing e.g. the result from the elimination
         self.final_sum_is_result_of_adding: <bool> then total_sum = previous + actual, otherwise total = actual
+        self.show_in_lane_table: <bool> default True
         self.trial: <LaneTrialContainer> trial
         self.players: <list[PlayerResultsContainer]> lanes
         """
@@ -29,6 +30,7 @@ class ResultsContainerPlayer:
         self.list_raw_messages_trial: list[bytes] = []
         self.previous_sum: int = 0
         self.final_sum_is_result_of_adding: bool = True
+        self.show_in_lane_table: bool = True
         self.trial: ResultsContainerTrial = ResultsContainerTrial()
         self.lanes: list[ResultsContainerLane] = [ResultsContainerLane() for _ in range(number_lane)]
 
@@ -148,6 +150,10 @@ class ResultsContainerPlayer:
         if lane == "":
             if stat == "name_now_playing_player":
                 return self.list_name[-1][0]
+            if stat == "show_on_lane_table":
+                if self.show_in_lane_table:
+                    return "1"
+                return "0"
             if stat == "name":
                 return self.get_name()
             if stat == "previous_sum":

@@ -88,6 +88,9 @@ class _CreateResultTable(MethodsToDrawOnImage):
         img_key, clear_img = instruction.get_img_template(now_results["status"])
         if clear_img is None:
             return None
+        if now_results.get("T|P||show_on_lane_table||", "1") == "0":
+            self.__old_results[table_index] = {}
+            return None
         if "status" not in old_results or int(img_key) & int(old_results["status"]) != int(old_results["status"]) or old_table is None:
             old_results = {}
             old_table = clear_img.copy()
