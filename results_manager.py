@@ -387,7 +387,8 @@ class ResultsManager:
         :param list_of_result_names: <list[str]> - list of statistics names
         :return: None - was problem, list[dict | None] each element is a single lane, None means there is no player on lane, dict - player statistics
         """
-        # list_of_result_names.append("T|P||show_on_lane_table||")
+        list_of_result_names = list_of_result_names.copy()
+        list_of_result_names.append("T|P||show_on_lane_table||")
         currently_playing_players: list[tuple[int, tuple[int, int, int]] | None] | None = self.__get_currently_playing_players()
         if currently_playing_players is None:
             return None

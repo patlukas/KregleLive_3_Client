@@ -59,14 +59,14 @@ class _SectionSetName(QGroupBox):
         self.__layout = QGridLayout()
         self.__number_players = number_player
 
-        label_name = QLabel("Nazwisko i imię")
+        label_name = QLabel("Nazwisko i Imię")
         label_name.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.__layout.addWidget(label_name, 0, 2)
 
         if self.__with_previous_result:
             label_previous_result = QLabel("Wynik eliminacji")
             label_previous_result.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.__layout.addWidget(label_previous_result, 0, 2)
+            self.__layout.addWidget(label_previous_result, 0, 3)
 
         for i in range(number_player):
             label = QLabel(f"Tor {i+1}")
@@ -121,13 +121,10 @@ class _SectionSetName(QGroupBox):
             self.__list_row[i][1].setCurrentText(name)
             self.__list_row[i][2].setText(str(previous_result))
             self.__list_row[i][3].setChecked(show_player_in_lane_table)
-            if show_player_in_lane_table:
-                self.__layout.addWidget(self.__list_row[i][1], i + 1, 2)
-                if self.__with_previous_result:
-                    self.__layout.addWidget(self.__list_row[i][2], i + 1, 3)
-            else:
-                self.__list_row[i][1].setParent(None)
-                self.__list_row[i][2].setParent(None)
+            is_checked = self.__list_row[i][3].isChecked()
+            self.__list_row[i][1].setVisible(is_checked)
+            if self.__list_row[i][2].parent():
+                self.__list_row[i][2].setVisible(is_checked)
         self.__on_disable_buttons()
 
     def __on_disable_buttons(self):
@@ -157,14 +154,11 @@ class _SectionSetName(QGroupBox):
         self.__on_disable_buttons()
 
     def __checkbox_state_changed(self):
-        for i, (_, dropdown, line_previous_result, checkbox_is_player) in enumerate(self.__list_row):
-            if checkbox_is_player.isChecked():
-                self.__layout.addWidget(dropdown, i + 1, 2)
-                if self.__with_previous_result:
-                    self.__layout.addWidget(line_previous_result, i + 1, 3)
-            else:
-                dropdown.setParent(None)
-                line_previous_result.setParent(None)
+        for i, [_, dropdown, line_previous_result, checkbox_is_player] in enumerate(self.__list_row):
+            is_checked = checkbox_is_player.isChecked()
+            dropdown.setVisible(is_checked)
+            if line_previous_result.parent():
+                line_previous_result.setVisible(is_checked)
         self.__check_is_new_value()
 
 

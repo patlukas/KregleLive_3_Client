@@ -150,11 +150,10 @@ class ResultsContainerPlayer:
         if lane == "":
             if stat == "name_now_playing_player":
                 return self.list_name[-1][0]
-            # if stat == "show_on_lane_table":
-            #     print(self.show_in_lane_table)
-            #     if self.show_in_lane_table:
-            #         return "1"
-            #     return "0"
+            if stat == "show_on_lane_table":
+                if self.show_in_lane_table:
+                    return "1"
+                return "0"
             if stat == "name":
                 return self.get_name()
             if stat == "previous_sum":
