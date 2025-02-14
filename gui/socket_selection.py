@@ -1,5 +1,7 @@
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import QWidget, QPushButton, QGroupBox, QGridLayout, QLabel, QLineEdit, QStackedLayout
+
+from gui.alert_windows import AlertWindowWithSound
 from socket_manager import SocketManager
 
 
@@ -12,6 +14,7 @@ class SocketSelection(QGroupBox):
         self.__socket_manager: SocketManager = socket_manager
         self.__default_ip: str = default_ip
         self.__default_port: str = default_port
+        self.__alert_server_lose: AlertWindowWithSound = AlertWindowWithSound("Kręgle Live: Utracono połączenie", "Utracono połączenie z serwerem")
 
         self.__stacked_layout: QStackedLayout = QStackedLayout()
 
@@ -98,7 +101,10 @@ class SocketSelection(QGroupBox):
                 self.__label_status.setStyleSheet("")
                 self.__label_status.setText(f"Status: ponownie połączono")
                 self.__label_failed.setText("")
+                self.__alert_server_lose.close_alert()
             else:
+                if self.__socket_manager.number_of_failed_reconnections == 1:
+                    self.__alert_server_lose.show_alert()
                 self.__label_status.setStyleSheet("color: red;")
                 self.__label_status.setText(f"Status: nie udane ponowne połączenie")
                 self.__label_failed.setText(f"Liczba nieudanych prób połączenia: {self.__socket_manager.number_of_failed_reconnections}")
