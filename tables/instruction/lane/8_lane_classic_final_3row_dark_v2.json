@@ -1,0 +1,177 @@
+{
+    "type": "lane",
+    "name": "Zawody finał | 3 wiersze rzutów | ciemne v2",
+    "path_to_table": {
+        "0": "lane_classic_final_3row_game_dark_v2.png",
+        "3": "lane_trial_final_dark.png",
+        "4": "lane_trial_final_dark_end.png",
+        "24": "lane_classic_final_3row_game_dark_v2.png",
+        "32": "lane_classic_final_3row_game_dark_v2_end.png"
+    },
+    "background_color": [255, 0, 255],
+    "width": 807,
+    "height": 137,
+    "table_cords": [
+        {
+            "top": 2,
+            "left": 2
+        },
+        {
+            "top": 2,
+            "left": 135
+        },
+        {
+            "top": 2,
+            "left": 273
+        },
+        {
+            "top": 2,
+            "left": 406
+        },
+        {
+            "top": 2,
+            "left": 544
+        },
+        {
+            "top": 2,
+            "left": 677
+        }
+    ],
+    "cell_in_table": {
+        "metadata_default": {
+            "font_path": "MartianMono-Regular.ttf",
+            "font_color": [255, 255, 255],
+            "max_font_size": 13,
+            "left": 0,
+            "top": 0,
+            "width": 7,
+            "height": 13,
+            "text": null,
+            "background": null,
+            "writeIfNoChange": false,
+            "text_align": "center",
+            "breakIfEmpty": false
+        },
+        "cells": {
+            "for|_x_|1|10": {
+                "metadata": {
+                    "top": 15,
+                    "left": 6
+                },
+                "metadata_step": {
+                    "left": 12
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|11|20": {
+                "metadata": {
+                    "top": 29,
+                    "left": 6
+                },
+                "metadata_step": {
+                    "left": 12
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|21|30": {
+                "metadata": {
+                    "top": 43,
+                    "left": 6
+                },
+                "metadata_step": {
+                    "left": 12
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "T|P||name_now_playing_player||": {
+                "top": 1,
+                "left": 2,
+                "width": 124,
+                "max_font_size": 13,
+                "height": 14
+            },
+            "for|_x_|0|3": {
+                "metadata": {
+                    "top": 59,
+                    "height": 10,
+                    "max_font_size": 9
+                },
+                "metadata_step": {
+                    "top": 11
+                },
+                "cells": {
+                    "T|P|_x_|p|262142|56": {
+                        "left": 8,
+                        "width": 28
+                    },
+                    "T|P|_x_|z|262142|56": {
+                        "left": 39
+                    },
+                    "T|P|_x_|s|262142|56": {
+                        "left": 92
+                    },
+                    "T|P|_x_|x|262142|56": {
+                        "left": 70,
+                        "width": 19
+                    }
+                }
+            },
+            "T|P||p||56": {
+                "background": null,
+                "top": 105,
+                "left": 8,
+                "width": 28
+            },
+            "T|P||z||56": {
+                "left": 39
+            },
+            "T|P||s||56": {
+                "left": 92
+            },
+            "T|P||x||56": {
+                "left": 70,
+                "width": 19
+            },
+            "T|P||previous_sum||56": {
+                "top": 120,
+                "left": 8,
+                "width": 42
+            },
+            "T|P||total_sum||56": {
+                "left": 78
+            },
+            "T|P|trial|time||7": {
+                "text":  null,
+                "top": 16,
+                "left": 89,
+                "width": 34,
+                "height": 14,
+                "max_font_size": 13
+            },
+            "T|P|trial|s||7": {
+                "left": 41
+            },
+            "T|P|trial|throw-last||7": {
+                "left": 29,
+                "width": 10
+            },
+            "T|P|trial|number_throw||7": {
+                "left": 5,
+                "width": 22
+            },
+            "T|P||previous_sum||7": {
+                "left": 24,
+                "width": 80,
+                "height": 16,
+                "top": 34,
+                "max_font_size": 15
+            }
+        }
+    }
+}
