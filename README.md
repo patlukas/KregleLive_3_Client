@@ -1,6 +1,6 @@
 # KregleLive_3_Client
 
-KregleLive_3_Client is part of a bigger project. Together with [KregleLive_3_Server](https://github.com/patlukas/KregleLive_3_Server), it creates a system for generating live score tables. This application was tested and works with Python 3.12. The requirements are listed in `requirements.txt`.
+KregleLive_3_Client is part of a bigger project. Together with [KregleLive_3_Server](https://github.com/patlukas/KregleLive_3_Server), it creates a system for generating live score tables. This application was tested and works with Python 3.13. The requirements are listed in `requirements.txt`.
 
 KregleLive_3_Client receives data from KregleLive_3_Server over TCP. KregleLive_3_Server gets this data from bowling lanes.
 
