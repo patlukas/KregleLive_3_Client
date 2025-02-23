@@ -1,0 +1,78 @@
+{
+    "type": "main",
+    "name": "Liga - minimalistyczny ciemny",
+    "path_to_table": {
+        "0": "main_simple_dark.png",
+        "63": "main_simple_dark.png"
+    },
+    "background_color": [255, 0, 255],
+    "width": 1280,
+    "height": 170,
+    "table_cords": [
+        {
+            "top": 130,
+            "left": 10
+        }
+    ],
+    "cell_in_table": {
+        "metadata_default": {
+            "font_path": "MartianMono_Condensed-Regular.ttf",
+            "font_color": [255,255,255],
+            "max_font_size": 33,
+            "left": 0,
+            "top": 1,
+            "width": 35,
+            "height": 33,
+            "text": null,
+            "background": null,
+            "writeIfNoChange": false,
+            "text_align": "center",
+            "breakIfEmpty": false
+        },
+        "cells": {
+            "0|||s||": {
+                "width": 80,
+                "left": 420
+            },
+            "1|||s||": {
+                "left": 760
+            },
+            "0|||pd||": {
+                "width": 55,
+                "left": 565,
+                "text_align": "right"
+            },
+            "1|||pd||": {
+                "left": 640,
+                "text_align": "left"
+            },
+            "0|||name||": {
+                "left": 0,
+                "width": 410,
+                "text_align": "center",
+                "font_path": "MartianMono_SemiExpanded-ExtraBold.ttf"
+            },
+            "1|||name||": {
+                "left": 850
+            },
+            "0|||different|249855|": {
+                "font_path": "MartianMono_Condensed-Regular.ttf",
+                "left": 510,
+                "width": 50,
+                "font_color": [255, 0, 0],
+                "text_align": "right"
+            },
+            "1|||different|249855|": {
+                "left": 700,
+                "text_align": "left"
+            },
+            "&:": {
+                "font_path": "MartianMono_Condensed-Regular.ttf",
+                "text": ":",
+                "font_color": [200, 200, 200],
+                "left": 620,
+                "width": 20
+            }
+        }
+    }
+}
