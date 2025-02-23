@@ -186,7 +186,7 @@ class ResultsContainerPlayer:
         :param stat: <str> statistics name
         :return: <int | float | None> int | float if statistics exists, None if not
         """
-        if stat in ["p", "z", "x", "number_throw"]:
+        if stat in ["s", "p", "z", "x", "number_throw"]:
             return self.__get_sum_stat_value(stat)
         match stat:
             case "is":
