@@ -29,7 +29,7 @@ class ResultsContainerPlayer:
         self.list_raw_messages: list[bytes] = []
         self.list_raw_messages_trial: list[bytes] = []
         self.previous_sum: int = 0
-        self.final_sum_is_result_of_adding: bool = True
+        self.final_sum_is_result_of_adding: bool = False
         self.show_in_lane_table: bool = True
         self.trial: ResultsContainerTrial = ResultsContainerTrial()
         self.lanes: list[ResultsContainerLane] = [ResultsContainerLane() for _ in range(number_lane)]
