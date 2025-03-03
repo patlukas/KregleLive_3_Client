@@ -41,6 +41,9 @@ Or you can download the pre-built `.exe` file from the [Releases](https://github
 ## Configuration
 The project comes with a pre-prepared configuration. You don’t need to change anything to start using it.
 
+## Directory with Logs
+The log directory is located at: `%PROGRAMDATA%\KL3_C\logs\`
+
 ## Screenshots
 Here are some screenshots of the application:
 

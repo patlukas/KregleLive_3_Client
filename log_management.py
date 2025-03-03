@@ -166,3 +166,7 @@ class LogManagement:
             elif int(log[2]) >= min_priority:
                 data.append(log)
         return data
+
+    def open_folder_with_logs(self):
+        self.add_log(0, "LOG_OPENDIR", "", "Otwarto folder z logami", False)
+        os.startfile(self.__path)

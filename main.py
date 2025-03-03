@@ -66,7 +66,7 @@ class WorkerThread(QThread):
 class Main(QWidget):
     def __init__(self):
         super().__init__()
-        self.__log_management = None
+        self.__log_management: None | LogManagement = None
         self.__socket_manager: None | SocketManager = None
         self.__results_container: None | ResultsContainer = None
         self.__results_manager: None | ResultsManager = None
@@ -195,8 +195,11 @@ class Main(QWidget):
         licenses_menu.addAction(refresh_licenses_action)
 
         help_menu = menu_bar.addMenu("Pomoc")
+        logs_dir_action = QAction("Otwórz folder z logami", self)
+        logs_dir_action.triggered.connect(self.__log_management.open_folder_with_logs)
         about_action = QAction("O aplikacji", self)
         about_action.triggered.connect(self.__show_about)
+        help_menu.addAction(logs_dir_action)
         help_menu.addAction(about_action)
 
         return menu_bar
