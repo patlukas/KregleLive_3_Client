@@ -80,7 +80,6 @@ class ConfigReader:
             ["loop_interval_ms", "int"],
             ["server_ip", "str"],
             ["server_port", "str"]
-            ["server_port", "str"],
         ]
         return list_settings
 

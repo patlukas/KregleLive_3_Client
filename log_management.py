@@ -23,9 +23,10 @@ class LogManagement:
 
         :param minimum_number_of_lines_to_write: when this number of lines the program will then write them to the file
         """
-        if not os.path.exists("logs") or not os.path.isdir("logs"):
-            os.makedirs("logs")
-        self.__name: str = "logs/" + self.__get_file_name()
+        self.__path = os.path.expandvars("%PROGRAMDATA%/KL3_C/logs/")
+        if not os.path.exists(self.__path):
+            os.makedirs(os.path.dirname(self.__path), exist_ok=True)
+        self.__name: str = self.__path + self.__get_file_name()
         open(self.__name, "w").close()
         self.__index: int = 0
         self.__index_to_show_in_gui: int = 0
