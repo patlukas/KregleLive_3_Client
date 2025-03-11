@@ -2,8 +2,7 @@ import sys
 from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox, QStatusBar, \
-    QMenuBar
+from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox, QMenuBar
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
@@ -265,6 +264,7 @@ class Main(QWidget):
 
         if game_type.type == "league":
             self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
+            # self.__results_manager.add_functions_after_successfully_set_player_name_if_not_set(self.__player_section.load_data) TODO #17
         elif game_type.type == "classic":
             self.__player_section = PlayersSectionClassic(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
             self.__results_manager.add_function_wait_to_new_block(self.__player_section.on_after_new_block)
