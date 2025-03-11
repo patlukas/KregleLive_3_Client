@@ -53,5 +53,5 @@ Here are some screenshots of the application:
 ### Example Generated Tables
 <img src="screenshots/SS_2.png" width="500">
 
-### System Diagram
+### System Diagram (this project is "Application 2")
 <img src="screenshots/SS_3.png" width="500">
