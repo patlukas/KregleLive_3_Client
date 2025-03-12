@@ -2,7 +2,7 @@ import sys
 from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox, QMenuBar
+from PyQt6.QtWidgets import QWidget, QApplication, QGridLayout, QSizePolicy, QMessageBox, QMenuBar
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
@@ -83,8 +83,6 @@ class Main(QWidget):
         self.__layout = QGridLayout()
         self.setLayout(self.__layout)
         self.__loop_is_running: bool = False
-        self.__button_start: QPushButton = QPushButton("Rozpocznij")
-        self.__button_stop: QPushButton = QPushButton("Zatrzymaj")
         self.__column1_layout = QGridLayout()
         self.__column2_layout = QGridLayout()
 
@@ -171,14 +169,8 @@ class Main(QWidget):
             self.__column1_layout.addWidget(socket_section, 0, 0)
             self.__column1_layout.addWidget(settings_section, 1, 0)
             self.__column1_layout.addWidget(game_type_selection, 2, 0)
-            self.__column1_layout.addWidget(self.__button_start, 3, 0)
-            self.__column1_layout.addWidget(self.__statistics_section, 4, 0)
-            self.__column1_layout.addWidget(logs_section, 5, 0)
-
-            self.__button_start.setEnabled(False)
-            self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
-            self.__button_start.clicked.connect(self.__on_start_loop)
-            self.__button_stop.clicked.connect(self.__on_stop_loop)
+            self.__column1_layout.addWidget(self.__statistics_section, 3, 0)
+            self.__column1_layout.addWidget(logs_section, 4, 0)
 
             self.__layout.addWidget(column1, 0, 0)
             self.__layout.addWidget(column2, 0, 1)
@@ -218,34 +210,7 @@ class Main(QWidget):
             return
         self.__player_section.load_data_from_new_category()
 
-    def __on_start_loop(self):
-        try:
-            self.__button_start.setParent(None)
-            self.__column1_layout.addWidget(self.__button_stop, 3, 0)
-            if self.__game_type_manager.game_type is None:
-                return
-            self.__thread.start()
-        except Exception as e:
-            print("=", e)
-
-    def __on_stop_loop(self):
-        reply = QMessageBox.question(
-            self,
-            'Zatrzymanie pętli',
-            'Czy na pewno chcesz zatrzymać pętlę?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-
-        if reply == QMessageBox.StandardButton.No:
-            return
-        self.__button_stop.setParent(None)
-        self.__column1_layout.addWidget(self.__button_start, 3, 0)
-        self.__thread.stop()
-
     def __on_select_game_type(self):
-        self.__button_start.setToolTip("")
-        self.__button_start.setEnabled(True)
         game_type = self.__game_type_manager.game_type
         if game_type is None:
             return
@@ -274,6 +239,7 @@ class Main(QWidget):
 
         self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
                                      self.__create_table_main, self.__create_table_lane, self.__config["loop_interval_ms"])
+        self.__thread.start()
 
     def __on_refresh_table_lane(self):
         if self.__thread is None:
