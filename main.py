@@ -179,19 +179,26 @@ class Main(QWidget):
         self.show()
 
     def __create_menu_bar(self) -> QMenuBar:
+        bars = [
+            ["Licencje", [
+                ["Odśwież listę licencji", self.__refresh_licenses]
+            ]],
+            ["Pomoc", [
+                ["Otwórz folder z logami", self.__log_management.open_folder_with_logs],
+                ["O aplikacji", self.__show_about]
+            ]]
+        ]
         menu_bar = QMenuBar(self)
-        licenses_menu = menu_bar.addMenu("Licencje")
-        refresh_licenses_action = QAction("Odśwież listę licencji", self)
-        refresh_licenses_action.triggered.connect(self.__refresh_licenses)
-        licenses_menu.addAction(refresh_licenses_action)
-
-        help_menu = menu_bar.addMenu("Pomoc")
-        logs_dir_action = QAction("Otwórz folder z logami", self)
-        logs_dir_action.triggered.connect(self.__log_management.open_folder_with_logs)
-        about_action = QAction("O aplikacji", self)
-        about_action.triggered.connect(self.__show_about)
-        help_menu.addAction(logs_dir_action)
-        help_menu.addAction(about_action)
+        for title, options in bars:
+            menu = menu_bar.addMenu(title)
+            for option in options:
+                if option is None:
+                    menu.addSeparator()
+                    continue
+                name, event = option
+                action = QAction(name, self)
+                action.triggered.connect(event)
+                menu.addAction(action)
 
         return menu_bar
 
