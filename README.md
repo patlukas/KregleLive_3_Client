@@ -52,19 +52,18 @@ The log directory is located at: `%PROGRAMDATA%\KL3_C\logs\`
 
 | Version          | Release Date      | Commits | Changes                                      |
 |------------------|-------------------|---------|----------------------------------------------|
-| **v1.1.4.0**     | 🚧 In Development | 77+     |                                              |
-| **v1.1.3.3**     | 2025-02-23        | 69      | Add new table                                |
-| **v1.1.3.2**     | 2025-02-23        | 68      | Fix small bug                                |
-| **v1.1.3.1**     | 2025-02-15        | 67      | Add new table                                |
-| **v1.1.3.0**     | 2025-02-14        | 65      | Increasing the functionality of classic mode |
-| **v1.1.2.1**     | 2025-02-07        | 59      | 🐍Added support for Python 13                |
-| **v1.1.2.0**     | 2025-02-07        | 56      | Added support for individual competitions    |
-| **v1.1.1.1**     | 2025-02-06        | 46      | Add README.md                                |
-| **v1.1.1.0**     | 2025-02-05        | 44      | More tables to choose                        |
-| **v1.1.0.0**     | 2025-02-04        | 40      | Add splashscreen                             |
-| **v1.0.3**       | 2024-11-22        | 30      | Fix critical bug                             |
-| **v1.0.1**       | 2024-11-02        | 27      | 🎉 Initial stable release                    |
-| **First commit** | 2024-08-13        | 1       |                                              |
+| **v1.2.0.0**     | 🚧 In Development | 50+     |                                              |
+| **v1.1.3.0**     | 2025-02-28        | 46      | Added Jenkins to create new releases         |  
+| **v1.1.1**       | 2025-02-21        | 42      | Added waiting for a response from the lanes  |
+| **v1.1.0**       | 2025-02-05        | 38      | Added automatic creation of TCP server       |
+| **v1.0.6**       | 2025-11-22        | 34      | Added support for Polish characters          |
+| **v1.0.5**       | 2024-11-02        | 33      | Added dropdown with possible IP addresses    |
+| **v1.0.4**       | 2024-08-13        | 28      |                                              |
+| **v1.0.3**       | 2024-08-08        | 21      |                                              |
+| **v1.0.2**       | 2024-06-15        | 15      |                                              |
+| **v1.0.1**       | 2023-10-19        | 10      |                                              |
+| **First commit** | 2023-06-30        | 1       |                                              |
+![](https://github.ct8.pl/readme/patlukas/KregleLive_3_Client)
 
 ## Screenshots
 Here are some screenshots of the application:
