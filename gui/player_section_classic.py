@@ -28,10 +28,10 @@ class _SectionChooseTransition(QGroupBox):
 class _SectionSelectMethodCalculateTotalSum(QGroupBox):
     def __init__(self, on_select: Callable[[bool], None]):
         super().__init__("Sposób liczenia sumy całkowitej")
-        options: list[str] = ["Wynik z totalizatora", "Wynik eliminacji + Wynik z totalizatora"]
+        options: list[str] = ["Wynik eliminacji + Wynik z totalizatora", "Wynik z totalizatora"]
         self.__dropdown: QComboBox = QComboBox()
         self.__dropdown.addItems(options)
-        self.__dropdown.currentIndexChanged.connect(lambda: on_select(self.__dropdown.currentIndex() == 1))
+        self.__dropdown.currentIndexChanged.connect(lambda: on_select(self.__dropdown.currentIndex() == 0))
 
         self.__layout = QGridLayout()
         self.__layout.addWidget(self.__dropdown, 0, 0)
