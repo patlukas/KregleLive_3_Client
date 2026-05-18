@@ -15,7 +15,7 @@ class AlertWindowWithSound(QMessageBox):
         self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
 
         self.setStandardButtons(QMessageBox.StandardButton.Ok)
-        self.buttonClicked.connect(self.close_alert)
+        self.button(QMessageBox.StandardButton.Ok).clicked.connect(self.close_alert)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.__play_sound)
