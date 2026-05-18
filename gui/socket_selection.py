@@ -87,6 +87,7 @@ class SocketSelection(QGroupBox):
         self.__socket_manager.disconnect()
         self.__stacked_layout.setCurrentWidget(self.__widget_connect)
         self.__label_info.setText("")
+        self.__label_failed.setText("")
         self.__alert_server_lose.close_alert()
         self.__timer.stop()
 
