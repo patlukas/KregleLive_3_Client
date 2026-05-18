@@ -14,7 +14,7 @@ class SocketSelection(QGroupBox):
         self.__socket_manager: SocketManager = socket_manager
         self.__default_ip: str = default_ip
         self.__default_port: str = default_port
-        self.__alert_server_lose: AlertWindowWithSound = AlertWindowWithSound("Kręgle Live: Utracono połączenie", "Utracono połączenie z serwerem")
+        self.__alert_server_lose: AlertWindowWithSound = AlertWindowWithSound("Kręgle Live: Utracono połączenie", "Utracono połączenie z serwerem", self)
 
         self.__stacked_layout: QStackedLayout = QStackedLayout()
 
