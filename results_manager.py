@@ -432,6 +432,19 @@ class ResultsManager:
         previous_players = block * self.__game_type.number_player_in_team_in_period
         return self.__results_container.get_player_name((team, player + previous_players))
 
+    def get_player_team_in_relative_block(self, team: int, player: int, relative_block: int) -> str | None:
+        """
+        :param team: <int> team number
+        :param player: <int> relative player number (player in block)
+        :param relative_block: <int> 0 - actual block, -1 - previous block, 1 - next block
+        :return: str - str - team name, None - the expected block does not exist
+        """
+        block = self.__block_number + relative_block
+        if block < 0 or block >= self.get_number_of_blocks():
+            return None
+        previous_players = block * self.__game_type.number_player_in_team_in_period
+        return self.__results_container.get_player_team_name((team, player + previous_players))
+
     def set_player_name_in_relative_block(self, team: int, player: int,  relative_block: int, name: str) -> bool:
         """
         :param team: <int> team number
@@ -445,6 +458,21 @@ class ResultsManager:
             return False
         previous_players = block * self.__game_type.number_player_in_team_in_period
         self.__results_container.set_player_name((team, player + previous_players), name)
+        return True
+
+    def set_player_team_in_relative_block(self, team: int, player: int,  relative_block: int, team_name: str) -> bool:
+        """
+        :param team: <int> team number
+        :param player: <int> relative player number (player in block)
+        :param relative_block: <int> 0 - actual block, -1 - previous block, 1 - next block
+        :param team_name: <str> new player name
+        :return: True - player name is set, False - the expected block does not exist
+        """
+        block = self.__block_number + relative_block
+        if block < 0 or block >= self.get_number_of_blocks():
+            return False
+        previous_players = block * self.__game_type.number_player_in_team_in_period
+        self.__results_container.set_player_team_name((team, player + previous_players), team_name)
         return True
 
     def get_player_previous_sum_in_relative_block(self, team: int, player: int, relative_block: int) -> int | None:

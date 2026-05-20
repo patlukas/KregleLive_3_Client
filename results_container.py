@@ -114,6 +114,16 @@ class ResultsContainer:
         """
         self.teams[who[0]].players[who[1]].set_name(name)
 
+    def set_player_team_name(self, who: tuple[int, int], team_name: str) -> None:
+        """
+        This method sets the player name
+
+        :param who: <tuple(int: number_team, int: number_player)>
+        :param team_name: <str> team name
+        :return: None
+        """
+        self.teams[who[0]].players[who[1]].set_team_name(team_name)
+
     def set_player_list_name(self, who: tuple[int, int], list_name: list[tuple[str, int]]) -> None:
         """
         This method set player name or player's if was playing more than one player
@@ -203,6 +213,15 @@ class ResultsContainer:
         :return: str
         """
         return self.teams[who[0]].players[who[1]].get_name()
+
+    def get_player_team_name(self, who: tuple[int, int]) -> str:
+        """
+        This method gets the player's team name
+
+        :param who: <tuple(int: number_team, int: number_player)>
+        :return: str
+        """
+        return self.teams[who[0]].players[who[1]].get_team_name()
 
 
 class ResultsContainerLeague(ResultsContainer):

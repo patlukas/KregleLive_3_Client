@@ -120,6 +120,15 @@ class ResultsContainerPlayer:
         """
         self.list_name[0] = (name, 0)
 
+    def set_team_name(self, team_name: str) -> None:
+        """
+        This method sets the team name
+
+        :param team_name: <str> player name
+        :return: None
+        """
+        self.team_name = team_name
+
     def set_list_name(self, list_name: list[tuple[str, int]]) -> None:
         """
         This method set player name or player's if was playing more than one player
@@ -156,9 +165,12 @@ class ResultsContainerPlayer:
                 return "0"
             if stat == "name":
                 return self.get_name()
+            if stat == "team": # TODO Add info about this to documentation
+                return self.get_team_name()
             if stat == "previous_sum":
                 return str(self.previous_sum)
             if stat == "total_sum":
+                # TODO should take result from last lane form sums[2], not calc sum frm all sum[1]
                 if self.final_sum_is_result_of_adding:
                     return str(self.previous_sum + self.__get_sum_stat_value("s"))
                 else:
@@ -234,3 +246,11 @@ class ResultsContainerPlayer:
         else:
             string = string[1:]
         return string
+
+    def get_team_name(self) -> str:
+        """
+        This method return player's team name
+
+        :return: <str> player's team names
+        """
+        return self.team_name
