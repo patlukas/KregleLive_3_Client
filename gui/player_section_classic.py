@@ -40,11 +40,11 @@ class _SectionSelectMethodCalculateTotalSum(QGroupBox):
 
 class _SectionSetName(QGroupBox):
     def __init__(self, name: str, number_player: int, with_previous_result: bool,
-                 on_save_players_data: Callable[[list[tuple[str, int, bool]]], None],
-                 on_get_players_data: Callable[[], None | list[tuple[str, int, bool]]]):
+                 on_save_players_data: Callable[[list[tuple[str, str, int, bool]]], None],
+                 on_get_players_data: Callable[[], None | list[tuple[str, str, int, bool]]]):
         super().__init__(name)
-        self.__on_save_players_data: Callable[[list[tuple[str, int, bool]]], None] = on_save_players_data
-        self.__on_get_players_data: Callable[[], None | list[tuple[str, int, bool]]] = on_get_players_data
+        self.__on_save_players_data: Callable[[list[tuple[str, str, int, bool]]], None] = on_save_players_data
+        self.__on_get_players_data: Callable[[], None | list[tuple[str, str, int, bool]]] = on_get_players_data
         self.__with_previous_result: bool = with_previous_result
         self.__list_row: list[tuple[QLabel, QComboBox, QLineEdit, QCheckBox]] = []
         self.__buttons: QWidget = QWidget()
@@ -90,12 +90,13 @@ class _SectionSetName(QGroupBox):
         self.__on_disable_buttons()
         self.setLayout(self.__layout)
 
-    def refresh_list_players(self, list_players):
+    def refresh_list_players(self, list_players_with_team):
         buttons_is_visible = self.__buttons.isVisible()
         for _, dropdown, _, _ in self.__list_row:
             name = dropdown.currentText()
             dropdown.clear()
-            dropdown.addItems(list_players)
+            for player, player_with_team in list_players_with_team:
+                dropdown.addItem(player, player_with_team)
             dropdown.setCurrentText(name)
         if not buttons_is_visible:
             self.__on_disable_buttons()
@@ -104,28 +105,39 @@ class _SectionSetName(QGroupBox):
         list_player_data = []
         for _, dropdown, line_previous_result, checkbox_is_player in self.__list_row:
             name = dropdown.currentText()
+            team = "" #dropdown.currentData()[1] # TODO
             previous_result = line_previous_result.text()
             show_player_in_lane_table = checkbox_is_player.isChecked()
             try:
                 previous_result_int = int(previous_result)
             except (ValueError, TypeError):
                 previous_result_int = 0
-            list_player_data.append((name, previous_result_int, show_player_in_lane_table))
+            list_player_data.append((name, team, previous_result_int, show_player_in_lane_table))
         self.__on_save_players_data(list_player_data)
         self.__on_disable_buttons()
 
     def load_players_data(self):
-        list_player_data: list[tuple[str, int, bool]] = self.__on_get_players_data()
+        list_player_data: list[tuple[str, str, int, bool]] = self.__on_get_players_data()
+        print("1.1")
         if list_player_data is None:
             return
-        for i, [name, previous_result, show_player_in_lane_table] in enumerate(list_player_data):
+        print("1.2", list_player_data)
+        for i, [name, team, previous_result, show_player_in_lane_table] in enumerate(list_player_data):
             self.__list_row[i][1].setCurrentText(name)
+            # TODO team
+            print("1.3", name, team, "|"+str(previous_result)+"|", show_player_in_lane_table, len(self.__list_row), i)
+            print(len(self.__list_row[i]))
             self.__list_row[i][2].setText(str(previous_result))
+            print("1.4")
             self.__list_row[i][3].setChecked(show_player_in_lane_table)
+            print("1.5")
             is_checked = self.__list_row[i][3].isChecked()
+            print("1.6")
             self.__list_row[i][1].setVisible(is_checked)
+            print("1.7")
             if self.__list_row[i][2].parent():
                 self.__list_row[i][2].setVisible(is_checked)
+        print("1.10")
         self.__on_disable_buttons()
 
     def __on_disable_buttons(self):
@@ -137,11 +149,12 @@ class _SectionSetName(QGroupBox):
         self.__btn_cancel.setEnabled(True)
 
     def __check_is_new_value(self):
-        list_player_data: list[tuple[str, int, bool]] = self.__on_get_players_data()
+        list_player_data: list[tuple[str, str, int, bool]] = self.__on_get_players_data()
         if list_player_data is None:
             return
-        for i, [name, previous_result, show_player_in_lane_table] in enumerate(list_player_data):
+        for i, [name, team, previous_result, show_player_in_lane_table] in enumerate(list_player_data):
             name_in_form = self.__list_row[i][1].currentText()
+            # TODO team
             previous_result_in_form = self.__list_row[i][2].text()
             show_player_in_lane_table_in_form = self.__list_row[i][3].isChecked()
             if (not show_player_in_lane_table_in_form and show_player_in_lane_table) or (show_player_in_lane_table_in_form and not show_player_in_lane_table):
@@ -208,7 +221,9 @@ class PlayersSectionClassic(QGroupBox):
 
     def __select_transition(self, transition: str):
         self.__results_manager.add_block(transition)
+        print(1)
         self.__section_next_set_name.load_players_data()
+        print(2)
         if self.__results_manager.get_number_of_blocks() == 1:
             self.__section_now_set_name.setParent(None)
             self.__layout.addWidget(self.__section_next_set_name, 1, 1)
@@ -217,6 +232,7 @@ class PlayersSectionClassic(QGroupBox):
             self.__layout.addWidget(self.__section_now_set_name, 1, 0)
             self.__layout.addWidget(self.__section_next_set_name, 1, 1)
             self.__section_next_select_block.setParent(None)
+        print(3)
 
     def on_after_new_block(self):
         if len(self.__transitions) > 1:
@@ -230,30 +246,34 @@ class PlayersSectionClassic(QGroupBox):
                 self.__layout.addWidget(self.__section_next_select_block, 1, 1)
         else:
             self.__select_transition(self.__transitions[0])
+        print(4)
         self.__section_now_set_name.load_players_data()
+        print(5)
 
     def load_data(self):
         self.__section_now_set_name.load_players_data()
 
     def load_data_from_new_category(self):
-        list_payers = self.__player_licenses.get_list_players_name(None)
-        self.__section_now_set_name.refresh_list_players(list_payers)
-        self.__section_next_set_name.refresh_list_players(list_payers)
+        list_players_with_team = self.__player_licenses.get_list_players_with_team_name(None)
+        self.__section_now_set_name.refresh_list_players(list_players_with_team)
+        self.__section_next_set_name.refresh_list_players(list_players_with_team)
 
-    def __set_players_data_in_relative_block(self, relative_block: int, list_data: list[tuple[str, int, bool]]) -> None:
-        for i, [name, previous_sum, show_player_in_lane_table] in enumerate(list_data):
+    def __set_players_data_in_relative_block(self, relative_block: int, list_data: list[tuple[str, str, int, bool]]) -> None:
+        for i, [name, team, previous_sum, show_player_in_lane_table] in enumerate(list_data):
             self.__results_manager.set_player_name_in_relative_block(0, i, relative_block, name)
+            self.__results_manager.set_player_team_in_relative_block(0, i, relative_block, team)
             self.__results_manager.set_player_previous_sum_in_relative_block(0, i, relative_block, previous_sum)
             self.__results_manager.set_show_player_in_lane_table_in_relative_block(0, i, relative_block, show_player_in_lane_table)
         self.__on_refresh_tables()
 
-    def __get_players_data_in_relative_block(self, relative_block: int) -> list[tuple[str, int, bool]] | None:
+    def __get_players_data_in_relative_block(self, relative_block: int) -> list[tuple[str, str, int, bool]] | None:
         list_data = []
         for i in range(self.__number_player_in_period):
             name = self.__results_manager.get_player_name_in_relative_block(0, i, relative_block)
+            team = self.__results_manager.get_player_team_in_relative_block(0, i, relative_block)
             previous_sum = self.__results_manager.get_player_previous_sum_in_relative_block(0, i, relative_block)
             show_player_in_lane_table = self.__results_manager.get_show_player_in_lane_table_in_relative_block(0, i, relative_block)
-            if name is None or previous_sum is None or show_player_in_lane_table is None:
+            if name is None or team is None or previous_sum is None or show_player_in_lane_table is None:
                 return None
-            list_data.append((name, previous_sum, show_player_in_lane_table))
+            list_data.append((name, team, previous_sum, show_player_in_lane_table))
         return list_data
