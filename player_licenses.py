@@ -67,6 +67,13 @@ class PlayerLicenses:
             return_list.append(player.name)
         return return_list
 
+    def get_list_players_with_team_name(self, team: str | None) -> list[list[str | list[str]]]:
+        list_players = self.get_players(team)
+        return_list = [["", ["", ""]]]
+        for player in list_players:
+            return_list.append([player.name, [player.name, player.team]])
+        return return_list
+
     def get_teams(self) -> list[str]:
         list_players = self.get_players(None)
         list_teams: list[str] = [""]
