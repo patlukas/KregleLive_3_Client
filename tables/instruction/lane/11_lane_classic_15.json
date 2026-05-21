@@ -1,0 +1,158 @@
+{
+    "type": "lane",
+    "name": "Zawody 4x15 | ciemne",
+    "path_to_table": {
+        "0": "lane_classic_15.png",
+        "3": "lane_trial_dark.png",
+        "4": "lane_trial_dark_end.png",
+        "24": "lane_classic_15.png",
+        "32": "lane_classic_15_end.png"
+    },
+    "background_color": [255, 0, 255],
+    "width": 807,
+    "height": 125,
+    "table_cords": [
+        {
+            "top": 2,
+            "left": 2
+        },
+        {
+            "top": 2,
+            "left": 135
+        },
+        {
+            "top": 2,
+            "left": 273
+        },
+        {
+            "top": 2,
+            "left": 406
+        },
+        {
+            "top": 2,
+            "left": 544
+        },
+        {
+            "top": 2,
+            "left": 677
+        }
+    ],
+    "cell_in_table": {
+        "metadata_default": {
+            "font_path": "MartianMono-Regular.ttf",
+            "font_color": [255, 255, 255],
+            "max_font_size": 16,
+            "left": 0,
+            "top": 0,
+            "width": 10,
+            "height": 16,
+            "text": null,
+            "background": null,
+            "writeIfNoChange": false,
+            "text_align": "center",
+            "breakIfEmpty": false
+        },
+        "cells": {
+            "for|_x_|1|5": {
+                "metadata": {
+                    "top": 14,
+                    "left": 17
+                },
+                "metadata_step": {
+                    "left": 21
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|6|10": {
+                "metadata": {
+                    "top": 30,
+                    "left": 17
+                },
+                "metadata_step": {
+                    "left": 21
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "for|_x_|11|15": {
+                "metadata": {
+                    "top": 46,
+                    "left": 17
+                },
+                "metadata_step": {
+                    "left": 21
+                },
+                "cells": {
+                    "T|P|L|throw-_x_||56": {}
+                }
+            },
+            "T|P||name_now_playing_player||": {
+                "top": 1,
+                "left": 2,
+                "width": 124,
+                "max_font_size": 13,
+                "height": 14
+            },
+            "for|_x_|0|1": {
+                "metadata": {
+                    "left": 16,
+                    "top": 65,
+                    "height": 15,
+                    "max_font_size": 14,
+                    "width": 42
+                },
+                "metadata_step": {
+                    "left": 54
+                },
+                "cells": {
+                    "T|P|_x_|p|262142|56": {}
+                }
+            },
+            "for|_x_|2|3": {
+                "metadata": {
+                    "left": 16,
+                    "top": 81,
+                    "height": 15,
+                    "max_font_size": 14,
+                    "width": 42
+                },
+                "metadata_step": {
+                    "left": 54
+                },
+                "cells": {
+                    "T|P|_x_|p|262142|56": {}
+                }
+            },
+            "T|P||s||56": {
+                "background": null,
+                "top": 99,
+                "height": 17,
+                "max_font_size": 16,
+                "left": 37,
+                "width": 54
+            },
+            "T|P|trial|time||7": {
+                "text":  null,
+                "top": 16,
+                "left": 89,
+                "width": 34,
+                "height": 14,
+                "max_font_size": 13
+            },
+            "T|P|trial|s||7": {
+                "left": 41
+            },
+            "T|P|trial|throw-last||7": {
+                "left": 29,
+                "width": 10
+            },
+            "T|P|trial|number_throw||7": {
+                "left": 5,
+                "width": 22
+            }
+        }
+    }
+}
