@@ -132,7 +132,7 @@ class MessagesInterpreter:
 
     def __interpretation_of_trail_run(self, lane: int, trial_setup: bytes):
         number_of_throw_in_trial = self.__bytes2int(trial_setup[0:3])
-        number_of_time_in_trial = self.__bytes2int(trial_setup[3:6])
+        number_of_time_in_trial = self.__bytes2int(trial_setup[3:6]) / 10
         self.__results_manager.trial_setup_on_lane(lane, number_of_throw_in_trial, number_of_time_in_trial)
 
     def __interpretation_of_game_run(self, lane: int, game_setup: bytes):
