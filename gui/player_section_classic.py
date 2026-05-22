@@ -74,6 +74,7 @@ class _SectionSetName(QGroupBox):
             line_previous_result: QLineEdit = QLineEdit()
             checkbox_is_player: QCheckBox = QCheckBox()
             dropdown.setEditable(True)
+            checkbox_is_player.setFocusPolicy(Qt.FocusPolicy.NoFocus)
             self.__layout.addWidget(label, i+1, 0)
             self.__layout.addWidget(checkbox_is_player, i+1, 1)
             self.__layout.addWidget(dropdown, i+1, 2)

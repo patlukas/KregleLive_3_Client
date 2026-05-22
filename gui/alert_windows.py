@@ -4,8 +4,8 @@ from PyQt6.QtCore import QTimer, Qt
 
 
 class AlertWindowWithSound(QMessageBox):
-    def __init__(self, title: str, message: str):
-        super().__init__()
+    def __init__(self, title: str, message: str, parent=None):
+        super().__init__(parent)
         self.setModal(False)
 
         self.setWindowTitle(title)
@@ -15,7 +15,7 @@ class AlertWindowWithSound(QMessageBox):
         self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
 
         self.setStandardButtons(QMessageBox.StandardButton.Ok)
-        self.buttonClicked.connect(self.close_alert)
+        self.button(QMessageBox.StandardButton.Ok).clicked.connect(self.close_alert)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.__play_sound)

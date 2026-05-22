@@ -115,6 +115,8 @@ class MessagesInterpreter:
             else:
                 self.__number_of_unrecognized_message += 1
                 self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
+        elif x == b"T":
+            self.__on_add_log(0, "INT_TOLANE_IGNORE", "PANEL", f"In lane {recipient_str} was sent msg {content[1:3]}", False)
         else:
             self.__number_of_unrecognized_message += 1
             self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
@@ -130,7 +132,7 @@ class MessagesInterpreter:
 
     def __interpretation_of_trail_run(self, lane: int, trial_setup: bytes):
         number_of_throw_in_trial = self.__bytes2int(trial_setup[0:3])
-        number_of_time_in_trial = self.__bytes2int(trial_setup[3:6])
+        number_of_time_in_trial = self.__bytes2int(trial_setup[3:6]) / 10
         self.__results_manager.trial_setup_on_lane(lane, number_of_throw_in_trial, number_of_time_in_trial)
 
     def __interpretation_of_game_run(self, lane: int, game_setup: bytes):

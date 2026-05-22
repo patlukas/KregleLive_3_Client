@@ -2,8 +2,7 @@ import sys
 from PyQt6 import QtGui
 from PyQt6.QtCore import QThread
 from PyQt6.QtGui import QAction
-from PyQt6.QtWidgets import QWidget, QPushButton, QApplication, QGridLayout, QSizePolicy, QMessageBox, QStatusBar, \
-    QMenuBar
+from PyQt6.QtWidgets import QWidget, QApplication, QGridLayout, QSizePolicy, QMessageBox, QMenuBar
 
 from category_type_manager import CategoryTypesManager, CategoryTypesManagerError
 from create_result_table import CreateTableMain, CreateTableLane
@@ -25,7 +24,7 @@ from gui.game_type_section import GameTypeSection
 from gui.socket_selection import SocketSelection
 from socket_manager import SocketManager
 
-APP_VERSION = "1.1.3"
+APP_VERSION = "1.1.4"
 
 class WorkerThread(QThread):
     def __init__(self, log_management: LogManagement, socket_manager: SocketManager, messages_interpreter: MessagesInterpreter,
@@ -66,7 +65,7 @@ class WorkerThread(QThread):
 class Main(QWidget):
     def __init__(self):
         super().__init__()
-        self.__log_management = None
+        self.__log_management: None | LogManagement = None
         self.__socket_manager: None | SocketManager = None
         self.__results_container: None | ResultsContainer = None
         self.__results_manager: None | ResultsManager = None
@@ -84,8 +83,6 @@ class Main(QWidget):
         self.__layout = QGridLayout()
         self.setLayout(self.__layout)
         self.__loop_is_running: bool = False
-        self.__button_start: QPushButton = QPushButton("Rozpocznij")
-        self.__button_stop: QPushButton = QPushButton("Zatrzymaj")
         self.__column1_layout = QGridLayout()
         self.__column2_layout = QGridLayout()
 
@@ -172,14 +169,8 @@ class Main(QWidget):
             self.__column1_layout.addWidget(socket_section, 0, 0)
             self.__column1_layout.addWidget(settings_section, 1, 0)
             self.__column1_layout.addWidget(game_type_selection, 2, 0)
-            self.__column1_layout.addWidget(self.__button_start, 3, 0)
-            self.__column1_layout.addWidget(self.__statistics_section, 4, 0)
-            self.__column1_layout.addWidget(logs_section, 5, 0)
-
-            self.__button_start.setEnabled(False)
-            self.__button_start.setToolTip("Aby uruchomić musisz wybrać rodzaj gry")
-            self.__button_start.clicked.connect(self.__on_start_loop)
-            self.__button_stop.clicked.connect(self.__on_stop_loop)
+            self.__column1_layout.addWidget(self.__statistics_section, 3, 0)
+            self.__column1_layout.addWidget(logs_section, 4, 0)
 
             self.__layout.addWidget(column1, 0, 0)
             self.__layout.addWidget(column2, 0, 1)
@@ -188,16 +179,26 @@ class Main(QWidget):
         self.show()
 
     def __create_menu_bar(self) -> QMenuBar:
+        bars = [
+            ["Licencje", [
+                ["Odśwież listę licencji", self.__refresh_licenses]
+            ]],
+            ["Pomoc", [
+                ["Otwórz folder z logami", self.__log_management.open_folder_with_logs],
+                ["O aplikacji", self.__show_about]
+            ]]
+        ]
         menu_bar = QMenuBar(self)
-        licenses_menu = menu_bar.addMenu("Licencje")
-        refresh_licenses_action = QAction("Odśwież listę licencji", self)
-        refresh_licenses_action.triggered.connect(self.__refresh_licenses)
-        licenses_menu.addAction(refresh_licenses_action)
-
-        help_menu = menu_bar.addMenu("Pomoc")
-        about_action = QAction("O aplikacji", self)
-        about_action.triggered.connect(self.__show_about)
-        help_menu.addAction(about_action)
+        for title, options in bars:
+            menu = menu_bar.addMenu(title)
+            for option in options:
+                if option is None:
+                    menu.addSeparator()
+                    continue
+                name, event = option
+                action = QAction(name, self)
+                action.triggered.connect(event)
+                menu.addAction(action)
 
         return menu_bar
 
@@ -216,34 +217,7 @@ class Main(QWidget):
             return
         self.__player_section.load_data_from_new_category()
 
-    def __on_start_loop(self):
-        try:
-            self.__button_start.setParent(None)
-            self.__column1_layout.addWidget(self.__button_stop, 3, 0)
-            if self.__game_type_manager.game_type is None:
-                return
-            self.__thread.start()
-        except Exception as e:
-            print("=", e)
-
-    def __on_stop_loop(self):
-        reply = QMessageBox.question(
-            self,
-            'Zatrzymanie pętli',
-            'Czy na pewno chcesz zatrzymać pętlę?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-
-        if reply == QMessageBox.StandardButton.No:
-            return
-        self.__button_stop.setParent(None)
-        self.__column1_layout.addWidget(self.__button_start, 3, 0)
-        self.__thread.stop()
-
     def __on_select_game_type(self):
-        self.__button_start.setToolTip("")
-        self.__button_start.setEnabled(True)
         game_type = self.__game_type_manager.game_type
         if game_type is None:
             return
@@ -262,6 +236,7 @@ class Main(QWidget):
 
         if game_type.type == "league":
             self.__player_section = PlayersSectionLeague(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
+            # self.__results_manager.add_functions_after_successfully_set_player_name_if_not_set(self.__player_section.load_data) TODO #17
         elif game_type.type == "classic":
             self.__player_section = PlayersSectionClassic(self.__results_manager, game_type, self.__player_licenses, self.__on_refresh_tables)
             self.__results_manager.add_function_wait_to_new_block(self.__player_section.on_after_new_block)
@@ -271,6 +246,7 @@ class Main(QWidget):
 
         self.__thread = WorkerThread(self.__log_management, self.__socket_manager, self.__message_interpreter,
                                      self.__create_table_main, self.__create_table_lane, self.__config["loop_interval_ms"])
+        self.__thread.start()
 
     def __on_refresh_table_lane(self):
         if self.__thread is None:
