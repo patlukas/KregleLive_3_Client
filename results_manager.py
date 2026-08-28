@@ -542,7 +542,9 @@ class ResultsManager:
         return self.__list_locked_communication_on_lane[lane]
 
     def lock_lane(self, lane: int):
+        self.__on_add_log(6, "LANE_LOCK", f"{lane + 1}", f"Komunikacja z torem {lane + 1} zastała zablokowana", False)
         self.__list_locked_communication_on_lane[lane] = True
 
     def unlock_lane(self, lane: int):
+        self.__on_add_log(6, "LANE_LOCK", f"{lane + 1}", f"Komunikacja z torem {lane + 1} zastała odblokowana", False)
         self.__list_locked_communication_on_lane[lane] = False
