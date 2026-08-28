@@ -20,6 +20,8 @@ class ResultsManager:
         self.__block_is_running: <bool> whether the block number whose number is in the variable self.__block_number is still active
         self.__round: <int> the round number that is on all lanes min([x for x in self.__status_on_lanes])
         self.__status_on_lanes: list[list[int] | None] list of all rounds on all lanes
+        self.__list_locked_communication_on_lane: list[bool] list with information on which lane is locked communication,
+                                                because is started too short program, e.g. it is used while victory throws on sprint
 
         Info:
             1. variables "self.__block_number" and "self.__max_block_number" have equal values almost all the time.
@@ -37,6 +39,7 @@ class ResultsManager:
         self.__block_is_running: bool = False
         self.__round: int = -1
         self.__status_on_lanes: list[list[int] | None] = [([] if l == 1 else None) for l in game_type.lanes]
+        self.__list_locked_communication_on_lane: list[bool] = [False] * len(game_type.lanes)
         self.__results_container.init_struct(self.__game_type.number_team, self.__game_type.number_player_in_team_in_period)
         self.__functions_wait_to_new_block: list[Callable] = []
         self.__functions_after_successfully_set_player_name_if_not_set: list[Callable] = []
@@ -510,3 +513,12 @@ class ResultsManager:
 
     def minimal_throws_on_game(self) -> int:
         return self.__game_type.minimum_number_throws_on_lane
+
+    def lane_is_locked(self, lane: int) -> bool:
+        return self.__list_locked_communication_on_lane[lane]
+
+    def lock_lane(self, lane: int):
+        self.__list_locked_communication_on_lane[lane] = True
+
+    def unlock_lane(self, lane: int):
+        self.__list_locked_communication_on_lane[lane] = False
