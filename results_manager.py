@@ -88,6 +88,10 @@ class ResultsManager:
                 optional, so both messages change state to 3, because if only the second one were changed, the name
                 would be incorrectly assigned
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana",False)
+            return False
+
         if self.__block_number == self.__game_type.number_periods - 1 and not self.__block_is_running:
             return False
         if self.__status_on_lanes[lane] is None:
@@ -179,6 +183,10 @@ class ResultsManager:
         :param time: <float> new time
         :return: <bool> True - time has been updated, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         who = self.__get_player_on_lane_for_results_or_time(lane)
         if not who:
             return False
@@ -204,6 +212,10 @@ class ResultsManager:
         :param raw_message <bytes> raw message received from the lane
         :return: <bool> True - result has been added, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         who = self.__get_player_on_lane_for_results_or_time(lane)
         if not who:
             return False
@@ -220,6 +232,10 @@ class ResultsManager:
         :param time: <float> max time a player can play in trial
         :return: <bool> True - trial has been initialised, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         result = self.__get_player_on_lane(lane)
         if not result or result[0] != 0:
             return False
@@ -239,6 +255,10 @@ class ResultsManager:
         :param card: <int> <int> 0 - no card, 1 - yellow card, 3 - red card
         :return: <bool> True - game has been initialised, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         result = self.__get_player_on_lane(lane)
         if not result or result[0] != 3:
             return False
@@ -253,6 +273,10 @@ class ResultsManager:
         :param name: <str> player name
         :return: None
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         result = self.__get_player_on_lane(lane)
         if not result:
             return False
