@@ -62,15 +62,22 @@ class GameTypesManager:
                 self.__check_value(k, v, "transitions", dict, 'list({v}.keys()) == [""]')
                 self.__check_value_not_exists(k, v, "default_transitions")
                 self.__check_value_not_exists(k, v, "with_previous_result")
+                self.__check_value_not_exists(k, v, "minimum_number_throws_on_lane")
             elif v["type"] == "classic":
                 self.__check_value(k, v, "transitions", dict, 'len(list({v}.keys())) > 0')
                 self.__check_value(k, v, "default_transitions", str, '{v}')
                 self.__check_value(k, v, "with_previous_result", bool, '{v} or True')
                 self.__check_value_not_exists(k, v, "number_periods")
                 self.__check_value_not_exists(k, v, "number_of_changes")
+                self.__check_value_if_exists(k, v, "minimum_number_throws_on_lane", int, '{v} >= 0')
 
                 if v["default_transitions"] not in list(v["transitions"].keys()):
                     raise GameTypesManagerError("13-005",f"In {k} the parametr 'default_transitions' ma nazwę której nie ma w 'transations'")
+
+    def __check_value_if_exists(self, name: str, parameters: dict, parameter_name: str, parameter_type: type, condition: str):
+        if parameter_name not in parameters:
+            return
+        self.__check_value(name, parameters, parameter_name, parameter_type, condition)
 
     @staticmethod
     def __check_value(name: str, parameters: dict, parameter_name: str, parameter_type: type, condition: str):
@@ -144,7 +151,8 @@ class GameTypesManager:
                                                          raw_game_type.get("number_periods", -1), number_team,
                                                          number_player_in_team, transitions,
                                                          raw_game_type.get("default_transitions", None),
-                                                         raw_game_type.get("with_previous_result", False))
+                                                         raw_game_type.get("with_previous_result", False),
+                                                         raw_game_type.get("minimum_number_throws_on_lane", 0))
 
 class Transition:
     def __init__(self, name: str, schema: list[list[list[int, int, int] | int]], number_lane: int):
@@ -156,7 +164,7 @@ class GameType:
     def __init__(self, name: str, game_type: Literal["classic", "league"], lanes: list[Literal[0, 1]],
                  number_of_changes: int | None, number_periods: int, number_team: int,
                  number_player_in_team_in_period: int, transitions: dict[str: Transition], default_transitions: str,
-                 with_previous_result: bool):
+                 with_previous_result: bool, minimum_number_throws_on_lane: int):
         self.name: str = name
         self.type: Literal["classic", "league"] = game_type
         self.lanes: list[Literal[0, 1]] = lanes
@@ -167,6 +175,7 @@ class GameType:
         self.transitions: dict[str: Transition] = transitions
         self.default_transitions: str = default_transitions
         self.with_previous_result: bool = with_previous_result
+        self.minimum_number_throws_on_lane: int = minimum_number_throws_on_lane
 
     def get_list_transitions_name(self) -> list[str]:
         return list(self.transitions.keys())

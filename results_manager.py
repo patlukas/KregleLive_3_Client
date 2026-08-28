@@ -20,6 +20,8 @@ class ResultsManager:
         self.__block_is_running: <bool> whether the block number whose number is in the variable self.__block_number is still active
         self.__round: <int> the round number that is on all lanes min([x for x in self.__status_on_lanes])
         self.__status_on_lanes: list[list[int] | None] list of all rounds on all lanes
+        self.__list_locked_communication_on_lane: list[bool] list with information on which lane is locked communication,
+                                                because is started too short program, e.g. it is used while victory throws on sprint
 
         Info:
             1. variables "self.__block_number" and "self.__max_block_number" have equal values almost all the time.
@@ -37,6 +39,7 @@ class ResultsManager:
         self.__block_is_running: bool = False
         self.__round: int = -1
         self.__status_on_lanes: list[list[int] | None] = [([] if l == 1 else None) for l in game_type.lanes]
+        self.__list_locked_communication_on_lane: list[bool] = [False] * len(game_type.lanes)
         self.__results_container.init_struct(self.__game_type.number_team, self.__game_type.number_player_in_team_in_period)
         self.__functions_wait_to_new_block: list[Callable] = []
         self.__functions_after_successfully_set_player_name_if_not_set: list[Callable] = []
@@ -85,6 +88,10 @@ class ResultsManager:
                 optional, so both messages change state to 3, because if only the second one were changed, the name
                 would be incorrectly assigned
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana",False)
+            return False
+
         if self.__block_number == self.__game_type.number_periods - 1 and not self.__block_is_running:
             return False
         if self.__status_on_lanes[lane] is None:
@@ -176,6 +183,10 @@ class ResultsManager:
         :param time: <float> new time
         :return: <bool> True - time has been updated, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         who = self.__get_player_on_lane_for_results_or_time(lane)
         if not who:
             return False
@@ -201,6 +212,10 @@ class ResultsManager:
         :param raw_message <bytes> raw message received from the lane
         :return: <bool> True - result has been added, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         who = self.__get_player_on_lane_for_results_or_time(lane)
         if not who:
             return False
@@ -217,6 +232,10 @@ class ResultsManager:
         :param time: <float> max time a player can play in trial
         :return: <bool> True - trial has been initialised, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         result = self.__get_player_on_lane(lane)
         if not result or result[0] != 0:
             return False
@@ -236,6 +255,10 @@ class ResultsManager:
         :param card: <int> <int> 0 - no card, 1 - yellow card, 3 - red card
         :return: <bool> True - game has been initialised, False - otherwise
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         result = self.__get_player_on_lane(lane)
         if not result or result[0] != 3:
             return False
@@ -250,6 +273,10 @@ class ResultsManager:
         :param name: <str> player name
         :return: None
         """
+        if self.__list_locked_communication_on_lane[lane]:
+            self.__on_add_log(8, "RST_LOCKED", f"{lane + 1}", f"Komunikacja z torem {lane + 1} jest zablokowana", False)
+            return False
+
         result = self.__get_player_on_lane(lane)
         if not result:
             return False
@@ -507,3 +534,17 @@ class ResultsManager:
         for team in self.__results_container.teams:
             for player in team.players:
                 player.final_sum_is_result_of_adding = final_sum_is_result_of_adding
+
+    def minimal_throws_on_game(self) -> int:
+        return self.__game_type.minimum_number_throws_on_lane
+
+    def lane_is_locked(self, lane: int) -> bool:
+        return self.__list_locked_communication_on_lane[lane]
+
+    def lock_lane(self, lane: int):
+        self.__on_add_log(6, "LANE_LOCK", f"{lane + 1}", f"Komunikacja z torem {lane + 1} zastała zablokowana", False)
+        self.__list_locked_communication_on_lane[lane] = True
+
+    def unlock_lane(self, lane: int):
+        self.__on_add_log(6, "LANE_LOCK", f"{lane + 1}", f"Komunikacja z torem {lane + 1} zastała odblokowana", False)
+        self.__list_locked_communication_on_lane[lane] = False

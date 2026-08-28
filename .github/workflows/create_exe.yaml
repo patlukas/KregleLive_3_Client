@@ -96,7 +96,7 @@ jobs:
         with:
           tag_name: ${{ env.NEW_VERSION_WITH_BUILD__V }}
           name: Release ${{ env.NEW_VERSION_WITH_BUILD__V }}
-          body: "Nowa wersja aplikacji 🎉"
+          body_path: about_release.txt
           draft: false
           prerelease: false
           token: ${{ secrets.PAT }}

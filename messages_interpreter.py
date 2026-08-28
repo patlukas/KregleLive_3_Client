@@ -57,6 +57,14 @@ class MessagesInterpreter:
             self.__number_of_unrecognized_message += 1
             self.__on_add_log(9, "INT_LANE_UNKNOWN", "", f"Unknown message from {sender_name} with content: {content}", True)
             return
+
+        self.__lock_communication(sender_int, content)
+        self.__unlock_communication(sender_int, content)
+
+        if self.__is_locked(sender_int):
+            self.__on_add_log(2, "LOCKED_FROM", "", f"Communication from {sender_int} is locked", False)
+            return
+
         x = content[0:1]
         if length == 28 and x in [b"w", b"g", b"h", b"k", b"f"]:
             self.__interpretation_of_lane_result(sender_int, content)
@@ -96,6 +104,14 @@ class MessagesInterpreter:
                 self.__on_add_log(9, "INT_TOLANE_UNKNOWN", "", f"Unknown message to {recipient_str} with content: {content}", True)
             return
         y = content[1:2]
+
+        self.__lock_communication(recipient_int, content)
+        self.__unlock_communication(recipient_int, content)
+
+        if self.__is_locked(recipient_int):
+            self.__on_add_log(2, "LOCKED_TO", "", f"Communication to {recipient_str} is locked", False)
+            return
+
         if length == 21 and x == b"I" and y == b"G":
             self.__set_lane_status(recipient_int, 3)
             self.__interpretation_of_game_run(recipient_int, content[2:])
@@ -184,6 +200,39 @@ class MessagesInterpreter:
         if lane in interpreter:
             return interpreter[lane]
         return -1, ""
+
+    def __lock_communication(self, lane: int, message: bytes):
+        length = len(message)
+        x = message[0:1]
+        y = message[1:2]
+        if length == 21 and x == b"I" and y == b"G":
+            game_setup = message[2:]
+            number_p = self.__bytes2int(game_setup[0:3])
+            number_z = self.__bytes2int(game_setup[3:6])
+
+            if number_p + number_z < self.__results_manager.minimal_throws_on_game():
+                self.__results_manager.lock_lane(lane)
+
+    def __unlock_communication(self, lane: int, message: bytes):
+        length = len(message)
+        x = message[0:1]
+        y = message[1:2]
+        if length == 21 and x == b"I" and y == b"G":
+            game_setup = message[2:]
+            number_p = self.__bytes2int(game_setup[0:3])
+            number_z = self.__bytes2int(game_setup[3:6])
+
+            if number_p + number_z >= self.__results_manager.minimal_throws_on_game():
+                self.__results_manager.unlock_lane(lane)
+
+        elif length == 2 and x == b"i" and y == b"0":
+            self.__results_manager.unlock_lane(lane)
+        elif length == 8 and x == b"P":
+            self.__results_manager.unlock_lane(lane)
+
+
+    def __is_locked(self, lane: int) -> bool:
+        return self.__results_manager.lane_is_locked(lane)
 
     @staticmethod
     def __checksum_checker(message: bytes) -> bool:
