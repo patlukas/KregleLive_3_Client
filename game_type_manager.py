@@ -72,6 +72,11 @@ class GameTypesManager:
                 if v["default_transitions"] not in list(v["transitions"].keys()):
                     raise GameTypesManagerError("13-005",f"In {k} the parametr 'default_transitions' ma nazwę której nie ma w 'transations'")
 
+    def __check_value_if_exists(self, name: str, parameters: dict, parameter_name: str, parameter_type: type, condition: str):
+        if parameter_name not in parameters:
+            return
+        self.__check_value(name, parameters, parameter_name, parameter_type, condition)
+
     @staticmethod
     def __check_value(name: str, parameters: dict, parameter_name: str, parameter_type: type, condition: str):
         if parameter_name not in parameters:
