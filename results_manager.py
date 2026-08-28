@@ -507,3 +507,6 @@ class ResultsManager:
         for team in self.__results_container.teams:
             for player in team.players:
                 player.final_sum_is_result_of_adding = final_sum_is_result_of_adding
+
+    def minimal_throws_on_game(self) -> int:
+        return self.__game_type.minimum_number_throws_on_lane
