@@ -53,7 +53,8 @@ The log directory is located at: `%PROGRAMDATA%\KL3_C\logs\`
 | Version          | Release Date      | Commits | Changes                                          |
 |------------------|-------------------|---------|--------------------------------------------------|
 | **v1.1.6.0**     | 🚧 In Development | 101+    |                                                  |
-| **v1.1.5.0**     | 2026-08-28        | 101     | Sprint and tandem                                |
+| **v1.1.5.1**     | 2026-08-29        | 109     | Fix bug after victory throws                     |
+| **v1.1.5.0**     | 2026-08-28        | 106     | Sprint and tandem                                |
 | **v1.1.4.0**     | 2026-05-22        | 92      | Fix disconnect bug, add 4x15, fix trial time bug |
 | **v1.1.3.3**     | 2025-02-23        | 69      | Add new table                                    |
 | **v1.1.3.2**     | 2025-02-23        | 68      | Fix small bug                                    |

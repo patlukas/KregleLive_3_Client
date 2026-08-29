@@ -1,3 +1,2 @@
-- add possible to use not required fields in game_type
-- add not required fields `minimum_number_throws_on_lane` in game_type
 - add new game type "Tandem and Sprint"
+- fix bug after Victory throws
