@@ -52,8 +52,8 @@ The log directory is located at: `%PROGRAMDATA%\KL3_C\logs\`
 
 | Version          | Release Date      | Commits | Changes                                                           |
 |------------------|-------------------|---------|-------------------------------------------------------------------|
-| **v1.1.7.0**    | 🚧 In Development | 101+    |                                                                   |
-| **v1.1.6.0**     | 2026-11-12        | 101+    | Fix bug when short block is after long block & method hint player |
+| **v1.2.0**       | 🚧 In Development | 113+    |                                                                   |
+| **v1.1.6.0**     | 2026-11-14        | 113     | Fix bug when short block is after long block & method hint player |
 | **v1.1.5.1**     | 2026-08-29        | 109     | Fix bug after victory throws                                      |
 | **v1.1.5.0**     | 2026-08-28        | 106     | Sprint and tandem                                                 |
 | **v1.1.4.0**     | 2026-05-22        | 92      | Fix disconnect bug, add 4x15, fix trial time bug                  |

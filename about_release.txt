@@ -1,2 +1,1 @@
-- fix bug when is block 2x30 after 4x30 #67
-- change method to hint player name and surname #63
+- change version format to MAJOR.MINOR.PATCH #69
