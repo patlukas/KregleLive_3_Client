@@ -8,8 +8,8 @@ YEAR = now.year
 
 version_info = f"""VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=({APP_VERSION_COMMA}),
-    prodvers=({APP_VERSION_COMMA}),
+    filevers=({APP_VERSION_COMMA},0),
+    prodvers=({APP_VERSION_COMMA},0),
     mask=0x3f,
     flags=0x0,
     OS=0x4,
