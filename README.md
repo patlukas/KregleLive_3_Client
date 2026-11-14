@@ -50,24 +50,25 @@ The log directory is located at: `%PROGRAMDATA%\KL3_C\logs\`
 
 ## 📌 Version History
 
-| Version          | Release Date      | Commits | Changes                                          |
-|------------------|-------------------|---------|--------------------------------------------------|
-| **v1.1.6.0**     | 🚧 In Development | 101+    |                                                  |
-| **v1.1.5.1**     | 2026-08-29        | 109     | Fix bug after victory throws                     |
-| **v1.1.5.0**     | 2026-08-28        | 106     | Sprint and tandem                                |
-| **v1.1.4.0**     | 2026-05-22        | 92      | Fix disconnect bug, add 4x15, fix trial time bug |
-| **v1.1.3.3**     | 2025-02-23        | 69      | Add new table                                    |
-| **v1.1.3.2**     | 2025-02-23        | 68      | Fix small bug                                    |
-| **v1.1.3.1**     | 2025-02-15        | 67      | Add new table                                    |
-| **v1.1.3.0**     | 2025-02-14        | 65      | Increasing the functionality of classic mode     |
-| **v1.1.2.1**     | 2025-02-07        | 59      | 🐍Added support for Python 13                    |
-| **v1.1.2.0**     | 2025-02-07        | 56      | Added support for individual competitions        |
-| **v1.1.1.1**     | 2025-02-06        | 46      | Add README.md                                    |
-| **v1.1.1.0**     | 2025-02-05        | 44      | More tables to choose                            |
-| **v1.1.0.0**     | 2025-02-04        | 40      | Add splashscreen                                 |
-| **v1.0.3**       | 2024-11-22        | 30      | Fix critical bug                                 |
-| **v1.0.1**       | 2024-11-02        | 27      | 🎉 Initial stable release                        |
-| **First commit** | 2024-08-13        | 1       |                                                  |
+| Version          | Release Date      | Commits | Changes                                                           |
+|------------------|-------------------|---------|-------------------------------------------------------------------|
+| **v1.1.7.0**    | 🚧 In Development | 101+    |                                                                   |
+| **v1.1.6.0**     | 2026-11-12        | 101+    | Fix bug when short block is after long block & method hint player |
+| **v1.1.5.1**     | 2026-08-29        | 109     | Fix bug after victory throws                                      |
+| **v1.1.5.0**     | 2026-08-28        | 106     | Sprint and tandem                                                 |
+| **v1.1.4.0**     | 2026-05-22        | 92      | Fix disconnect bug, add 4x15, fix trial time bug                  |
+| **v1.1.3.3**     | 2025-02-23        | 69      | Add new table                                                     |
+| **v1.1.3.2**     | 2025-02-23        | 68      | Fix small bug                                                     |
+| **v1.1.3.1**     | 2025-02-15        | 67      | Add new table                                                     |
+| **v1.1.3.0**     | 2025-02-14        | 65      | Increasing the functionality of classic mode                      |
+| **v1.1.2.1**     | 2025-02-07        | 59      | 🐍Added support for Python 13                                     |
+| **v1.1.2.0**     | 2025-02-07        | 56      | Added support for individual competitions                         |
+| **v1.1.1.1**     | 2025-02-06        | 46      | Add README.md                                                     |
+| **v1.1.1.0**     | 2025-02-05        | 44      | More tables to choose                                             |
+| **v1.1.0.0**     | 2025-02-04        | 40      | Add splashscreen                                                  |
+| **v1.0.3**       | 2024-11-22        | 30      | Fix critical bug                                                  |
+| **v1.0.1**       | 2024-11-02        | 27      | 🎉 Initial stable release                                         |
+| **First commit** | 2024-08-13        | 1       |                                                                   |
 
 ## Screenshots
 Here are some screenshots of the application:
