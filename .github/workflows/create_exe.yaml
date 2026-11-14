@@ -43,12 +43,12 @@ jobs:
         id: increment_build
         shell: pwsh
         run: |
-          $NEW_VERSION = "${{ env.NEW_VERSION }}" #a.b.c
-          $LATEST_VERSION_WITH_BUILD = "${{ env.LATEST_VERSION_WITH_BUILD }}" #a.b.c.d
+          $NEW_VERSION = "${{ env.NEW_VERSION }}" #MAJOR.MINOR
+          $LATEST_VERSION_WITH_BUILD = "${{ env.LATEST_VERSION_WITH_BUILD }}" #MAJOR.MINOR.PATCH
 
           # Check if the latest tag matches the version prefix
           if ($LATEST_VERSION_WITH_BUILD -like "$NEW_VERSION.*") {
-              # If the version matches, increment the build number (the last part of the tag)
+              # If the version matches, increment the patch number (the last part of the tag)
               $BUILD_NUMBER = [int]($LATEST_VERSION_WITH_BUILD -replace ".*\.(\d+)$", '$1') + 1
               $NEW_VERSION_WITH_BUILD = "$NEW_VERSION.$BUILD_NUMBER"
           }
