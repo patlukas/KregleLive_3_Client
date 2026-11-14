@@ -404,6 +404,8 @@ class ResultsManager:
             if round_number >= block.number_lane:
                 round_number -= block.number_lane
                 block_number += 1
+            else:
+                break
         return block_number, round_number
 
     def get_scores_of_players_now_playing(self, list_of_result_names: list[str]) -> list[dict | None] | None:
