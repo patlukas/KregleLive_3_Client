@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QGroupBox, QLabel, QPushButton, QComboBox, QGridLayout, QLineEdit, QHBoxLayout, QWidget, \
-    QCheckBox
+    QCheckBox, QCompleter
 from collections.abc import Callable
 from PyQt6.QtCore import Qt
 
@@ -74,6 +74,11 @@ class _SectionSetName(QGroupBox):
             line_previous_result: QLineEdit = QLineEdit()
             checkbox_is_player: QCheckBox = QCheckBox()
             dropdown.setEditable(True)
+
+            completer = dropdown.completer()
+            completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+            completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+
             checkbox_is_player.setFocusPolicy(Qt.FocusPolicy.NoFocus)
             self.__layout.addWidget(label, i+1, 0)
             self.__layout.addWidget(checkbox_is_player, i+1, 1)
